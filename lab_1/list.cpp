@@ -33,14 +33,14 @@ void list<T>::iterator::operator--()
 }
 
 template<class T>
-bool list<T>::iterator::operator==(list::iterator iterator)
+bool list<T>::iterator::operator==(list::iterator iter)
 {
     // TODO: IMPLEMENT ME
     return false;
 }
 
 template<class T>
-bool list<T>::iterator::operator!=(list::iterator iterator)
+bool list<T>::iterator::operator!=(list::iterator iter)
 {
     // TODO: IMPLEMENT ME
     return false;
