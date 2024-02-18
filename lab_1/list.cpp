@@ -132,7 +132,7 @@ bool list<T>::is_contain(T item)
 }
 
 template<class T>
-T list<T>::get_element_by_id(unsigned int id)
+T list<T>::get_element_by_id(unsigned int idx)
 {
     // TODO: IMPLEMENT ME
     return nullptr;
@@ -152,7 +152,7 @@ void list<T>::push(T item)
 }
 
 template<class T>
-bool list<T>::push(T item, unsigned int id)
+bool list<T>::push(T item, unsigned int idx)
 {
     // TODO: IMPLEMENT ME
     return false;
@@ -166,7 +166,7 @@ bool list<T>::remove(T item)
 }
 
 template<class T>
-bool list<T>::remove(unsigned int)
+bool list<T>::remove(unsigned int idx)
 {
     // TODO: IMPLEMENT ME
     return false;

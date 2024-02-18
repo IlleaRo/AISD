@@ -73,15 +73,15 @@ public:
 
     bool is_contain(T item); // Опрос наличия заданного значения
 
-    T get_element_by_id(unsigned int id); // Чтение значения с заданным номером в списке
+    T get_element_by_id(unsigned int idx); // Чтение значения с заданным номером в списке
 
     unsigned int get_id(T item); // Получение позиции в списке для заданного значения
 
     void push(T item); // Включение нового значения
-    bool push(T item, unsigned int id); // Включение нового значения в позицию с заданным номером
+    bool push(T item, unsigned int idx); // Включение нового значения в позицию с заданным номером
 
     bool remove(T item); // Удаление заданного значения из списка
-    bool remove(unsigned int); // Удаление значения из позиции с заданным номером
+    bool remove(unsigned int idx); // Удаление значения из позиции с заданным номером
 
     iterator begin(); // Запрос прямого итератора
     reverse_iterator rbegin(); // Запрос обратного итератора
