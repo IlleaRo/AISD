@@ -6,7 +6,7 @@ class list { // Кольцевой двухсвязный список на ба
 
 protected:
     class node { // Класс узла списка
-        node(T item);
+        explicit node(T item);
 
     private:
         T item;
@@ -16,31 +16,24 @@ protected:
 
     class iterator { // Прямой итератор
     private:
-        list* plist;
+        list<T> *plist;
         node *cur_node;
 
     public:
-        iterator(list* plist) {
-            this->plist = plist;
-            cur_node = plist->head;
-        }
+        explicit iterator(list* plist);
 
         T operator*(); // Операция доступа по чтению и записи к текущему значению
 
-        void operator++() { // Операция инкримента для перехода к следующему значению
-            cur_node = cur_node->next;
-        }
+        void operator++(); // Операция инкримента для перехода к следующему значению
 
-        void operator--() { // Операция декремента для перехода к предыдущему значению в списке
-            cur_node = cur_node->preview;
-        }
+        void operator--(); // Операция декремента для перехода к предыдущему значению в списке
 
         /**
          * НЕПРОСМОТРЕННО: операторы равенства и неравенства
          */
 
-        bool operator==(); // Проверка равенства однотипных итераторов
-        bool operator!=(); // Проверка неравенства однотипных итераторов
+        bool operator==(iterator iter); // Проверка равенства однотипных итераторов
+        bool operator!=(iterator iter); // Проверка неравенства однотипных итераторов
     };
 
     /**
@@ -49,27 +42,20 @@ protected:
 
     class reverse_iterator { // Обратный итератор
     private:
-        list* plist;
+        list<T>* plist;
         node *cur_node;
 
     public:
-        reverse_iterator(list* plist) {
-            this->plist = plist;
-            cur_node = plist->tail;
-        }
+        explicit reverse_iterator(list* plist);
 
         T operator*(); // Операция доступа по чтению и записи к текущему значению
 
-        void operator++() { // Операция инкримента для перехода к предыдущему значению
-            cur_node = cur_node->preview;
-        }
+        void operator++(); // Операция инкримента для перехода к предыдущему значению
 
-        void operator--() { // Операция декремента для перехода к следующему значению в списке
-            cur_node = cur_node->next;
-        }
+        void operator--(); // Операция декремента для перехода к следующему значению в списке
 
-        bool operator==(); // Проверка равенства однотипных итераторов
-        bool operator!=(); // Проверка неравенства однотипных итераторов
+        bool operator==(reverse_iterator iter); // Проверка равенства однотипных итераторов
+        bool operator!=(reverse_iterator iter); // Проверка неравенства однотипных итераторов
     };
 
 public:
