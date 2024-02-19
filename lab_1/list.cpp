@@ -199,3 +199,10 @@ typename list<T>::reverse_iterator list<T>::rend()
     // TODO: IMPLEMENT ME
     return list::reverse_iterator(nullptr);
 }
+
+template<class T>
+std::ostream &operator<<(std::ostream &os, const list<T> &list)
+{
+    // TODO: IMPLEMENT ME
+    return os;
+}

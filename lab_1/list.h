@@ -1,6 +1,8 @@
 #ifndef LAB_1_LIST_H
 #define LAB_1_LIST_H
 
+#include "iostream"
+
 template <class T>
 class list { // Кольцевой двухсвязный список на базе адресных указателей
 
@@ -74,6 +76,9 @@ public:
     bool is_contain(T item); // Опрос наличия заданного значения
 
     T get_element_by_id(unsigned int idx); // Чтение значения с заданным номером в списке
+
+    template<class T1>
+    friend std::ostream& operator<< (std::ostream &os, const list<T1> &list); // Вывод на экран последовательности значений данных из списка.
 
     unsigned int get_id(T item); // Получение позиции в списке для заданного значения
 
