@@ -1,25 +1,28 @@
 #ifndef LAB_1_LIST_H
 #define LAB_1_LIST_H
 
+#include "iostream"
+
 template <class T>
 class list { // Кольцевой двухсвязный список на базе адресных указателей
 
 protected:
     class node { // Класс узла списка
-
-    public:
         explicit node(T item);
+
+    private:
         T item;
         node *next;
-        node *previous;
+        node *preview;
     };
 
     class iterator { // Прямой итератор
-    protected:
+    private:
+        list<T> *plist;
         node *cur_node;
 
     public:
-        explicit iterator(const list<T> *plist);
+        explicit iterator(list* plist);
 
         T operator*(); // Операция доступа по чтению и записи к текущему значению
 
@@ -41,10 +44,11 @@ protected:
 
     class reverse_iterator { // Обратный итератор
     private:
+        list<T>* plist;
         node *cur_node;
 
     public:
-        explicit reverse_iterator(const list<T> *plist);
+        explicit reverse_iterator(list* plist);
 
         T operator*(); // Операция доступа по чтению и записи к текущему значению
 
@@ -56,15 +60,10 @@ protected:
         bool operator!=(reverse_iterator iter); // Проверка неравенства однотипных итераторов
     };
 
-    node *beg_node;
-    unsigned int size;
-
-    node *get_node_by_idx(unsigned int idx);
-
 public:
     list(); // Конструктор
 
-    list(const list<T> &old_list); // Конструктор копирования
+    list(const list &); // Конструктор копирования
 
     ~list(); // Деструктор
 
@@ -74,14 +73,17 @@ public:
 
     bool is_empty(); // Проверка списка на пустоту
 
-    bool contains(T item); // Опрос наличия заданного значения
+    bool is_contain(T item); // Опрос наличия заданного значения
 
-    T get_element_by_idx(unsigned int idx); // Чтение значения с заданным номером в списке
+    T get_element_by_id(unsigned int idx); // Чтение значения с заданным номером в списке
 
-    unsigned int get_idx(T item); // Получение позиции в списке для заданного значения
+    template<class T1>
+    friend std::ostream& operator<< (std::ostream &os, const list<T1> &list); // Вывод на экран последовательности значений данных из списка.
+
+    unsigned int get_id(T item); // Получение позиции в списке для заданного значения
 
     void push(T item); // Включение нового значения
-    void push(T item, unsigned int idx); // Включение нового значения в позицию с заданным номером
+    bool push(T item, unsigned int idx); // Включение нового значения в позицию с заданным номером
 
     bool remove(T item); // Удаление заданного значения из списка
     bool remove(unsigned int idx); // Удаление значения из позиции с заданным номером
