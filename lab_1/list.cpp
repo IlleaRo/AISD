@@ -3,7 +3,7 @@
 template<class T>
 list<T>::node::node(T item)
 {
-    // TODO: IMPLEMENT ME
+    this->item = item;
 }
 
 template<class T>
@@ -87,13 +87,10 @@ bool list<T>::reverse_iterator::operator!=(list::reverse_iterator iter)
 }
 
 template<class T>
-list<T>::list()
-{
-    // TODO: IMPLEMENT ME
-}
+list<T>::list() = default;
 
 template<class T>
-list<T>::list(const list &)
+list<T>::list(const list &old_list)
 {
     // TODO: IMPLEMENT ME
 }
@@ -107,8 +104,7 @@ list<T>::~list()
 template<class T>
 unsigned int list<T>::get_size()
 {
-    // TODO: IMPLEMENT ME
-    return 0;
+    return this->size;
 }
 
 template<class T>
@@ -120,26 +116,25 @@ void list<T>::free()
 template<class T>
 bool list<T>::is_empty()
 {
-    // TODO: IMPLEMENT ME
-    return false;
+    return this->size == 0;
 }
 
 template<class T>
-bool list<T>::is_contain(T item)
+bool list<T>::contains(T item)
 {
     // TODO: IMPLEMENT ME
     return false;
 }
 
 template<class T>
-T list<T>::get_element_by_id(unsigned int idx)
+T list<T>::get_element_by_idx(unsigned int idx)
 {
     // TODO: IMPLEMENT ME
     return nullptr;
 }
 
 template<class T>
-unsigned int list<T>::get_id(T item)
+unsigned int list<T>::get_idx(T item)
 {
     // TODO: IMPLEMENT ME
     return 0;
