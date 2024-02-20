@@ -8,21 +8,20 @@ class list { // Кольцевой двухсвязный список на ба
 
 protected:
     class node { // Класс узла списка
-        explicit node(T item);
 
-    private:
+    public:
+        explicit node(T item);
         T item;
         node *next;
         node *preview;
     };
 
     class iterator { // Прямой итератор
-    private:
-        list<T> *plist;
+    protected:
         node *cur_node;
 
     public:
-        explicit iterator(list* plist);
+        explicit iterator(const list<T> *plist);
 
         T operator*(); // Операция доступа по чтению и записи к текущему значению
 
@@ -44,11 +43,10 @@ protected:
 
     class reverse_iterator { // Обратный итератор
     private:
-        list<T>* plist;
         node *cur_node;
 
     public:
-        explicit reverse_iterator(list* plist);
+        explicit reverse_iterator(const list<T> *plist);
 
         T operator*(); // Операция доступа по чтению и записи к текущему значению
 
@@ -63,10 +61,12 @@ protected:
     node *beg_node;
     unsigned int size;
 
+    node *get_node_by_idx(unsigned int idx);
+
 public:
     list(); // Конструктор
 
-    list(const list &old_list); // Конструктор копирования
+    list(const list<T> &old_list); // Конструктор копирования
 
     ~list(); // Деструктор
 
@@ -86,7 +86,7 @@ public:
     unsigned int get_idx(T item); // Получение позиции в списке для заданного значения
 
     void push(T item); // Включение нового значения
-    bool push(T item, unsigned int idx); // Включение нового значения в позицию с заданным номером
+    void push(T item, unsigned int idx); // Включение нового значения в позицию с заданным номером
 
     bool remove(T item); // Удаление заданного значения из списка
     bool remove(unsigned int idx); // Удаление значения из позиции с заданным номером
