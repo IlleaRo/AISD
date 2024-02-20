@@ -58,10 +58,13 @@ protected:
         bool operator!=(reverse_iterator iter); // Проверка неравенства однотипных итераторов
     };
 
+    node *beg_node;
+    unsigned int size;
+
 public:
     list(); // Конструктор
 
-    list(const list &); // Конструктор копирования
+    list(const list &old_list); // Конструктор копирования
 
     ~list(); // Деструктор
 
@@ -71,11 +74,11 @@ public:
 
     bool is_empty(); // Проверка списка на пустоту
 
-    bool is_contain(T item); // Опрос наличия заданного значения
+    bool contains(T item); // Опрос наличия заданного значения
 
-    T get_element_by_id(unsigned int idx); // Чтение значения с заданным номером в списке
+    T get_element_by_idx(unsigned int idx); // Чтение значения с заданным номером в списке
 
-    unsigned int get_id(T item); // Получение позиции в списке для заданного значения
+    unsigned int get_idx(T item); // Получение позиции в списке для заданного значения
 
     void push(T item); // Включение нового значения
     bool push(T item, unsigned int idx); // Включение нового значения в позицию с заданным номером
