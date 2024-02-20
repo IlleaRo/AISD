@@ -1,7 +1,7 @@
 #ifndef LAB_1_LIST_H
 #define LAB_1_LIST_H
 
-#include "iostream"
+#include <iostream>
 
 template <class T>
 class list { // Кольцевой двухсвязный список на базе адресных указателей
