@@ -29,7 +29,7 @@ void list<T>::iterator::operator++()
 template<class T>
 void list<T>::iterator::operator--()
 {
-    cur_node = cur_node->preview;
+    cur_node = cur_node->previous;
 }
 
 template<class T>
@@ -63,7 +63,7 @@ T list<T>::reverse_iterator::operator*()
 template<class T>
 void list<T>::reverse_iterator::operator++()
 {
-    cur_node = cur_node->preview;
+    cur_node = cur_node->previous;
 }
 
 template<class T>

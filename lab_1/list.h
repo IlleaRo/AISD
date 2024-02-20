@@ -13,7 +13,7 @@ protected:
     private:
         T item;
         node *next;
-        node *preview;
+        node *previous;
     };
 
     class iterator { // Прямой итератор
