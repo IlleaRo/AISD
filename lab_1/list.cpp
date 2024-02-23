@@ -226,6 +226,7 @@ typename list<T>::node *list<T>::get_node_by_idx(unsigned int idx) {
         counter++;
     }
 
+    this->traverse_counter = counter;
     return cur_node;
 }
 
@@ -246,12 +247,15 @@ unsigned int list<T>::get_idx(T item)
     {
         if (*iter == item)
         {
+            this->traverse_counter = counter;
             return counter;
         }
         iter++;
         counter++;
     }
     while (iter != iter_beg);
+
+    this->traverse_counter = counter;
 
     throw std::runtime_error("item not found");
 }
@@ -297,6 +301,7 @@ void list<T>::push(T item, unsigned int idx)
 
     if (idx == this->size)
     {
+        this->traverse_counter = 0;
         this->push(item);
         return;
     }
@@ -344,6 +349,7 @@ T list<T>::remove(unsigned int idx)
     {
         case 1:
         {
+            this->traverse_counter = 0;
             removed_item = this->beg_node->item;
             delete this->beg_node;
             this->beg_node = nullptr;
@@ -388,5 +394,10 @@ typename list<T>::reverse_iterator list<T>::rend()
     return list<T>::reverse_iterator(this, nullptr);
 }
 
+template<class T>
+unsigned int list<T>::get_traverse_count()
+{
+    return this->traverse_counter;
+}
 
 template class list<int>;

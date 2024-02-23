@@ -18,6 +18,7 @@ protected:
 
     node *beg_node;
     unsigned int size;
+    unsigned int traverse_counter;
 
     node *get_node_by_idx(unsigned int idx);
 
@@ -105,6 +106,8 @@ public:
 
     iterator end(); // Запрос прямого итератора
     reverse_iterator rend(); // Запрос обратного итератора
+
+    unsigned int get_traverse_count(); // Запрос последнего количества пройденных элементов
 };
 
 template<class T>
