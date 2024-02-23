@@ -182,7 +182,7 @@ bool list<T>::contains(T item)
     {
         this->get_idx(item);
     }
-    catch (...) // TODO: make exceptions static
+    catch (...)
     {
         return false;
     }
@@ -196,7 +196,7 @@ typename list<T>::node *list<T>::get_node_by_idx(unsigned int idx) {
 
     if (idx > this->size)
     {
-        throw std::runtime_error("out of list bounds"); // TODO: make exceptions static
+        throw std::runtime_error("out of list bounds");
     }
 
     while (counter != idx)
@@ -232,7 +232,7 @@ unsigned int list<T>::get_idx(T item)
     }
     while (iter != iter_beg);
 
-    throw std::runtime_error("item not found"); // TODO: make exceptions static
+    throw std::runtime_error("item not found");
 }
 
 template<class T>
@@ -271,7 +271,7 @@ void list<T>::push(T item, unsigned int idx)
 
     if (idx > this->size)
     {
-        throw std::runtime_error("out of list bounds"); // TODO: make exceptions static
+        throw std::runtime_error("out of list bounds");
     }
 
     if (idx == this->size)
@@ -327,12 +327,14 @@ typename list<T>::reverse_iterator list<T>::rbegin()
 template<class T>
 typename list<T>::iterator list<T>::end()
 {
+    // TODO: "proper" end iterator
     return list<T>::iterator(this)--;
 }
 
 template<class T>
 typename list<T>::reverse_iterator list<T>::rend()
 {
+    // TODO: "proper" end iterator
     return list<T>::reverse_iterator(this)++;
 }
 
