@@ -21,6 +21,13 @@ list<T>::iterator::iterator(const list<T> *plist)
 }
 
 template<class T>
+list<T>::iterator::iterator(const list<T> *plist, node *pnode)
+{
+    this->plist = plist;
+    cur_node = pnode;
+}
+
+template<class T>
 typename list<T>::iterator list<T>::iterator::operator++()
 {
     iterator temp = *this;
@@ -67,6 +74,13 @@ list<T>::reverse_iterator::reverse_iterator(const list<T> *plist)
 {
     this->plist = plist;
     cur_node = plist->beg_node->previous;
+}
+
+template<class T>
+list<T>::reverse_iterator::reverse_iterator(const list<T> *plist, node *pnode)
+{
+    this->plist = plist;
+    cur_node = pnode;
 }
 
 template<class T>
@@ -365,15 +379,13 @@ typename list<T>::reverse_iterator list<T>::rbegin()
 template<class T>
 typename list<T>::iterator list<T>::end()
 {
-    // TODO: "proper" end iterator
-    return list<T>::iterator(this)--;
+    return list<T>::iterator(this, nullptr);
 }
 
 template<class T>
 typename list<T>::reverse_iterator list<T>::rend()
 {
-    // TODO: "proper" end iterator
-    return list<T>::reverse_iterator(this)++;
+    return list<T>::reverse_iterator(this, nullptr);
 }
 
 

@@ -16,54 +16,6 @@ protected:
         node *previous;
     };
 
-    class iterator { // Прямой итератор
-    protected:
-        const list<T> *plist;
-        node *cur_node;
-
-    public:
-        explicit iterator(const list<T> *plist);
-
-        T operator*(); // Операция доступа по чтению и записи к текущему значению
-
-        iterator operator++(); // Операция инкримента для перехода к следующему значению
-        iterator operator++(int);
-
-        iterator operator--(); // Операция декремента для перехода к предыдущему значению в списке
-        iterator operator--(int);
-
-        /**
-         * НЕПРОСМОТРЕННО: операторы равенства и неравенства
-         */
-
-        bool operator==(iterator iter); // Проверка равенства однотипных итераторов
-        bool operator!=(iterator iter); // Проверка неравенства однотипных итераторов
-    };
-
-    /**
-    * НЕПРОСМОТРЕННО: обратный итератор
-    */
-
-    class reverse_iterator { // Обратный итератор
-    private:
-        const list<T> *plist;
-        node *cur_node;
-
-    public:
-        explicit reverse_iterator(const list<T> *plist);
-
-        T operator*(); // Операция доступа по чтению и записи к текущему значению
-
-        reverse_iterator operator++(); // Операция инкримента для перехода к предыдущему значению
-        reverse_iterator operator++(int);
-
-        reverse_iterator operator--(); // Операция декремента для перехода к следующему значению в списке
-        reverse_iterator operator--(int);
-
-        bool operator==(reverse_iterator iter); // Проверка равенства однотипных итераторов
-        bool operator!=(reverse_iterator iter); // Проверка неравенства однотипных итераторов
-    };
-
     node *beg_node;
     unsigned int size;
 
@@ -97,6 +49,56 @@ public:
 
     T remove(T item); // Удаление заданного значения из списка
     T remove(unsigned int idx); // Удаление значения из позиции с заданным номером
+
+    class iterator { // Прямой итератор
+    protected:
+        const list<T> *plist;
+        node *cur_node;
+
+    public:
+        explicit iterator(const list<T> *plist);
+        iterator(const list<T> *plist, node *pnode);
+
+        T operator*(); // Операция доступа по чтению и записи к текущему значению
+
+        iterator operator++(); // Операция инкримента для перехода к следующему значению
+        iterator operator++(int);
+
+        iterator operator--(); // Операция декремента для перехода к предыдущему значению в списке
+        iterator operator--(int);
+
+        /**
+         * НЕПРОСМОТРЕННО: операторы равенства и неравенства
+         */
+
+        bool operator==(iterator iter); // Проверка равенства однотипных итераторов
+        bool operator!=(iterator iter); // Проверка неравенства однотипных итераторов
+    };
+
+    /**
+    * НЕПРОСМОТРЕННО: обратный итератор
+    */
+
+    class reverse_iterator { // Обратный итератор
+    private:
+        const list<T> *plist;
+        node *cur_node;
+
+    public:
+        explicit reverse_iterator(const list<T> *plist);
+        reverse_iterator(const list<T> *plist, node *pnode);
+
+        T operator*(); // Операция доступа по чтению и записи к текущему значению
+
+        reverse_iterator operator++(); // Операция инкримента для перехода к предыдущему значению
+        reverse_iterator operator++(int);
+
+        reverse_iterator operator--(); // Операция декремента для перехода к следующему значению в списке
+        reverse_iterator operator--(int);
+
+        bool operator==(reverse_iterator iter); // Проверка равенства однотипных итераторов
+        bool operator!=(reverse_iterator iter); // Проверка неравенства однотипных итераторов
+    };
 
     iterator begin(); // Запрос прямого итератора
     reverse_iterator rbegin(); // Запрос обратного итератора
