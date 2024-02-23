@@ -127,7 +127,6 @@ list<T>::list()
 template<class T>
 list<T>::list(const list<T> &old_list)
 {
-    const list<T> *test = &old_list;
     list<T>::iterator iter = list<T>::iterator(&old_list);
 
     this->size = 0;
