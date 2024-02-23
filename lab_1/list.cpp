@@ -211,14 +211,6 @@ void list<T>::push(T item)
             this->beg_node->previous = new_node;
             break;
         }
-        case 1:
-        {
-            new_node->next = this->beg_node;
-            new_node->previous = this->beg_node;
-            this->beg_node->previous = new_node;
-            this->beg_node->next = new_node;
-            break;
-        }
         default:
         {
             new_node->next = this->beg_node;
