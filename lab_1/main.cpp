@@ -1,9 +1,11 @@
+#include "list.h"
 #include <iostream>
 
 using namespace std;
 
 int tests()
 {
+    list<int> test_list;
     int function_counter = 0;
     /*
      * if (test_function() != success)
@@ -12,6 +14,16 @@ int tests()
      * }
      * function_counter++;
      */
+    test_list.push(2);
+    cerr << "Pushed 2 to the end of the list" << endl;
+    test_list.push(1, 0);
+    cerr << "Pushed 1 to pos 0 of the list" << endl;
+    test_list.push(3);
+    cerr << "Pushed 3 to the end of the list" << endl;
+    cerr << "Current list: " << test_list << endl;
+    cerr << "Removed " << test_list.remove(2) << " from list" << endl;
+    cerr << "Removed " << test_list.remove(1) << " from list" << endl;
+    cerr << "Removed " << test_list.remove(0) << " from list" << endl;
     return 0;
 }
 

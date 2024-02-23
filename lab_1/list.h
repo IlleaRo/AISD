@@ -8,27 +8,29 @@ class list { // Кольцевой двухсвязный список на ба
 
 protected:
     class node { // Класс узла списка
-        explicit node(T item);
 
-    private:
+    public:
+        explicit node(T item);
         T item;
         node *next;
-        node *preview;
+        node *previous;
     };
 
     class iterator { // Прямой итератор
-    private:
-        list<T> *plist;
+    protected:
+        const list<T> *plist;
         node *cur_node;
 
     public:
-        explicit iterator(list* plist);
+        explicit iterator(const list<T> *plist);
 
         T operator*(); // Операция доступа по чтению и записи к текущему значению
 
-        void operator++(); // Операция инкримента для перехода к следующему значению
+        iterator operator++(); // Операция инкримента для перехода к следующему значению
+        iterator operator++(int);
 
-        void operator--(); // Операция декремента для перехода к предыдущему значению в списке
+        iterator operator--(); // Операция декремента для перехода к предыдущему значению в списке
+        iterator operator--(int);
 
         /**
          * НЕПРОСМОТРЕННО: операторы равенства и неравенства
@@ -44,26 +46,33 @@ protected:
 
     class reverse_iterator { // Обратный итератор
     private:
-        list<T>* plist;
+        const list<T> *plist;
         node *cur_node;
 
     public:
-        explicit reverse_iterator(list* plist);
+        explicit reverse_iterator(const list<T> *plist);
 
         T operator*(); // Операция доступа по чтению и записи к текущему значению
 
-        void operator++(); // Операция инкримента для перехода к предыдущему значению
+        reverse_iterator operator++(); // Операция инкримента для перехода к предыдущему значению
+        reverse_iterator operator++(int);
 
-        void operator--(); // Операция декремента для перехода к следующему значению в списке
+        reverse_iterator operator--(); // Операция декремента для перехода к следующему значению в списке
+        reverse_iterator operator--(int);
 
         bool operator==(reverse_iterator iter); // Проверка равенства однотипных итераторов
         bool operator!=(reverse_iterator iter); // Проверка неравенства однотипных итераторов
     };
 
+    node *beg_node;
+    unsigned int size;
+
+    node *get_node_by_idx(unsigned int idx);
+
 public:
     list(); // Конструктор
 
-    list(const list &); // Конструктор копирования
+    list(const list<T> &old_list); // Конструктор копирования
 
     ~list(); // Деструктор
 
@@ -73,20 +82,21 @@ public:
 
     bool is_empty(); // Проверка списка на пустоту
 
-    bool is_contain(T item); // Опрос наличия заданного значения
+    bool contains(T item); // Опрос наличия заданного значения
 
-    T get_element_by_id(unsigned int idx); // Чтение значения с заданным номером в списке
+    T get_element_by_idx(unsigned int idx); // Чтение значения с заданным номером в списке
 
     template<class T1>
-    friend std::ostream& operator<< (std::ostream &os, const list<T1> &list); // Вывод на экран последовательности значений данных из списка.
+    friend std::ostream& operator<< (std::ostream &os, list<T1> &plist); // Вывод на экран последовательности
+    // значений данных из списка.
 
-    unsigned int get_id(T item); // Получение позиции в списке для заданного значения
+    unsigned int get_idx(T item); // Получение позиции в списке для заданного значения
 
     void push(T item); // Включение нового значения
-    bool push(T item, unsigned int idx); // Включение нового значения в позицию с заданным номером
+    void push(T item, unsigned int idx); // Включение нового значения в позицию с заданным номером
 
-    bool remove(T item); // Удаление заданного значения из списка
-    bool remove(unsigned int idx); // Удаление значения из позиции с заданным номером
+    T remove(T item); // Удаление заданного значения из списка
+    T remove(unsigned int idx); // Удаление значения из позиции с заданным номером
 
     iterator begin(); // Запрос прямого итератора
     reverse_iterator rbegin(); // Запрос обратного итератора
@@ -94,5 +104,21 @@ public:
     iterator end(); // Запрос прямого итератора
     reverse_iterator rend(); // Запрос обратного итератора
 };
+
+template<class T>
+std::ostream &operator<<(std::ostream &os, list<T> &plist)
+{
+    typename list<T>::iterator iter_beg = plist.begin();
+    typename list<T>::iterator iter = plist.begin();
+
+    do
+    {
+        os << *iter << " ";
+        iter++;
+    }
+    while (iter != iter_beg);
+
+    return os;
+}
 
 #endif //LAB_1_LIST_H
