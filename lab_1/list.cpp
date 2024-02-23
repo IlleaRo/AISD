@@ -233,12 +233,15 @@ unsigned int list<T>::get_idx(T item)
     {
         if (*iter == item)
         {
+            this->traverse_counter = counter;
             return counter;
         }
         iter++;
         counter++;
     }
     while (iter != iter_beg);
+
+    this->traverse_counter = counter;
 
     throw std::runtime_error("item not found");
 }
