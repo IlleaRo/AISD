@@ -95,8 +95,8 @@ public:
     void push(T item); // Включение нового значения
     void push(T item, unsigned int idx); // Включение нового значения в позицию с заданным номером
 
-    bool remove(T item); // Удаление заданного значения из списка
-    bool remove(unsigned int idx); // Удаление значения из позиции с заданным номером
+    T remove(T item); // Удаление заданного значения из списка
+    T remove(unsigned int idx); // Удаление значения из позиции с заданным номером
 
     iterator begin(); // Запрос прямого итератора
     reverse_iterator rbegin(); // Запрос обратного итератора

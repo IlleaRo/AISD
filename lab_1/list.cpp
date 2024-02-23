@@ -155,8 +155,16 @@ unsigned int list<T>::get_size()
 template<class T>
 void list<T>::free()
 {
-    node *cur_node = this->beg_node;
-    node *next_node = this->beg_node->next;
+    node *cur_node;
+    node *next_node;
+
+    if (this->beg_node == nullptr)
+    {
+        return;
+    }
+
+    cur_node = this->beg_node;
+    next_node = this->beg_node->next;
 
     while (this->size > 0)
     {
@@ -299,17 +307,48 @@ void list<T>::push(T item, unsigned int idx)
 }
 
 template<class T>
-bool list<T>::remove(T item)
+T list<T>::remove(T item)
 {
-    // TODO: IMPLEMENT ME
-    return false;
+    if (this->size == 0)
+    {
+        throw std::runtime_error("empty list");
+    }
+
+    return this->remove(this->size-1);
 }
 
 template<class T>
-bool list<T>::remove(unsigned int idx)
+T list<T>::remove(unsigned int idx)
 {
-    // TODO: IMPLEMENT ME
-    return false;
+    T removed_item;
+    node *removed_node;
+    if (idx >= this->size)
+    {
+        throw std::runtime_error("out of list bounds");
+    }
+
+    switch (this->size)
+    {
+        case 1:
+        {
+            removed_item = this->beg_node->item;
+            delete this->beg_node;
+            this->beg_node = nullptr;
+            break;
+        }
+        default:
+        {
+            removed_node = get_node_by_idx(idx);
+            removed_item = removed_node->item;
+            removed_node->next->previous = removed_node->previous;
+            removed_node->previous->next = removed_node->next;
+            delete removed_node;
+            break;
+        }
+    }
+
+    this->size--;
+    return removed_item;
 }
 
 template<class T>

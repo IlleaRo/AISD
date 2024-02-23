@@ -21,6 +21,9 @@ int tests()
     test_list.push(3);
     cerr << "Pushed 3 to the end of the list" << endl;
     cerr << "Current list: " << test_list << endl;
+    cerr << "Removed " << test_list.remove(2) << " from list" << endl;
+    cerr << "Removed " << test_list.remove(1) << " from list" << endl;
+    cerr << "Removed " << test_list.remove(0) << " from list" << endl;
     return 0;
 }
 
