@@ -21,15 +21,33 @@ list<T>::iterator::iterator(const list<T> *plist)
 }
 
 template<class T>
-void list<T>::iterator::operator++()
+typename list<T>::iterator list<T>::iterator::operator++()
 {
+    iterator temp = *this;
     cur_node = cur_node->next;
+    return temp;
 }
 
 template<class T>
-void list<T>::iterator::operator--()
+typename list<T>::iterator list<T>::iterator::operator++(int)
+{
+    cur_node = cur_node->next;
+    return *this;
+}
+
+template<class T>
+typename list<T>::iterator list<T>::iterator::operator--()
+{
+    iterator temp = *this;
+    cur_node = cur_node->previous;
+    return temp;
+}
+
+template<class T>
+typename list<T>::iterator list<T>::iterator::operator--(int)
 {
     cur_node = cur_node->previous;
+    return *this;
 }
 
 template<class T>
@@ -58,15 +76,33 @@ T list<T>::reverse_iterator::operator*()
 }
 
 template<class T>
-void list<T>::reverse_iterator::operator++()
+typename list<T>::reverse_iterator list<T>::reverse_iterator::operator++()
 {
+    list<T>::reverse_iterator temp = *this;
     cur_node = cur_node->previous;
+    return temp;
 }
 
 template<class T>
-void list<T>::reverse_iterator::operator--()
+typename list<T>::reverse_iterator list<T>::reverse_iterator::operator++(int)
+{
+    cur_node = cur_node->previous;
+    return *this;
+}
+
+template<class T>
+typename list<T>::reverse_iterator list<T>::reverse_iterator::operator--()
+{
+    list<T>::reverse_iterator temp = *this;
+    cur_node = cur_node->next;
+    return temp;
+}
+
+template<class T>
+typename list<T>::reverse_iterator list<T>::reverse_iterator::operator--(int)
 {
     cur_node = cur_node->next;
+    return *this;
 }
 
 template<class T>
@@ -100,7 +136,7 @@ list<T>::list(const list<T> &old_list)
     for (unsigned int i = 0; i < old_list.size; i++)
     {
         this->push(*iter);
-        ++iter;
+        iter++;
     }
 }
 
@@ -191,8 +227,8 @@ unsigned int list<T>::get_idx(T item)
         {
             return counter;
         }
-        ++iter;
-        ++counter;
+        iter++;
+        counter++;
     }
     while (iter != iter_beg);
 
@@ -291,19 +327,13 @@ typename list<T>::reverse_iterator list<T>::rbegin()
 template<class T>
 typename list<T>::iterator list<T>::end()
 {
-    // TODO: postfix decrement
-    list<T>::iterator iter = list<T>::iterator(this);
-    --iter;
-    return iter;
+    return list<T>::iterator(this)--;
 }
 
 template<class T>
 typename list<T>::reverse_iterator list<T>::rend()
 {
-    // TODO: postfix increment
-    list<T>::reverse_iterator iter = list<T>::reverse_iterator(this);
-    ++iter;
-    return iter;
+    return list<T>::reverse_iterator(this)++;
 }
 
 template<class T>
