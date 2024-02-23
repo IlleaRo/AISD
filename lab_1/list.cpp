@@ -212,6 +212,7 @@ typename list<T>::node *list<T>::get_node_by_idx(unsigned int idx) {
         counter++;
     }
 
+    this->traverse_counter = counter;
     return cur_node;
 }
 
@@ -283,6 +284,7 @@ void list<T>::push(T item, unsigned int idx)
 
     if (idx == this->size)
     {
+        this->traverse_counter = 0;
         this->push(item);
         return;
     }
@@ -330,6 +332,7 @@ T list<T>::remove(unsigned int idx)
     {
         case 1:
         {
+            this->traverse_counter = 0;
             removed_item = this->beg_node->item;
             delete this->beg_node;
             this->beg_node = nullptr;
@@ -376,5 +379,10 @@ typename list<T>::reverse_iterator list<T>::rend()
     return list<T>::reverse_iterator(this)++;
 }
 
+template<class T>
+unsigned int list<T>::get_traverse_count()
+{
+    return this->traverse_counter;
+}
 
 template class list<int>;
