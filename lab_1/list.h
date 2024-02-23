@@ -18,6 +18,7 @@ protected:
 
     class iterator { // Прямой итератор
     protected:
+        const list<T> *plist;
         node *cur_node;
 
     public:
@@ -43,6 +44,7 @@ protected:
 
     class reverse_iterator { // Обратный итератор
     private:
+        const list<T> *plist;
         node *cur_node;
 
     public:

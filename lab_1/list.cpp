@@ -16,6 +16,7 @@ T list<T>::iterator::operator*()
 template<class T>
 list<T>::iterator::iterator(const list<T> *plist)
 {
+    this->plist = plist;
     cur_node = plist->beg_node;
 }
 
@@ -46,6 +47,7 @@ bool list<T>::iterator::operator!=(list<T>::iterator iter)
 template<class T>
 list<T>::reverse_iterator::reverse_iterator(const list<T> *plist)
 {
+    this->plist = plist;
     cur_node = plist->beg_node->previous;
 }
 
