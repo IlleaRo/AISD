@@ -20,6 +20,7 @@ int tests()
     cerr << "Pushed 1 to pos 0 of the list" << endl;
     test_list.push(3);
     cerr << "Pushed 3 to the end of the list" << endl;
+    cerr << "Current list: " << test_list << endl;
     return 0;
 }
 

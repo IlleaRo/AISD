@@ -338,11 +338,5 @@ typename list<T>::reverse_iterator list<T>::rend()
     return list<T>::reverse_iterator(this)++;
 }
 
-template<class T>
-std::ostream &operator<<(std::ostream &os, const list<T> &list)
-{
-    // TODO: IMPLEMENT ME
-    return os;
-}
 
 template class list<int>;

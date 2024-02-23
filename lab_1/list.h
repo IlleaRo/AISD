@@ -87,7 +87,8 @@ public:
     T get_element_by_idx(unsigned int idx); // Чтение значения с заданным номером в списке
 
     template<class T1>
-    friend std::ostream& operator<< (std::ostream &os, const list<T1> &list); // Вывод на экран последовательности значений данных из списка.
+    friend std::ostream& operator<< (std::ostream &os, list<T1> &plist); // Вывод на экран последовательности
+    // значений данных из списка.
 
     unsigned int get_idx(T item); // Получение позиции в списке для заданного значения
 
@@ -103,5 +104,21 @@ public:
     iterator end(); // Запрос прямого итератора
     reverse_iterator rend(); // Запрос обратного итератора
 };
+
+template<class T>
+std::ostream &operator<<(std::ostream &os, list<T> &plist)
+{
+    typename list<T>::iterator iter_beg = plist.begin();
+    typename list<T>::iterator iter = plist.begin();
+
+    do
+    {
+        os << *iter << " ";
+        iter++;
+    }
+    while (iter != iter_beg);
+
+    return os;
+}
 
 #endif //LAB_1_LIST_H
