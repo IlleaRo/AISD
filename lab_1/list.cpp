@@ -134,6 +134,7 @@ bool list<T>::reverse_iterator::operator!=(list<T>::reverse_iterator iter)
 template<class T>
 list<T>::list()
 {
+    this->traverse_counter = 0;
     this->size = 0;
     this->beg_node = nullptr;
 }
@@ -143,6 +144,7 @@ list<T>::list(const list<T> &old_list)
 {
     list<T>::iterator iter = list<T>::iterator(&old_list);
 
+    this->traverse_counter = 0;
     this->size = 0;
     this->beg_node = nullptr;
 
