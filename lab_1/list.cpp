@@ -400,4 +400,14 @@ unsigned int list<T>::get_traverse_count()
     return this->traverse_counter;
 }
 
+template<class T>
+T list<T>::set_element_by_idx(T item, unsigned int idx)
+{
+    node *pnode = get_node_by_idx(idx);
+    T ret = pnode->item;
+    pnode->item = item;
+
+    return ret;
+}
+
 template class list<int>;

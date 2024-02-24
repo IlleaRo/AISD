@@ -37,6 +37,8 @@ public:
 
     bool contains(T item); // Опрос наличия заданного значения
 
+    T set_element_by_idx(T item, unsigned int idx); // Изменение значения с заданным номером в списке
+
     T get_element_by_idx(unsigned int idx); // Чтение значения с заданным номером в списке
 
     template<class T1>
