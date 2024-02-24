@@ -45,14 +45,21 @@ int main()
     short decision;
 
     while (true) {
-        cout<<ANSI_COLOR_RESET<<"\n\n1. Вывод списка\n2. Получить размер списка\n"
+        cout<<ANSI_COLOR_RESET<<"\n\n0. запрос числа элементов списка, просмотренных предыдущей операцией\n"
+                                "1. Вывод списка\n2. Получить размер списка\n"
                                 "3. Вставка элемента\n4. Удаление элемента\n"
                                 "5. Опрос наличия элемента\n6. Чтение значения с заданным номером в списке\n"
-                                "7. Проверка на пустоту\n"
-                                "8. Очистка списка\n"
-                                "9. Выход\n---> "<<ends;
+                                "7. Получение позиции в списке для заданного значения\n"
+                                "8. Изменение значения с заданным номером в списке\n"
+                                "9. Проверка на пустоту\n"
+                                "10. Очистка списка\n"
+                                "11. Выход\n---> "<<ends;
         cin>>decision;
         switch (decision) {
+            case 0:
+                system("clear");
+                cout<<"Просмотрено "<<list.get_traverse_count()<<" элемента(ов)"<<endl;
+                break;
             case 1:
                 system("clear");
                 cout<<list;
@@ -91,8 +98,8 @@ int main()
                     break;
             case 4:
                 while (true) {
-                    cout<<ANSI_COLOR_RESET<<"\n1. Удаление заданного значения\n"
-                                            "2. удаление значения из позиции с заданным номером\n"
+                    cout<<ANSI_COLOR_RESET<<"\n1. Удаление заданного значения;\n"
+                                            "2. удаление значения из позиции с заданным номером;\n"
                                             "3. отмена\n---> "<<ends;
 
                     cin>>decision;
@@ -137,14 +144,30 @@ int main()
                 break;
             case 7:
                 system("clear");
-                cout<<(list.is_empty() ? "Список пуст" : "Список содержит элементы")<<endl;
+                cout<<"\nВведите значение:\n---> "<<ends;
+                cin>>value;
+                system("clear");
+                cout<<"Значение "<<value<<" находится на позиции "<<list.get_idx(value)<<endl;
                 break;
             case 8:
+                system("clear");
+                cout<<"Введите позицию:\n---> "<<ends;
+                cin>>idx;
+                cout<<"\nВведите новый элемент:\n---> "<<ends;
+                cin>>value;
+                system("clear");
+                cout<<"Значение "<<list.set_element_by_idx(value, idx)<<" было заменено на "<<value<<endl;
+                break;
+            case 9:
+                system("clear");
+                cout<<(list.is_empty() ? "Список пуст" : "Список содержит элементы")<<endl;
+                break;
+            case 10:
                 system("clear");
                 list.free();
                 cout<<ANSI_COLOR_YELLOW<<"Список был очищен!"<<endl;
                 break;
-            case 9:
+            case 11:
                 exit(EXIT_SUCCESS);
             default:
                 system("clear");
