@@ -50,8 +50,8 @@ public:
     void push(T item); // Включение нового значения
     void push(T item, unsigned int idx); // Включение нового значения в позицию с заданным номером
 
-    T remove(T item); // Удаление заданного значения из списка
-    T remove(unsigned int idx); // Удаление значения из позиции с заданным номером
+    T remove_item(T item); // Удаление заданного значения из списка
+    T remove_idx(unsigned int idx); // Удаление значения из позиции с заданным номером
 
     class iterator { // Прямой итератор
     protected:
@@ -115,6 +115,10 @@ public:
 template<class T>
 std::ostream &operator<<(std::ostream &os, list<T> &plist)
 {
+    if (plist.is_empty()) {
+        return os;
+    }
+
     typename list<T>::iterator iter_beg = plist.begin();
     typename list<T>::iterator iter = plist.begin();
 
@@ -125,6 +129,7 @@ std::ostream &operator<<(std::ostream &os, list<T> &plist)
     }
     while (iter != iter_beg);
 
+    os<<"\n";
     return os;
 }
 

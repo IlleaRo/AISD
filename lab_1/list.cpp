@@ -217,7 +217,7 @@ typename list<T>::node *list<T>::get_node_by_idx(unsigned int idx) {
     unsigned int counter = 0;
     node *cur_node = this->beg_node;
 
-    if (idx > this->size)
+    if (this->size == 0 || idx > this->size - 1)
     {
         throw std::runtime_error("out of list bounds");
     }
@@ -309,7 +309,7 @@ void list<T>::push(T item, unsigned int idx)
     }
 
     new_node = new node(item);
-    prev_node = this->get_node_by_idx(idx);
+    prev_node = this->get_node_by_idx(idx)->previous;
     next_node = prev_node->next;
 
     new_node->previous = prev_node;
@@ -327,18 +327,18 @@ void list<T>::push(T item, unsigned int idx)
 }
 
 template<class T>
-T list<T>::remove(T item)
+T list<T>::remove_item(T item)
 {
     if (this->size == 0)
     {
         throw std::runtime_error("empty list");
     }
 
-    return this->remove(this->size-1);
+    return this->remove_idx(this->size-1);
 }
 
 template<class T>
-T list<T>::remove(unsigned int idx)
+T list<T>::remove_idx(unsigned int idx)
 {
     T removed_item;
     node *removed_node;
