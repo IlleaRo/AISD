@@ -17,30 +17,6 @@ const string ANSI_COLOR_RED = "\033[31m";
 const string ANSI_COLOR_YELLOW = "\033[33m";
 const string ANSI_COLOR_RESET = "\033[0m";
 
-int tests()
-{
-    list<int> test_list;
-    int function_counter = 0;
-    /*
-     * if (test_function() != success)
-     * {
-     *     return function_counter;
-     * }
-     * function_counter++;
-     */
-    test_list.push(2);
-    cerr << "Pushed 2 to the end of the list" << endl;
-    test_list.push(1, 0);
-    cerr << "Pushed 1 to pos 0 of the list" << endl;
-    test_list.push(3);
-    cerr << "Pushed 3 to the end of the list" << endl;
-    cerr << "Current list: " << test_list << endl;
-    cerr << "Removed " << test_list.remove_item(2) << " from list in " << test_list.get_traverse_count() << " its" << endl;
-    cerr << "Removed " << test_list.remove_item(1) << " from list in " << test_list.get_traverse_count() << " its" << endl;
-    cerr << "Removed " << test_list.remove_item(0) << " from list in " << test_list.get_traverse_count() << " its" << endl;
-    return 0;
-}
-
 int main()
 {
     list<TYPE> list;
