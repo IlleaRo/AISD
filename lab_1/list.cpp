@@ -347,20 +347,20 @@ bool list<T>::remove_item(T item)
 
     list::node *tnode = this->beg_node;
 
-    bool isFind = false;
+    bool is_found = false;
     this->traverse_counter = 0;
 
     do {
         this->traverse_counter++;
         if (tnode->item == item) {
-            isFind = true;
+            is_found = true;
             break;
         }
 
         tnode = tnode->next;
     } while (tnode != this->beg_node);
 
-    if (isFind) {
+    if (is_found) {
         switch (this->size)
         {
             case 1:
