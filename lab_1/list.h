@@ -50,8 +50,10 @@ public:
     void push(T item); // Включение нового значения
     void push(T item, unsigned int idx); // Включение нового значения в позицию с заданным номером
 
-    T remove_item(T item); // Удаление заданного значения из списка
+    bool remove_item(T item); // Удаление заданного значения из списка
     T remove_idx(unsigned int idx); // Удаление значения из позиции с заданным номером
+
+    T pop(); // Удаление последнего значения списка
 
     class iterator { // Прямой итератор
     protected:

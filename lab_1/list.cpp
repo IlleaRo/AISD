@@ -327,7 +327,7 @@ void list<T>::push(T item, unsigned int idx)
 }
 
 template<class T>
-T list<T>::remove_item(T item)
+T list<T>::pop()
 {
     if (this->size == 0)
     {
@@ -335,6 +335,51 @@ T list<T>::remove_item(T item)
     }
 
     return this->remove_idx(this->size-1);
+}
+
+template<class T>
+bool list<T>::remove_item(T item)
+{
+    if (this->size == 0)
+    {
+        throw std::runtime_error("empty list");
+    }
+
+    list::node *tnode = this->beg_node;
+
+    bool isFind = false;
+    this->traverse_counter = 0;
+
+    do {
+        this->traverse_counter++;
+        if (tnode->item == item) {
+            isFind = true;
+            break;
+        }
+
+        tnode = tnode->next;
+    } while (tnode != this->beg_node);
+
+    if (isFind) {
+        switch (this->size)
+        {
+            case 1:
+            {
+                delete this->beg_node;
+                this->beg_node = nullptr;
+                return true;
+            }
+            default:
+            {
+                tnode->previous->next = tnode->next;
+                tnode->next->previous = tnode->previous;
+                delete tnode;
+                return true;
+            }
+        }
+    }
+
+    return false;
 }
 
 template<class T>
