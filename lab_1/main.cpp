@@ -142,7 +142,8 @@ int main()
 
                 system(CLEAR);
                 cout<<"Значение "<< value <<
-                ((value<<list.contains(value)) ? " содержится в спискe" : " отсутствует в списке")<<endl;
+                (list.contains(value) ? " содержится в спискe" : " отсутствует в списке")
+                <<endl;
                 cout<<"Просмотрено "<<ANSI_COLOR_YELLOW<<
                     list.get_traverse_count()<<ANSI_COLOR_RESET<<" элемента(ов)"<<endl;
                 break;
