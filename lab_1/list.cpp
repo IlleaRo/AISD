@@ -134,6 +134,7 @@ bool list<T>::reverse_iterator::operator!=(list<T>::reverse_iterator iter)
 template<class T>
 list<T>::list()
 {
+    this->traverse_counter = 0;
     this->size = 0;
     this->beg_node = nullptr;
 }
@@ -143,6 +144,7 @@ list<T>::list(const list<T> &old_list)
 {
     list<T>::iterator iter = list<T>::iterator(&old_list);
 
+    this->traverse_counter = 0;
     this->size = 0;
     this->beg_node = nullptr;
 
@@ -215,7 +217,7 @@ typename list<T>::node *list<T>::get_node_by_idx(unsigned int idx) {
     unsigned int counter = 0;
     node *cur_node = this->beg_node;
 
-    if (idx > this->size)
+    if (this->size == 0 || idx > this->size - 1)
     {
         throw std::runtime_error("out of list bounds");
     }
@@ -307,7 +309,7 @@ void list<T>::push(T item, unsigned int idx)
     }
 
     new_node = new node(item);
-    prev_node = this->get_node_by_idx(idx);
+    prev_node = this->get_node_by_idx(idx)->previous;
     next_node = prev_node->next;
 
     new_node->previous = prev_node;
@@ -325,18 +327,63 @@ void list<T>::push(T item, unsigned int idx)
 }
 
 template<class T>
-T list<T>::remove(T item)
+T list<T>::pop()
 {
     if (this->size == 0)
     {
         throw std::runtime_error("empty list");
     }
 
-    return this->remove(this->size-1);
+    return this->remove_idx(this->size-1);
 }
 
 template<class T>
-T list<T>::remove(unsigned int idx)
+bool list<T>::remove_item(T item)
+{
+    if (this->size == 0)
+    {
+        throw std::runtime_error("empty list");
+    }
+
+    list::node *tnode = this->beg_node;
+
+    bool is_found = false;
+    this->traverse_counter = 0;
+
+    do {
+        this->traverse_counter++;
+        if (tnode->item == item) {
+            is_found = true;
+            break;
+        }
+
+        tnode = tnode->next;
+    } while (tnode != this->beg_node);
+
+    if (is_found) {
+        switch (this->size)
+        {
+            case 1:
+            {
+                delete this->beg_node;
+                this->beg_node = nullptr;
+                return true;
+            }
+            default:
+            {
+                tnode->previous->next = tnode->next;
+                tnode->next->previous = tnode->previous;
+                delete tnode;
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+template<class T>
+T list<T>::remove_idx(unsigned int idx)
 {
     T removed_item;
     node *removed_node;
@@ -398,6 +445,16 @@ template<class T>
 unsigned int list<T>::get_traverse_count()
 {
     return this->traverse_counter;
+}
+
+template<class T>
+T list<T>::set_element_by_idx(T item, unsigned int idx)
+{
+    node *pnode = get_node_by_idx(idx);
+    T ret = pnode->item;
+    pnode->item = item;
+
+    return ret;
 }
 
 template class list<int>;
