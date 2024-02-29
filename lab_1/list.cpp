@@ -31,14 +31,20 @@ template<class T>
 typename list<T>::iterator list<T>::iterator::operator++()
 {
     iterator temp = *this;
-    cur_node = cur_node->next;
+    if (temp.cur_node != nullptr)
+    {
+        cur_node = cur_node->next;
+    }
     return temp;
 }
 
 template<class T>
 typename list<T>::iterator list<T>::iterator::operator++(int)
 {
-    cur_node = cur_node->next;
+    if (this->cur_node != nullptr)
+    {
+        cur_node = cur_node->next;
+    }
     return *this;
 }
 
@@ -46,14 +52,20 @@ template<class T>
 typename list<T>::iterator list<T>::iterator::operator--()
 {
     iterator temp = *this;
-    cur_node = cur_node->previous;
+    if (temp.cur_node != nullptr)
+    {
+        cur_node = cur_node->previous;
+    }
     return temp;
 }
 
 template<class T>
 typename list<T>::iterator list<T>::iterator::operator--(int)
 {
-    cur_node = cur_node->previous;
+    if (this->cur_node != nullptr)
+    {
+        cur_node = cur_node->previous;
+    }
     return *this;
 }
 
