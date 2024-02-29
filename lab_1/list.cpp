@@ -222,10 +222,22 @@ typename list<T>::node *list<T>::get_node_by_idx(unsigned int idx) {
         throw std::runtime_error("out of list bounds");
     }
 
-    while (counter != idx)
+    if (idx > this->size / 2)
     {
-        cur_node = cur_node->next;
-        counter++;
+        counter = this->size - 1;
+        while (counter != idx)
+        {
+            cur_node = cur_node->previous;
+            counter--;
+        }
+    }
+    else
+    {
+        while (counter != idx)
+        {
+            cur_node = cur_node->next;
+            counter++;
+        }
     }
 
     this->traverse_counter = counter;
