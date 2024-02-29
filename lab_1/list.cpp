@@ -72,13 +72,19 @@ typename list<T>::iterator list<T>::iterator::operator--(int)
 template<class T>
 bool list<T>::iterator::operator==(list<T>::iterator iter)
 {
-    return this->cur_node == iter.cur_node;
+    if (this->plist == iter.plist)
+    {
+        return this->cur_node == iter.cur_node;
+    }
 }
 
 template<class T>
 bool list<T>::iterator::operator!=(list<T>::iterator iter)
 {
-    return this->cur_node != iter.cur_node;
+    if (this->plist == iter.plist)
+    {
+        return this->cur_node != iter.cur_node;
+    }
 }
 
 template<class T>
@@ -134,13 +140,19 @@ typename list<T>::reverse_iterator list<T>::reverse_iterator::operator--(int)
 template<class T>
 bool list<T>::reverse_iterator::operator==(list<T>::reverse_iterator iter)
 {
-    return this->cur_node == iter.cur_node;
+    if (this->plist == iter.plist)
+    {
+        return this->cur_node == iter.cur_node;
+    }
 }
 
 template<class T>
 bool list<T>::reverse_iterator::operator!=(list<T>::reverse_iterator iter)
 {
-    return this->cur_node != iter.cur_node;
+    if (this->plist == iter.plist)
+    {
+        return this->cur_node != iter.cur_node;
+    }
 }
 
 template<class T>
