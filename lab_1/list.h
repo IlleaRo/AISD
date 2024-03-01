@@ -333,7 +333,7 @@ public:
         iterator(list<T> *plist, node *pnode) : plist(plist), cur_node(pnode) {};
 
         // Операция доступа по чтению и записи к текущему значению
-        T operator*() {
+        T &operator*() {
             if (*this == this->plist->end()) {
                throw std::runtime_error("unspecified iterator");
             }
@@ -421,7 +421,7 @@ public:
         reverse_iterator(list<T> *plist, node *pnode) : plist(plist), cur_node(pnode) {};
 
         // Операция доступа по чтению и записи к текущему значению
-        T operator*() {
+        T &operator*() {
             if (*this == this->plist->rend()) {
                 throw std::runtime_error("unspecified iterator");
             }
