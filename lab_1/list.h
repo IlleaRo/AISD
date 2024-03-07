@@ -48,6 +48,11 @@ protected:
             }
         }
 
+        if (idx > this->size / 2)
+        {
+            counter = this->size - counter;
+        }
+
         this->traverse_counter = counter;
         return cur_node;
     }
