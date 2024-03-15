@@ -23,7 +23,7 @@ protected:
 
     node *get_node_by_idx(unsigned int idx) {
         unsigned int counter = 0;
-        node *cur_node = this->beg_node;
+        node *cur_node;
 
         if (this->size == 0 || idx > this->size - 1)
         {
@@ -32,6 +32,8 @@ protected:
 
         if (idx > this->size / 2)
         {
+            cur_node = this->beg_node->previous;
+
             counter = this->size - 1;
             while (counter != idx)
             {
@@ -41,6 +43,7 @@ protected:
         }
         else
         {
+            cur_node = this->beg_node;
             while (counter != idx)
             {
                 cur_node = cur_node->next;
