@@ -1,22 +1,22 @@
 #include <iostream>
 #include <list>
 
-template <class T>
+template <class T,K>
 class bst {
 private:
     unsigned long traverse_counter;
 protected:
     /// Класс узла
     class node {
-    private:
-        unsigned long key; // Ключ
+    public:
+        K key; // Ключ
         T data; // Данные
-        node &left; // Левый потомок
-        node &right; // Правый потомок
+        node *left; // Левый потомок
+        node *right; // Правый потомок
     };
 
-    node &head; // Корень дерева
-    unsigned int size; // Вершина дерева
+    node *root; // Корень дерева
+    unsigned int size; // Количество элементов
 
 public:
 
@@ -33,29 +33,30 @@ public:
     unsigned int get_size(void);
 
     /// Очистка дерева
-    void free(void);
+    void clear(void);
 
     /// Проверка дерева на пустоту
     bool is_empty(void);
 
     /// Доступ по чтению/записи к данным по ключу
-    T &get_by_key(const T &);
-    T &bst_search(node *, const T &);
+    T &get_by_key(const K);
+    T &bst_search(node *, const K);
 
     /// Включение данных с заданным ключом
-    bool insert(const unsigned long key, const T data);
-    bool bst_insert(node *, const unsigned long key, const T data);
+    bool insert(const K key, const T data);
+    bool bst_insert(node *, const K key, const T data);
 
     /// Удаление данных с заданным ключом
-    bool remove(const unsigned long key);
-    bool bst_remove(node *, const unsigned long key);
+    bool remove(const K key);
+    bool bst_remove(node *, const K key);
 
     /// Формирование списка ключей в дереве в порядке обхода узлов по схеме L->t->R
-    std::list<T> traversal(node *);
+    void print_traversal(void);
 
     /** Поиск и подъем в корень дерева узла с ближайшим ключом, большим заданного значения.
     Трудоёмкость операции – O(log n). */
-    void climbing_greater_node(void);
+    void climbing_greater_node(const K key);
+    
 
     class iterator;
     class reverse_iterator;
@@ -75,7 +76,7 @@ public:
 
     class iterator {
     private:
-        bst *root; // Корень
+        bst *tree; // Корень
         node *cur; // Текущий узел
 
     public:
@@ -97,7 +98,7 @@ public:
 
     class reverse_iterator {
     private:
-        bst *root; // Корень
+        bst *tree; // Корень
         node *cur; // Текущий узел
 
     public:
@@ -116,8 +117,8 @@ public:
         /// проверка неравенства однотипных итераторов !=.
         bool operator!=(const iterator &reverse_iterator);
     };
-
-    /// Вывод структуры дерева на экран
+    void show(void); // вывод структуры на экран (лучше так)
+    /// Вывод структуры дерева на экран (так не стоит)
     template<class T1>
     friend std::ostream& operator<< (std::ostream &os, const bst<T1> &root);
 
