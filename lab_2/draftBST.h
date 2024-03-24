@@ -1,7 +1,7 @@
 #include <iostream>
 #include <list>
 
-template <class T,K>
+template <class T, class K>
 class bst {
 private:
     unsigned long traverse_counter;
@@ -24,7 +24,7 @@ public:
     bst(void);
 
     /// Конструктор копирования
-    bst(const bst<T> &);
+    bst(const bst<T,K> &);
 
     /// Деструктор
     ~bst(void);
@@ -119,8 +119,8 @@ public:
     };
     void show(void); // вывод структуры на экран (лучше так)
     /// Вывод структуры дерева на экран (так не стоит)
-    template<class T1>
-    friend std::ostream& operator<< (std::ostream &os, const bst<T1> &root);
+    template<class T1, class K1>
+    friend std::ostream& operator<< (std::ostream &os, const bst<T1,K1> &root);
 
     /// Опрос числа узлов дерева, просмотренных предыдущей операцией
     unsigned long get_traverse_counter(void);
