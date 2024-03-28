@@ -54,14 +54,14 @@ protected:
 
     node *bst_remove(node *ptr_node, K key, bool &is_deleted) {
         std::function<node *(node *, node *)> bst_use_replacement_node =
-            [&] (node *ptr_replacement_node, node *_ptr_node) {
+            [&bst_use_replacement_node] (node *ptr_replacement_node, node *ptr_node) {
             if (ptr_replacement_node->left) {
                 ptr_replacement_node->left = bst_use_replacement_node(ptr_replacement_node->left, ptr_node);
                 return ptr_replacement_node;
             }
 
-            _ptr_node->key = ptr_replacement_node->key;
-            _ptr_node->data = ptr_replacement_node->data;
+            ptr_node->key = ptr_replacement_node->key;
+            ptr_node->data = ptr_replacement_node->data;
 
             node *tmp = ptr_replacement_node->right;
             delete ptr_replacement_node;
@@ -163,7 +163,7 @@ public:
 
     /// Конструктор копирования
     bst(const bst<T,K> &old_tree) : traverse_counter(0), size(old_tree.size) {
-        std::function<node *(node *)> bst_copy = [&] (node *ptr_node){
+        std::function<node *(node *)> bst_copy = [&bst_copy] (node *ptr_node){
             if (!ptr_node) {
                 return nullptr;
             }
@@ -198,7 +198,7 @@ public:
 
     /// Доступ по чтению/записи к данным по ключу
     T &get_by_key(const K key) {
-        std::function<T &(node *)> bst_search = [&] (node *ptr_node) {
+        std::function<T &(node *)> bst_search = [&bst_search, &key] (node *ptr_node) {
             if (!ptr_node) {
                 throw std::runtime_error("unknown key");
             }
@@ -208,10 +208,10 @@ public:
             }
 
             if (ptr_node->key < key) {
-                return bst_search(ptr_node->left, key);
+                return bst_search(ptr_node->left);
             }
 
-            return bst_search(ptr_node->right, key);
+            return bst_search(ptr_node->right);
         };
 
         return bst_search(root);
@@ -222,9 +222,8 @@ public:
         bool is_inserted = false;
 
         std::function<node *(node *)> bst_insert =
-            [&](node *ptr_node) {
+            [&bst_insert, &is_inserted, &key, &data](node *ptr_node) {
                 if (!ptr_node) {
-                    size++;
                     is_inserted = true;
 
                     return new node(key, data);
@@ -251,6 +250,10 @@ public:
 
         bst_insert(root);
 
+        if (is_inserted) {
+            size++;
+        }
+
         return is_inserted;
     }
 
@@ -265,7 +268,7 @@ public:
 
     /// Формирование списка ключей в дереве в порядке обхода узлов по схеме L->t->R
     void print_traversal(void) {
-        std::function<void (const node *)> bst_ltr_traversal = [&](const node *ptr_node) {
+        std::function<void (const node *)> bst_ltr_traversal = [&bst_ltr_traversal](const node *ptr_node) {
             if (!ptr_node) {
                 return;
             }
@@ -281,25 +284,25 @@ public:
     /** Поиск и подъем в корень дерева узла с ближайшим ключом, большим заданного значения.
     Трудоёмкость операции – O(log n). */
     bool climbing_greater_node(const K key) {
-        std::function<node *(node *, node **, K, bool &)> bst_find_greater_node =
-            [&](node *ptr_node, node **ptr_parrent, K key_link, bool &is_find) {
+        bool is_find = false;
+
+        std::function<node *(node *, node **)> bst_find_greater_node =
+            [&bst_find_greater_node, &is_find, &key](node *ptr_node, node **ptr_parrent) {
             if (!ptr_node) {
                 return ptr_node;
             }
 
-            if (ptr_node->key > key_link) {
+            if (ptr_node->key > key) {
                 is_find = true;
                 return ptr_node;
             }
 
             *ptr_parrent = ptr_node;
-            return bst_find_greater_node(ptr_node->right, ptr_parrent, key_link, is_find);
+            return bst_find_greater_node(ptr_node->right, ptr_parrent);
         };
 
-        bool is_find = false;
-
         node *parrent = root;
-        node *tmp = bst_find_greater_node(root, &parrent, key, is_find);
+        node *tmp = bst_find_greater_node(root, &parrent);
 
         if (!is_find) {
             return false;
