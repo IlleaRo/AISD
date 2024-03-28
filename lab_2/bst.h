@@ -1,5 +1,4 @@
 #include <iostream>
-#include <list>
 
 template <class T, class K>
 class bst {
@@ -80,7 +79,7 @@ protected:
 public:
 
     /// Конструктор
-    bst(void) : size(0), root(nullptr) {};
+    bst(void) : traverse_counter(0), size(0), root(nullptr) {};
 
     /// Конструктор копирования
     bst(bst<T,K> &old_tree) : size(old_tree.size), traverse_counter(0) {
