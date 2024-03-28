@@ -1,4 +1,9 @@
+#ifndef BST
+#define H_HEADER
+
 #include <iostream>
+#include <functional>
+
 
 template <class T, class K>
 class bst {
@@ -21,40 +26,19 @@ protected:
     node *root; // Корень дерева
     unsigned int size; // Количество элементов
 
-    node *bst_insert(node *ptr_node, const K key, const T data, bool &is_inserted) {
-        if (!ptr_node) {
-            size++;
-            is_inserted = true;
-
-            return new node(key, data);
-        }
-
-        if (ptr_node->key == key) {
-            return ptr_node;
-        }
-
-        if (ptr_node->key < key) {
-            ptr_node->left = bst_insert(ptr_node->left, key, data, is_inserted);
-        } else {
-            ptr_node->right = bst_insert(ptr_node->right, key, data, is_inserted);
-        }
-
-        return ptr_node;
-    }
-
-    void bst_show(node *ptr_node, unsigned int level) {
+    void bst_show(node *ptr_node, const unsigned int level) {
         if (!ptr_node) {
             return;
         }
         
-        bst_show(ptr_node->left, level + 1);
+        bst_show(ptr_node->right, level + 1);
 
         for (int i = 0; i < level * 3; i++) {
             std::cout<<" ";
         }
         std::cout<<ptr_node->key<<std::endl;
 
-        bst_show(ptr_node->right, level + 1);
+        bst_show(ptr_node->left, level + 1);
     }
 
     void bst_clear(node *ptr_node) {
@@ -68,73 +52,275 @@ protected:
         delete ptr_node;
     }
 
-    node *bst_copy(node *ptr_node) {
+    node *bst_remove(node *ptr_node, K key, bool &is_deleted) {
+        std::function<node *(node *, node *)> bst_use_replacement_node =
+            [&] (node *ptr_replacement_node, node *_ptr_node) {
+            if (ptr_replacement_node->left) {
+                ptr_replacement_node->left = bst_use_replacement_node(ptr_replacement_node->left, ptr_node);
+                return ptr_replacement_node;
+            }
+
+            _ptr_node->key = ptr_replacement_node->key;
+            _ptr_node->data = ptr_replacement_node->data;
+
+            node *tmp = ptr_replacement_node->right;
+            delete ptr_replacement_node;
+
+            return tmp;
+        };
+
         if (!ptr_node) {
+            return ptr_node;
+        }
+
+        if (key < ptr_node->key) {
+            ptr_node->left = bst_remove(ptr_node->left, key, is_deleted);
+            return ptr_node;
+        }
+
+        if (key > ptr_node->key) {
+            ptr_node->right = bst_remove(ptr_node->right, key, is_deleted);
+            return ptr_node;
+        }
+
+        is_deleted = true;
+
+        // У удаляемого узла нет сыновей
+        if (!ptr_node->left && !ptr_node->right) {
+            delete ptr_node;
             return nullptr;
         }
 
-        return new node(ptr_node->key, ptr_node->data, bst_copy(ptr_node->left), bst_copy(ptr_node->right));
+        // У удаляемого узла один сын левый или правый
+        if (!ptr_node->left) {
+            node *tmp = ptr_node->right;
+            delete ptr_node;
+            return tmp;
+        }
+
+        if (!ptr_node->right) {
+            node *tmp = ptr_node->left;
+            delete ptr_node;
+            return tmp;
+        }
+
+        // У удаляемого узла два потомка
+        ptr_node->right = bst_use_replacement_node(ptr_node->right, ptr_node);
+        return ptr_node;
+    }
+
+    node *bst_root_insert(node *ptr_node, K key, T data, bool &is_inserted) {
+
+        auto left_rotate = [](node *_ptr_node) {
+            node * tmp = _ptr_node->right;
+            _ptr_node->right = tmp->left;
+            tmp->left = _ptr_node;
+
+            return tmp;
+        };
+
+        auto right_rotate = [](node *_ptr_node) {
+            node * tmp = _ptr_node->left;
+            _ptr_node->left = tmp->right;
+            tmp->right = _ptr_node;
+
+            return tmp;
+        };
+
+
+        if (!ptr_node) {
+            is_inserted = true;
+            return new node(key, data);
+        }
+
+        if (ptr_node->key == key) {
+            is_inserted = false;
+            return ptr_node;
+        }
+
+        if (key < ptr_node->key) {
+            ptr_node->left = bst_root_insert(ptr_node->left, key, data, is_inserted);
+            if (is_inserted) {
+                return right_rotate(ptr_node);
+            }
+
+            return ptr_node;
+        }
+
+        ptr_node->right = bst_root_insert(ptr_node->right, key, data, is_inserted);
+
+        if (is_inserted) {
+            return left_rotate(ptr_node);
+        }
+
+        return ptr_node;
     }
 
 public:
 
     /// Конструктор
-    bst(void) : traverse_counter(0), size(0), root(nullptr) {};
+    bst(void) : traverse_counter(0), root(nullptr), size(0) {};
 
     /// Конструктор копирования
-    bst(bst<T,K> &old_tree) : size(old_tree.size), traverse_counter(0) {
+    bst(const bst<T,K> &old_tree) : traverse_counter(0), size(old_tree.size) {
+        std::function<node *(node *)> bst_copy = [&] (node *ptr_node){
+            if (!ptr_node) {
+                return nullptr;
+            }
+
+            return new node(ptr_node->key, ptr_node->data, bst_copy(ptr_node->left), bst_copy(ptr_node->right));
+        };
+
         root = bst_copy(old_tree.root);
     };
 
     /// Деструктор
     ~bst(void) {
-        clear();
+        bst_clear(root);
     }
 
     /// Опрос размера дерева
-    unsigned int get_size(void) {
+    [[nodiscard]] unsigned int get_size(void) const {
         return size;
     }
 
     /// Очистка дерева
     void clear(void) {
-       bst_clear(root);
-       root = nullptr;
+        bst_clear(root);
+        size = 0;
+        root = nullptr;
     }
 
     /// Проверка дерева на пустоту
-    bool is_empty(void) {
+    [[nodiscard]] bool is_empty(void) const {
         return size == 0;
     }
 
     /// Доступ по чтению/записи к данным по ключу
-    T &get_by_key(const K);
-    T &bst_search(node *, const K);
+    T &get_by_key(const K key) {
+        std::function<T &(node *)> bst_search = [&] (node *ptr_node) {
+            if (!ptr_node) {
+                throw std::runtime_error("unknown key");
+            }
+
+            if (ptr_node->key == key) {
+                return ptr_node->data;
+            }
+
+            if (ptr_node->key < key) {
+                return bst_search(ptr_node->left, key);
+            }
+
+            return bst_search(ptr_node->right, key);
+        };
+
+        return bst_search(root);
+    }
 
     /// Включение данных с заданным ключом
     bool insert(const K key, const T data) {
-        if (!root) {
-            size++;
-            return (root = new node(key, data));
-        }
-        
         bool is_inserted = false;
 
-        bst_insert(root, key, data, is_inserted);
+        std::function<node *(node *)> bst_insert =
+            [&](node *ptr_node) {
+                if (!ptr_node) {
+                    size++;
+                    is_inserted = true;
+
+                    return new node(key, data);
+                }
+
+                if (ptr_node->key == key) {
+                    return ptr_node;
+                }
+
+                if (ptr_node->key > key) {
+                    ptr_node->left = bst_insert(ptr_node->left);
+                } else {
+                    ptr_node->right = bst_insert(ptr_node->right);
+                }
+
+                return ptr_node;
+            };
+
+        if (!root) {
+            root = new node(key, data);
+            size++;
+            return true;
+        }
+
+        bst_insert(root);
 
         return is_inserted;
     }
 
     /// Удаление данных с заданным ключом
-    bool remove(const K key);
-    bool bst_remove(node *, const K key);
+    bool remove(K key) {
+        bool is_deleted;
+
+        root = bst_remove(root, key, is_deleted);
+
+        return is_deleted;
+    }
 
     /// Формирование списка ключей в дереве в порядке обхода узлов по схеме L->t->R
-    void print_traversal(void);
+    void print_traversal(void) {
+        std::function<void (const node *)> bst_ltr_traversal = [&](const node *ptr_node) {
+            if (!ptr_node) {
+                return;
+            }
+
+            bst_ltr_traversal(ptr_node->left);
+            std::cout<<ptr_node->key<<" ";
+            bst_ltr_traversal(ptr_node->right);
+        };
+
+        bst_ltr_traversal(root);
+    }
 
     /** Поиск и подъем в корень дерева узла с ближайшим ключом, большим заданного значения.
     Трудоёмкость операции – O(log n). */
-    void climbing_greater_node(const K key);
+    bool climbing_greater_node(const K key) {
+        std::function<node *(node *, node **, K, bool &)> bst_find_greater_node =
+            [&](node *ptr_node, node **ptr_parrent, K key_link, bool &is_find) {
+            if (!ptr_node) {
+                return ptr_node;
+            }
+
+            if (ptr_node->key > key_link) {
+                is_find = true;
+                return ptr_node;
+            }
+
+            *ptr_parrent = ptr_node;
+            return bst_find_greater_node(ptr_node->right, ptr_parrent, key_link, is_find);
+        };
+
+        bool is_find = false;
+
+        node *parrent = root;
+        node *tmp = bst_find_greater_node(root, &parrent, key, is_find);
+
+        if (!is_find) {
+            return false;
+        }
+
+        if (tmp == root) {
+            return true;
+        }
+
+        T _data = tmp->data;
+        K _key = tmp->key;
+
+        if (parrent->left == tmp) {
+            parrent->left = bst_remove(tmp, tmp->key, is_find);
+        } else {
+            parrent->right = bst_remove(tmp, tmp->key, is_find);
+        }
+
+        root = bst_root_insert(root, _key, _data, is_find);
+        return true;
+    }
     
 
     class iterator;
@@ -215,4 +401,4 @@ std::ostream &operator<< (std::ostream &os, bst<T,K> &tree) {
     return os;
 }
 
-
+#endif // BST
