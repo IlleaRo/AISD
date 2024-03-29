@@ -175,9 +175,17 @@ void test_ord(int n) {
  delete[] m;
 } //конец теста
 
-int main() {
- test_ord(1000);
- cout<<"\n----"<<endl;
- test_rand(1000);
+int main(int argc, char *argv[]) {
+ if (argc == 0) {
+  cout<<"Use ./tester <tree size>\n";
+  exit(EXIT_FAILURE);
+ }
+ const int size = atoi(argv[1]);
+
+ cout<<"Тестирование выражденного дерева"<<endl;
+ test_ord(size);
+ cout<<"\nТестирование случайного дерева"<<endl;
+
+ test_rand(size);
   return 0;
 }

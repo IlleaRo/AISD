@@ -4,8 +4,9 @@
 #include <iostream>
 #include <functional>
 
+#define USE_INSERT_IN_ROOT 0
 
-template <class T, class K>
+template <class K, class T>
 class bst {
 private:
     unsigned long traverse_counter;
@@ -111,7 +112,7 @@ protected:
         ptr_node->right = bst_use_replacement_node(ptr_node->right, ptr_node);
         return ptr_node;
     }
-
+#if USE_INSERT_IN_ROOT
     node *bst_root_insert(node *ptr_node, K key, T data, bool &is_inserted) {
 
         auto left_rotate = [](node *_ptr_node) {
@@ -130,6 +131,7 @@ protected:
             return tmp;
         };
 
+        traverse_counter++;
 
         if (!ptr_node) {
             is_inserted = true;
@@ -158,7 +160,7 @@ protected:
 
         return ptr_node;
     }
-
+#endif //USE_INSERT_IN_ROOT
     ///поиск предыдущего по ключу узла
     node *bst_predecessor(node *ptr_root, node *ptr_node) {
         //поиск максимального по ключу узла в левом поддереве
@@ -244,7 +246,7 @@ public:
     bst() : traverse_counter(0), root(nullptr), size(0) {};
 
     /// Конструктор копирования
-    bst(const bst<T,K> &old_tree) : traverse_counter(0), size(old_tree.size) {
+    explicit bst(const bst<T,K> &old_tree) : traverse_counter(0), size(old_tree.size) {
         std::function<node *(node *)> bst_copy = [&bst_copy] (node *ptr_node){
             if (!ptr_node) {
                 return nullptr;
@@ -290,10 +292,10 @@ public:
             }
 
             if (ptr_node->key < key) {
-                return bst_search(ptr_node->left);
+                return bst_search(ptr_node->right);
             }
 
-            return bst_search(ptr_node->right);
+            return bst_search(ptr_node->left);
         };
 
         return bst_search(root);
@@ -349,6 +351,10 @@ public:
 
         root = bst_remove(root, key, is_deleted);
 
+        if (is_deleted) {
+            size--;
+        }
+
         return is_deleted;
     }
 
@@ -370,10 +376,14 @@ public:
     /** Поиск и подъем в корень дерева узла с ближайшим ключом, большим заданного значения.
     Трудоёмкость операции – O(log n). */
     bool climbing_greater_node(const K key) {
+        traverse_counter = 0;
         bool is_find = false;
 
         std::function<node *(node *, node **)> bst_find_greater_node =
-            [&bst_find_greater_node, &is_find, &key](node *ptr_node, node **ptr_parrent) {
+            [&bst_find_greater_node, &is_find, &key, this](node *ptr_node, node **ptr_parrent) {
+
+            traverse_counter++;
+
             if (!ptr_node) {
                 return ptr_node;
             }
@@ -400,14 +410,23 @@ public:
 
         T _data = tmp->data;
         K _key = tmp->key;
-
+#if !(USE_INSERT_IN_ROOT)
+        node * new_root = new node(_data, _key);
+#endif // !(USE_INSERT_IN_ROOT)
         if (parrent->left == tmp) {
             parrent->left = bst_remove(tmp, tmp->key, is_find);
         } else {
             parrent->right = bst_remove(tmp, tmp->key, is_find);
         }
 
+#if USE_INSERT_IN_ROOT
         root = bst_root_insert(root, _key, _data, is_find);
+#else //USE_INSERT_IN_ROOT
+        new_root->left = root;
+        new_root->right = parrent->right;
+        parrent->right = nullptr;
+        root = new_root;
+#endif //USE_INSERT_IN_ROOT
         return true;
     }
     
@@ -418,8 +437,11 @@ public:
     /// Запрос прямого итератора, установленного на узел дерева с минимальным ключом begin().
     iterator begin() {
         node *tmp = root;
-        while (tmp->left) {
-            tmp = tmp->left;
+
+        if (tmp) {
+            while (tmp->left) {
+                tmp = tmp->left;
+            }
         }
 
         return bst::iterator(this, tmp);
@@ -428,8 +450,11 @@ public:
     /// Запрос обратного итератора, установленного на узел дерева с максимальным ключом rbegin().
     reverse_iterator rbegin() {
         node *tmp = root;
-        while (tmp->right) {
-            tmp = tmp->right;
+
+        if (tmp) {
+            while (tmp->right) {
+                tmp = tmp->right;
+            }
         }
 
         return bst::reverse_iterator(this, tmp);
@@ -463,7 +488,7 @@ public:
         }
 
         /// операция перехода к следующему по ключу узлу в дереве ++.
-        iterator operator++() {
+        iterator &operator++() {
             if (*this == tree->end()) {
                 throw std::runtime_error("unspecified iterator");
             }
@@ -473,7 +498,7 @@ public:
         }
 
         /// операция перехода к предыдущему по ключу узлу в дереве --.
-        iterator operator--() {
+        iterator &operator--() {
             if (*this == tree->end()) {
                 throw std::runtime_error("unspecified iterator");
             }
@@ -511,7 +536,7 @@ public:
         }
 
         /// операция перехода к предыдущему по ключу узлу в дереве ++.
-        reverse_iterator operator++() {
+        reverse_iterator &operator++() {
             if (*this == tree->rend()) {
                 throw std::runtime_error("unspecified iterator");
             }
@@ -521,12 +546,12 @@ public:
         }
 
         /// операция перехода к следующему по ключу узлу в дереве --.
-        reverse_iterator operator--() {
+        reverse_iterator &operator--() {
             if (*this == tree->rend()) {
                 throw std::runtime_error("unspecified iterator");
             }
 
-            this->cur = bst_successor();
+            this->cur = tree->bst_successor(tree->root, cur);
             return *this;
         }
 
@@ -552,7 +577,7 @@ public:
 };
 
 
-    /// Вывод структуры дерева на экран (так не стоит)
+/// Вывод структуры дерева на экран (так не стоит)
 template<class T, class K>
 std::ostream &operator<< (std::ostream &os, bst<T,K> &tree) {
     tree.bst_show(tree.root, 0);
