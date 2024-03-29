@@ -5,16 +5,16 @@
 void test() {
     bst<unsigned long, int> pretty_tree;
 
-    pretty_tree.insert(50, 2);
-    pretty_tree.insert(30, 3);
-    pretty_tree.insert(10, 6);
-    pretty_tree.insert(40, 23);
-    pretty_tree.insert(20, 6);
-    pretty_tree.insert(45, 12);
-    pretty_tree.insert(70, 6);
-    pretty_tree.insert(60, 7);
-    pretty_tree.insert(65, 7);
-    pretty_tree.insert(80, 7);
+    pretty_tree.insert(50, 50);
+    pretty_tree.insert(30, 30);
+    pretty_tree.insert(10, 10);
+    pretty_tree.insert(40, 40);
+    pretty_tree.insert(20, 20);
+    pretty_tree.insert(45, 45);
+    pretty_tree.insert(70, 70);
+    pretty_tree.insert(60, 60);
+    pretty_tree.insert(65, 65);
+    pretty_tree.insert(80, 80);
 
     std::cout<<"Исходное дерево:\n"<<pretty_tree<<"\n-----"<<std::endl;
 
@@ -32,6 +32,31 @@ void test() {
 
     std::cout<<"Удаление корня (70): "<<pretty_tree.remove(70)<<'\n'<<pretty_tree<<std::endl;
 
+    std::cout<<"Запрос прямого итератора begin()";
+    bst<unsigned long, int>::iterator iter = pretty_tree.begin();
+
+    try {
+        while (*iter) {
+
+            ++iter;
+            std::cout<<*iter<<" ";
+        }
+    } catch (std::exception &e) {
+           std::cout<<e.what();
+    }
+
+    std::cout<<"\nЗапрос обратного итератора rbegin()";
+    bst<unsigned long, int>::reverse_iterator riter = pretty_tree.rbegin();
+
+    try {
+        while (*riter) {
+
+            ++riter;
+            std::cout<<*riter<<" ";
+        }
+    } catch (std::exception &e) {
+        std::cout<<e.what();
+    }
 }
 
 

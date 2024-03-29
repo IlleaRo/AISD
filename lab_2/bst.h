@@ -54,14 +54,14 @@ protected:
 
     node *bst_remove(node *ptr_node, K key, bool &is_deleted) {
         std::function<node *(node *, node *)> bst_use_replacement_node =
-            [&bst_use_replacement_node] (node *ptr_replacement_node, node *ptr_node) {
+            [&bst_use_replacement_node] (node *ptr_replacement_node, node *_ptr_node) {
             if (ptr_replacement_node->left) {
-                ptr_replacement_node->left = bst_use_replacement_node(ptr_replacement_node->left, ptr_node);
+                ptr_replacement_node->left = bst_use_replacement_node(ptr_replacement_node->left, _ptr_node);
                 return ptr_replacement_node;
             }
 
-            ptr_node->key = ptr_replacement_node->key;
-            ptr_node->data = ptr_replacement_node->data;
+            _ptr_node->key = ptr_replacement_node->key;
+            _ptr_node->data = ptr_replacement_node->data;
 
             node *tmp = ptr_replacement_node->right;
             delete ptr_replacement_node;
@@ -156,10 +156,89 @@ protected:
         return ptr_node;
     }
 
+    ///поиск предыдущего по ключу узла
+    node *bst_predecessor(node *ptr_root, node *ptr_node) {
+        //поиск максимального по ключу узла в левом поддереве
+        std::function<node *(node *)> bst_max = [] (node *_ptr_node) -> node * {
+            if (!_ptr_node) {
+                return nullptr;
+            }
+
+            while (_ptr_node->right) {
+                _ptr_node = _ptr_node->right;
+            }
+
+            return _ptr_node;
+        };
+
+        //поиск ближайшего правого родителя для заданного узла дерева
+        std::function<node * (node *)> bst_r_parent = [&bst_r_parent, &ptr_node] (node *t) -> node * {
+            if (ptr_node == t) {
+                return nullptr;
+            }
+
+            if (ptr_node->key > t->key) {
+                if (node *r_parrent = bst_r_parent(t->right)) {
+                    return r_parrent;
+                }
+
+                return t;
+            }
+
+            return bst_r_parent(t->left);
+        };
+
+        if (ptr_node->left) {
+            return bst_max(ptr_node->left);
+        }
+
+        return bst_r_parent(ptr_root);
+    };
+
+    ///поиск следующего по ключу узла
+    node *bst_successor(node *ptr_root, node *ptr_node) {
+        //поиск минимального по ключу узла в правом поддереве
+        std::function<node *(node *)> bst_min = [] (node *_ptr_node) {
+            if (!_ptr_node) {
+                return _ptr_node;
+            }
+
+            while (_ptr_node->left) {
+                _ptr_node = _ptr_node->left;
+            }
+
+            return _ptr_node;
+        };
+
+        //поиск ближайшего левого родителя для заданного узла дерева
+        std::function<node *(node *)> bst_l_parent = [&bst_l_parent, &ptr_node] (node *t) -> node* {
+            if (ptr_node == t) {
+                return nullptr;
+            }
+
+            if (ptr_node->key < t->key) {
+                if (node *l_parrent = bst_l_parent(t->left)) {
+                    return l_parrent;
+                }
+
+                return t;
+            }
+
+            return bst_l_parent(t->right);
+        };
+
+        if (ptr_node->right) {
+            return bst_min(ptr_node->right);
+        }
+
+        return bst_l_parent(ptr_root);
+    };
+
+
 public:
 
     /// Конструктор
-    bst(void) : traverse_counter(0), root(nullptr), size(0) {};
+    bst() : traverse_counter(0), root(nullptr), size(0) {};
 
     /// Конструктор копирования
     bst(const bst<T,K> &old_tree) : traverse_counter(0), size(old_tree.size) {
@@ -175,24 +254,24 @@ public:
     };
 
     /// Деструктор
-    ~bst(void) {
+    ~bst() {
         bst_clear(root);
     }
 
     /// Опрос размера дерева
-    [[nodiscard]] unsigned int get_size(void) const {
+    [[nodiscard]] unsigned int get_size() const {
         return size;
     }
 
     /// Очистка дерева
-    void clear(void) {
+    void clear() {
         bst_clear(root);
         size = 0;
         root = nullptr;
     }
 
     /// Проверка дерева на пустоту
-    [[nodiscard]] bool is_empty(void) const {
+    [[nodiscard]] bool is_empty() const {
         return size == 0;
     }
 
@@ -267,7 +346,7 @@ public:
     }
 
     /// Формирование списка ключей в дереве в порядке обхода узлов по схеме L->t->R
-    void print_traversal(void) {
+    void print_traversal() {
         std::function<void (const node *)> bst_ltr_traversal = [&bst_ltr_traversal](const node *ptr_node) {
             if (!ptr_node) {
                 return;
@@ -330,16 +409,34 @@ public:
     class reverse_iterator;
 
     /// Запрос прямого итератора, установленного на узел дерева с минимальным ключом begin().
-    iterator begin(void);
+    iterator begin() {
+        node *tmp = root;
+        while (tmp->left) {
+            tmp = tmp->left;
+        }
+
+        return bst::iterator(this, tmp);
+    }
 
     /// Запрос обратного итератора, установленного на узел дерева с максимальным ключом rbegin().
-    reverse_iterator rbegin(void);
+    reverse_iterator rbegin() {
+        node *tmp = root;
+        while (tmp->right) {
+            tmp = tmp->right;
+        }
+
+        return bst::reverse_iterator(this, tmp);
+    }
 
     /// запрос «неустановленного» прямого итератора end().
-    iterator end(void);
+    iterator end() {
+        return bst::iterator(this, nullptr);
+    }
 
     /// запрос «неустановленного» обратного итератора rend().
-    reverse_iterator rend(void);
+    reverse_iterator rend() {
+        return bst::reverse_iterator(this, nullptr);
+    }
 
 
     class iterator {
@@ -347,20 +444,46 @@ public:
         bst *tree; // Корень
         node *cur; // Текущий узел
     public:
+        explicit iterator(bst *ptr_tree, node *ptr_node) : tree(ptr_tree), cur(ptr_node) {}
+
         /// операция доступа по чтению и записи к данным текущего узла *.
-        T &operator*(void);
+        T &operator*() {
+            if (*this == this->tree->end()) {
+                throw std::runtime_error("unspecified iterator");
+            }
 
-        /// операция перехода к следующему (для обратного – к предыдущему) по ключу узлу в дереве ++.
-        iterator operator++(void);
+            return cur->data;
+        }
 
-        /// операция перехода к предыдущему (для обратного – к следующему) по ключу узлу в дереве --.
-        iterator operator--(void);
+        /// операция перехода к следующему по ключу узлу в дереве ++.
+        iterator operator++() {
+            if (*this == tree->end()) {
+                throw std::runtime_error("unspecified iterator");
+            }
+
+            cur = tree->bst_successor(tree->root, cur);
+            return *this;
+        }
+
+        /// операция перехода к предыдущему по ключу узлу в дереве --.
+        iterator operator--() {
+            if (*this == tree->end()) {
+                throw std::runtime_error("unspecified iterator");
+            }
+
+            this->cur = tree->bst_predecessor(tree->root, cur);
+            return *this;
+        }
 
         /// проверка равенства однотипных итераторов ==.
-        bool operator==(const iterator &iter);
+        bool operator==(const iterator &iter) {
+            return tree == iter.tree && cur == iter.cur;
+        }
 
         /// проверка неравенства однотипных итераторов !=.
-        bool operator!=(const iterator &iter);
+        bool operator!=(const iterator &iter) {
+            return tree != iter.tree || cur != iter.cur;
+        }
     };
 
     class reverse_iterator {
@@ -369,20 +492,46 @@ public:
         node *cur; // Текущий узел
 
     public:
+        explicit reverse_iterator(bst *ptr_tree, node *ptr_node) : tree(ptr_tree), cur(ptr_node) {}
+
         /// операция доступа по чтению и записи к данным текущего узла *.
-        T &operator*(void);
+        T &operator*() {
+            if (*this == this->tree->rend()) {
+                throw std::runtime_error("unspecified iterator");
+            }
 
-        /// операция перехода к следующему (для обратного – к предыдущему) по ключу узлу в дереве ++.
-        reverse_iterator operator++(void);
+            return cur->data;
+        }
 
-        /// операция перехода к предыдущему (для обратного – к следующему) по ключу узлу в дереве --.
-        reverse_iterator operator--(void);
+        /// операция перехода к предыдущему по ключу узлу в дереве ++.
+        reverse_iterator operator++() {
+            if (*this == tree->rend()) {
+                throw std::runtime_error("unspecified iterator");
+            }
+
+            cur = tree->bst_predecessor(tree->root, cur);
+            return *this;
+        }
+
+        /// операция перехода к следующему по ключу узлу в дереве --.
+        reverse_iterator operator--() {
+            if (*this == tree->rend()) {
+                throw std::runtime_error("unspecified iterator");
+            }
+
+            this->cur = bst_successor();
+            return *this;
+        }
 
         /// проверка равенства однотипных итераторов ==.
-        bool operator==(const iterator &reverse_iterator);
+        bool operator==(const reverse_iterator &rev_iter) {
+            return tree == rev_iter.tree && cur == rev_iter.cur;
+        }
 
         /// проверка неравенства однотипных итераторов !=.
-        bool operator!=(const iterator &reverse_iterator);
+        bool operator!=(const reverse_iterator &rev_iter) {
+            return tree != rev_iter.tree || cur != rev_iter.cur;
+        }
     };
     
     /// Вывод структуры дерева на экран (так не стоит)
