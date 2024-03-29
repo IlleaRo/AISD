@@ -54,7 +54,8 @@ protected:
 
     node *bst_remove(node *ptr_node, K key, bool &is_deleted) {
         std::function<node *(node *, node *)> bst_use_replacement_node =
-            [&bst_use_replacement_node] (node *ptr_replacement_node, node *_ptr_node) {
+            [&] (node *ptr_replacement_node, node *_ptr_node) {
+            traverse_counter++;
             if (ptr_replacement_node->left) {
                 ptr_replacement_node->left = bst_use_replacement_node(ptr_replacement_node->left, _ptr_node);
                 return ptr_replacement_node;
@@ -68,6 +69,8 @@ protected:
 
             return tmp;
         };
+
+        traverse_counter++;
 
         if (!ptr_node) {
             return ptr_node;
@@ -277,7 +280,7 @@ public:
 
     /// Доступ по чтению/записи к данным по ключу
     T &get_by_key(const K key) {
-        std::function<T &(node *)> bst_search = [&bst_search, &key] (node *ptr_node) {
+        std::function<T &(node *)> bst_search = [&bst_search, &key] (node *ptr_node)-> T& {
             if (!ptr_node) {
                 throw std::runtime_error("unknown key");
             }
@@ -298,10 +301,13 @@ public:
 
     /// Включение данных с заданным ключом
     bool insert(const K key, const T data) {
+        traverse_counter = 0;
         bool is_inserted = false;
 
         std::function<node *(node *)> bst_insert =
-            [&bst_insert, &is_inserted, &key, &data](node *ptr_node) {
+            [&](node *ptr_node) {
+                traverse_counter++;
+
                 if (!ptr_node) {
                     is_inserted = true;
 
@@ -338,6 +344,7 @@ public:
 
     /// Удаление данных с заданным ключом
     bool remove(K key) {
+        traverse_counter = 0;
         bool is_deleted;
 
         root = bst_remove(root, key, is_deleted);
@@ -539,7 +546,7 @@ public:
     friend std::ostream &operator<< (std::ostream &os, bst<T1,K1> &tree);
 
     /// Опрос числа узлов дерева, просмотренных предыдущей операцией
-    unsigned long get_traverse_counter(void) {
+    [[nodiscard]] unsigned long get_traverse_counter() const {
         return traverse_counter;
     }
 };
