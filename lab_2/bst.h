@@ -1,5 +1,5 @@
 #ifndef BST
-#define H_HEADER
+#define BST
 
 #include <iostream>
 #include <functional>
@@ -53,24 +53,24 @@ protected:
         delete ptr_node;
     }
 
+    node *bst_use_replacement_node(node* ptr_replacement_node, node* ptr_node) {
+        traverse_counter++;
+
+        if (ptr_replacement_node->left) {
+            ptr_replacement_node->left = bst_use_replacement_node(ptr_replacement_node->left, ptr_node);
+            return ptr_replacement_node;
+        }
+
+        ptr_node->key = ptr_replacement_node->key;
+        ptr_node->data = ptr_replacement_node->data;
+
+        node* tmp = ptr_replacement_node->right;
+        delete ptr_replacement_node;
+
+        return tmp;
+    }
+
     node *bst_remove(node *ptr_node, K key, bool &is_deleted) {
-        std::function<node *(node *, node *)> bst_use_replacement_node =
-            [&] (node *ptr_replacement_node, node *_ptr_node) {
-            traverse_counter++;
-            if (ptr_replacement_node->left) {
-                ptr_replacement_node->left = bst_use_replacement_node(ptr_replacement_node->left, _ptr_node);
-                return ptr_replacement_node;
-            }
-
-            _ptr_node->key = ptr_replacement_node->key;
-            _ptr_node->data = ptr_replacement_node->data;
-
-            node *tmp = ptr_replacement_node->right;
-            delete ptr_replacement_node;
-
-            return tmp;
-        };
-
         traverse_counter++;
 
         if (!ptr_node) {
@@ -112,6 +112,7 @@ protected:
         ptr_node->right = bst_use_replacement_node(ptr_node->right, ptr_node);
         return ptr_node;
     }
+
 #if USE_INSERT_IN_ROOT
     node *bst_root_insert(node *ptr_node, K key, T data, bool &is_inserted) {
 
@@ -161,84 +162,165 @@ protected:
         return ptr_node;
     }
 #endif //USE_INSERT_IN_ROOT
-    ///поиск предыдущего по ключу узла
+
+    // Поиск максимального по ключу узла в левом поддереве
+    node *bst_max(node* ptr_node) {
+        if (!ptr_node) {
+            return nullptr;
+        }
+
+        while (ptr_node->right) {
+            ptr_node = ptr_node->right;
+        }
+
+        return ptr_node;
+    }
+
+    // Поиск минимального по ключу узла в правом поддереве
+    node *bst_min(node* ptr_node) {
+        if (!ptr_node) {
+            return nullptr;
+        }
+
+        while (ptr_node->left) {
+            ptr_node = ptr_node->left;
+        }
+
+        return ptr_node;
+    }
+
+    // Поиск ближайшего правого родителя для заданного узла дерева
+    node *bst_r_parent(node *tmp, const node *ptr_node){
+        if (ptr_node == tmp) {
+            return nullptr;
+        }
+
+        if (ptr_node->key > tmp->key) {
+            if (node* r_parrent = bst_r_parent(tmp->right, ptr_node)) {
+                return r_parrent;
+            }
+
+            return tmp;
+        }
+
+        return bst_r_parent(tmp->left, ptr_node);
+    }
+
+    // Поиск ближайшего левого родителя для заданного узла дерева
+    node *bst_l_parent(node* tmp, const node *ptr_node){
+        if (ptr_node == tmp) {
+            return nullptr;
+        }
+
+        if (ptr_node->key < tmp->key) {
+            if (node* l_parrent = bst_l_parent(tmp->left, ptr_node)) {
+                return l_parrent;
+            }
+
+            return tmp;
+        }
+
+        return bst_l_parent(tmp->right, ptr_node);
+    }
+
+
+    // Поиск предыдущего по ключу узла
     node *bst_predecessor(node *ptr_root, node *ptr_node) {
-        //поиск максимального по ключу узла в левом поддереве
-        std::function<node *(node *)> bst_max = [] (node *_ptr_node) -> node * {
-            if (!_ptr_node) {
-                return nullptr;
-            }
-
-            while (_ptr_node->right) {
-                _ptr_node = _ptr_node->right;
-            }
-
-            return _ptr_node;
-        };
-
-        //поиск ближайшего правого родителя для заданного узла дерева
-        std::function<node * (node *)> bst_r_parent = [&bst_r_parent, &ptr_node] (node *t) -> node * {
-            if (ptr_node == t) {
-                return nullptr;
-            }
-
-            if (ptr_node->key > t->key) {
-                if (node *r_parrent = bst_r_parent(t->right)) {
-                    return r_parrent;
-                }
-
-                return t;
-            }
-
-            return bst_r_parent(t->left);
-        };
-
         if (ptr_node->left) {
             return bst_max(ptr_node->left);
         }
 
-        return bst_r_parent(ptr_root);
+        return bst_r_parent(ptr_root, ptr_node);
     };
 
-    ///поиск следующего по ключу узла
+    // Поиск следующего по ключу узла
     node *bst_successor(node *ptr_root, node *ptr_node) {
-        //поиск минимального по ключу узла в правом поддереве
-        std::function<node *(node *)> bst_min = [] (node *_ptr_node) {
-            if (!_ptr_node) {
-                return _ptr_node;
-            }
-
-            while (_ptr_node->left) {
-                _ptr_node = _ptr_node->left;
-            }
-
-            return _ptr_node;
-        };
-
-        //поиск ближайшего левого родителя для заданного узла дерева
-        std::function<node *(node *)> bst_l_parent = [&bst_l_parent, &ptr_node] (node *t) -> node* {
-            if (ptr_node == t) {
-                return nullptr;
-            }
-
-            if (ptr_node->key < t->key) {
-                if (node *l_parrent = bst_l_parent(t->left)) {
-                    return l_parrent;
-                }
-
-                return t;
-            }
-
-            return bst_l_parent(t->right);
-        };
-
         if (ptr_node->right) {
             return bst_min(ptr_node->right);
         }
 
-        return bst_l_parent(ptr_root);
+        return bst_l_parent(ptr_root, ptr_node);
     };
 
+    // Рекурсивное копирование узлов дерева
+    node *bst_copy(node* ptr_node) {
+        if (!ptr_node) {
+            return nullptr;
+        }
+
+        return new node(ptr_node->key, ptr_node->data, bst_copy(ptr_node->left), bst_copy(ptr_node->right));
+    }
+
+    // Рекурсивный поиск элементов в дереве
+    T &bst_search(node* ptr_node, const K &key){
+        traverse_counter++;
+
+        if (!ptr_node) {
+            throw std::runtime_error("unknown key");
+        }
+
+        if (ptr_node->key == key) {
+            return ptr_node->data;
+        }
+
+        if (ptr_node->key < key) {
+            return bst_search(ptr_node->right, key);
+        }
+
+        return bst_search(ptr_node->left, key);
+    }
+
+    // Рекурсивный поиск элементов в дереве
+    node *bst_insert(node* ptr_node, const K &key, const T &data, bool &is_inserted) {
+        traverse_counter++;
+
+        if (!ptr_node) {
+            is_inserted = true;
+
+            return new node(key, data);
+        }
+
+        if (ptr_node->key == key) {
+            return ptr_node;
+        }
+
+        if (ptr_node->key > key) {
+            ptr_node->left = bst_insert(ptr_node->left, key, data, is_inserted);
+        }
+        else {
+            ptr_node->right = bst_insert(ptr_node->right, key, data, is_inserted);
+        }
+
+        return ptr_node;
+    }
+
+    // Рекурсивное формирование списка ключей в дереве в порядке обхода узлов по схеме L->t->R
+    void bst_ltr_traversal(const node* ptr_node) {
+        if (!ptr_node) {
+            return;
+        }
+
+        bst_ltr_traversal(ptr_node->left);
+        std::cout << ptr_node->key << " ";
+        bst_ltr_traversal(ptr_node->right);
+    }
+
+    // Рекурсивный поиск узла с большим заданного ключом
+    node *bst_find_greater_node(node* ptr_node, node** ptr_parrent, const K &key, bool &is_find) {
+        traverse_counter++;
+
+        if (!ptr_node) {
+            return ptr_node;
+        }
+
+        if (ptr_node->key > key) {
+            is_find = true;
+            return ptr_node;
+        }
+
+        *ptr_parrent = ptr_node;
+        return bst_find_greater_node(ptr_node->right, ptr_parrent, key, is_find);
+    }
 
 public:
 
@@ -247,14 +329,6 @@ public:
 
     /// Конструктор копирования
     explicit bst(const bst<T,K> &old_tree) : traverse_counter(0), size(old_tree.size) {
-        std::function<node *(node *)> bst_copy = [&bst_copy] (node *ptr_node){
-            if (!ptr_node) {
-                return nullptr;
-            }
-
-            return new node(ptr_node->key, ptr_node->data, bst_copy(ptr_node->left), bst_copy(ptr_node->right));
-        };
-
         root = bst_copy(old_tree.root);
     };
 
@@ -282,60 +356,18 @@ public:
 
     /// Доступ по чтению/записи к данным по ключу
     T &get_by_key(const K key) {
-        std::function<T &(node *)> bst_search = [&bst_search, &key] (node *ptr_node)-> T& {
-            if (!ptr_node) {
-                throw std::runtime_error("unknown key");
-            }
+        traverse_counter = 0;
 
-            if (ptr_node->key == key) {
-                return ptr_node->data;
-            }
-
-            if (ptr_node->key < key) {
-                return bst_search(ptr_node->right);
-            }
-
-            return bst_search(ptr_node->left);
-        };
-
-        return bst_search(root);
+        return bst_search(root, key);
     }
 
     /// Включение данных с заданным ключом
     bool insert(const K key, const T data) {
         traverse_counter = 0;
+
         bool is_inserted = false;
 
-        std::function<node *(node *)> bst_insert =
-            [&](node *ptr_node) {
-                traverse_counter++;
-
-                if (!ptr_node) {
-                    is_inserted = true;
-
-                    return new node(key, data);
-                }
-
-                if (ptr_node->key == key) {
-                    return ptr_node;
-                }
-
-                if (ptr_node->key > key) {
-                    ptr_node->left = bst_insert(ptr_node->left);
-                } else {
-                    ptr_node->right = bst_insert(ptr_node->right);
-                }
-
-                return ptr_node;
-            };
-
-        if (!root) {
-            root = new node(key, data);
-            size++;
-            return true;
-        }
-
-        bst_insert(root);
+        root = bst_insert(root, key, data, is_inserted);
 
         if (is_inserted) {
             size++;
@@ -360,16 +392,6 @@ public:
 
     /// Формирование списка ключей в дереве в порядке обхода узлов по схеме L->t->R
     void print_traversal() {
-        std::function<void (const node *)> bst_ltr_traversal = [&bst_ltr_traversal](const node *ptr_node) {
-            if (!ptr_node) {
-                return;
-            }
-
-            bst_ltr_traversal(ptr_node->left);
-            std::cout<<ptr_node->key<<" ";
-            bst_ltr_traversal(ptr_node->right);
-        };
-
         bst_ltr_traversal(root);
     }
 
@@ -379,26 +401,8 @@ public:
         traverse_counter = 0;
         bool is_find = false;
 
-        std::function<node *(node *, node **)> bst_find_greater_node =
-            [&bst_find_greater_node, &is_find, &key, this](node *ptr_node, node **ptr_parrent) {
-
-            traverse_counter++;
-
-            if (!ptr_node) {
-                return ptr_node;
-            }
-
-            if (ptr_node->key > key) {
-                is_find = true;
-                return ptr_node;
-            }
-
-            *ptr_parrent = ptr_node;
-            return bst_find_greater_node(ptr_node->right, ptr_parrent);
-        };
-
         node *parrent = root;
-        node *tmp = bst_find_greater_node(root, &parrent);
+        node *tmp = bst_find_greater_node(root, &parrent, key, is_find);
 
         if (!is_find) {
             return false;
@@ -410,9 +414,11 @@ public:
 
         T _data = tmp->data;
         K _key = tmp->key;
+
 #if !(USE_INSERT_IN_ROOT)
         node * new_root = new node(_data, _key);
 #endif // !(USE_INSERT_IN_ROOT)
+
         if (parrent->left == tmp) {
             parrent->left = bst_remove(tmp, tmp->key, is_find);
         } else {

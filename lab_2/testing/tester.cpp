@@ -176,13 +176,13 @@ void test_ord(int n) {
 } //конец теста
 
 int main(int argc, char *argv[]) {
- if (argc == 0) {
+ if (argc != 2) {
   cout<<"Use ./tester <tree size>\n";
   exit(EXIT_FAILURE);
  }
  const int size = atoi(argv[1]);
 
- cout<<"Тестирование выражденного дерева"<<endl;
+ cout<<"Тестирование вырожденного дерева"<<endl;
  test_ord(size);
  cout<<"\nТестирование случайного дерева"<<endl;
 
