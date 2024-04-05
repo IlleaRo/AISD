@@ -1,12 +1,9 @@
 #include "bst.h"
 
-template <class T, class K>
-class rbst : public bst<T, K> {
-  typedef typename bst<T, K>::node node;
- private:
-  int rand_bool() {
-      return rand() % 2;
-  }
+template <class K, class T>
+class rbst : public bst<K, T> {
+  typedef class bst<K, T> super;
+  typedef typename super::node node;
  protected:
 
   virtual void bst_show(node *ptr_node, const unsigned int level) {
@@ -20,4 +17,5 @@ class rbst : public bst<T, K> {
   node *bst_remove(node *ptr_node, K key, bool &is_deleted) {
 
   }
+
 };

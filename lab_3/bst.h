@@ -17,10 +17,11 @@ class bst {
     T data; // Данные
     node *left; // Левый потомок
     node *right; // Правый потомок
+    unsigned int subtree_size; // Количество потомков узла
 
 
-    node(K key, T data) : key(key), data(data), left(nullptr), right(nullptr) {};
-    node(K key, T data, node *left, node *right) : key(key), data(data), left(left), right(right) {};
+    node(K key, T data) : key(key), data(data), left(nullptr), right(nullptr), subtree_size(0) {};
+    node(K key, T data, node *left, node *right) : key(key), data(data), left(left), right(right), subtree_size(0) {};
   };
 
   node *root; // Корень дерева
