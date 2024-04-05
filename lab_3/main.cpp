@@ -1,10 +1,10 @@
-#include "bst.h"
+#include "rbst.h"
 #include <iostream>
 
 
-
 int main() {
-    bst<unsigned long, int> pretty_tree;
+    srand((unsigned) time(nullptr));
+    rbst<unsigned long, int> pretty_tree;
     
     for (int i = 2; i < 10; i++) {
         std::cout<<pretty_tree.insert(i * 10,i)<<std::endl; 
@@ -14,7 +14,7 @@ int main() {
     std::cout<<pretty_tree.insert(45, 10)<<std::endl;
 
 
-    bst<unsigned long, int> copy(pretty_tree);
+    rbst<unsigned long, int> copy(pretty_tree);
 
     std::cout<<pretty_tree<<"Hello Wolrd!"<<std::endl;
    

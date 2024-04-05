@@ -13,6 +13,7 @@ protected:
         T data; // Данные
         node *left; // Левый потомок
         node *right; // Правый потомок
+        unsigned int subtree_size; // Количество потомков узла
     };
 
     node *root; // Корень дерева
