@@ -113,7 +113,7 @@ class bst {
       return ptr_node;
   }
 
-#if USE_INSERT_IN_ROOT
+
   node *bst_root_insert(node *ptr_node, K key, T data, bool &is_inserted) {
 
         auto left_rotate = [](node *_ptr_node) {
@@ -161,7 +161,6 @@ class bst {
 
         return ptr_node;
     }
-#endif //USE_INSERT_IN_ROOT
 
   // Поиск максимального по ключу узла в левом поддереве
   node *bst_max(node* ptr_node) {
