@@ -43,6 +43,7 @@ class rbst : public bst<K, T>
       }
 
       cur_node = new node(key, data);
+      cur_node->subtree_size = 1;
       if (traversed_nodes.size() > 0) {
           if (traversed_right)
           {
