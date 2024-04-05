@@ -1,49 +1,66 @@
 #include "bst.h"
 
-template <class K, class T>
-class rbst : public bst<K, T> {
+template<class K, class T>
+class rbst : public bst<K, T>
+{
   typedef class bst<K, T> super;
   typedef typename super::node node;
-  typedef typename super::bst_root_insert bst_root_insert;
  protected:
 
-	 virtual void bst_show(node *ptr_node, const unsigned int level) {
-	 
-	 }
+  node *bst_insert(node *ptr_node, const K &key, const T &data, bool &is_inserted)
+  {
+      node *cur_node = ptr_node;
+      bool traversed_right;
+      std::vector<node *> traversed_nodes = {};
 
-  node *bst_insert(node* ptr_node, const K &key, const T &data, bool &is_inserted) {
-	  if (!ptr_node) {
-		  ptr_node = new node(key, data);
-		  ptr_node->subtree_size = 1; //TODO: Конструктор для узла с размером поддерева?
-		  is_inserted = true;
+      while (cur_node)
+      {
+          if (rand() < RAND_MAX / (cur_node->subtree_size + 1))
+          {
+              ptr_node = super::bst_root_insert(cur_node, key, data, is_inserted); //NOTE: эта функция уже у нас есть
+              is_inserted = true;
+              return ptr_node;
+          }
 
-		  return ptr_node;
-	  }
+          if (key == cur_node->key)
+          {
+              is_inserted = false;
+              return ptr_node;
+          }
 
-	  if (rand() < RAND_MAX / (ptr_node->subtree_size + 1)) {
-		  ptr_node = bst_root_insert(ptr_node, key, data, is_inserted); //NOTE: эта функция уже у нас есть
-		  
-		  return ptr_node;
-	  }
+          traversed_nodes.push_back(cur_node);
+          if (key < cur_node->key)
+          {
+              cur_node = cur_node->left;
+              traversed_right = false;
+          }
+          else
+          {
+              cur_node = cur_node->right;
+              traversed_right = true;
+          }
 
-	  if (key == ptr_node->key) {
-		  is_inserted = false;
+      }
 
-		  return ptr_node;
-	  }
-
-	  if (key < ptr_node->key) {
-		  ptr_node->left = bst_insert(ptr_node->left, key, data, is_inserted);
-	  }
-	  else {
-		  ptr_node->right = bst_insert(ptr_node->right, key, data, is_inserted);
-	  }
-
-	  if (is_inserted) {
-		  ptr_node->subtree_size++;
-	  }
-
-	  return ptr_node;
+      cur_node = new node(key, data);
+      if (traversed_nodes.size() > 0) {
+          if (traversed_right)
+          {
+              traversed_nodes[traversed_nodes.size() - 1]->right = cur_node;
+          }
+          else
+          {
+              traversed_nodes[traversed_nodes.size() - 1]->left = cur_node;
+          }
+          for (int i = 0; i < traversed_nodes.size(); i++)
+          {
+              traversed_nodes[i]->subtree_size++;
+          }
+      }
+      else {
+          ptr_node = cur_node;
+      }
+      is_inserted = true;
+      return ptr_node;
   }
-
 };
