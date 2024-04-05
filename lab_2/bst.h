@@ -416,7 +416,7 @@ public:
         K _key = tmp->key;
 
 #if !(USE_INSERT_IN_ROOT)
-        node * new_root = new node(_data, _key);
+        node * new_root = new node(_key, _data);
 #endif // !(USE_INSERT_IN_ROOT)
 
         if (parrent->left == tmp) {
