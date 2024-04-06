@@ -113,55 +113,6 @@ class bst {
       return ptr_node;
   }
 
-
-  node *bst_root_insert(node *ptr_node, K key, T data, bool &is_inserted) {
-
-        auto left_rotate = [](node *_ptr_node) {
-            node * tmp = _ptr_node->right;
-            _ptr_node->right = tmp->left;
-            tmp->left = _ptr_node;
-
-            return tmp;
-        };
-
-        auto right_rotate = [](node *_ptr_node) {
-            node * tmp = _ptr_node->left;
-            _ptr_node->left = tmp->right;
-            tmp->right = _ptr_node;
-
-            return tmp;
-        };
-
-        traverse_counter++;
-
-        if (!ptr_node) {
-            is_inserted = true;
-            return new node(key, data);
-        }
-
-        if (ptr_node->key == key) {
-            is_inserted = false;
-            return ptr_node;
-        }
-
-        if (key < ptr_node->key) {
-            ptr_node->left = bst_root_insert(ptr_node->left, key, data, is_inserted);
-            if (is_inserted) {
-                return right_rotate(ptr_node);
-            }
-
-            return ptr_node;
-        }
-
-        ptr_node->right = bst_root_insert(ptr_node->right, key, data, is_inserted);
-
-        if (is_inserted) {
-            return left_rotate(ptr_node);
-        }
-
-        return ptr_node;
-    }
-
   // Поиск максимального по ключу узла в левом поддереве
   node *bst_max(node* ptr_node) {
       if (!ptr_node) {
