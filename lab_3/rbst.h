@@ -22,7 +22,7 @@ class rbst : public bst<K, T>
       new_top->right = ptr_node;
       new_top->subtree_size = ptr_node->subtree_size;
 
-      ptr_node->subtree_size = get_subtree_size(ptr_node->left) + get_subtree_size(ptr_node->right);
+      ptr_node->subtree_size = get_subtree_size(ptr_node->left) + get_subtree_size(ptr_node->right) + 1;
 
       return new_top;
   }
@@ -37,7 +37,7 @@ class rbst : public bst<K, T>
       new_top->left = ptr_node;
       new_top->subtree_size = ptr_node->subtree_size;
 
-      ptr_node->subtree_size = get_subtree_size(ptr_node->left) + get_subtree_size(ptr_node->right);
+      ptr_node->subtree_size = get_subtree_size(ptr_node->left) + get_subtree_size(ptr_node->right) + 1;
 
       return new_top;
   }
