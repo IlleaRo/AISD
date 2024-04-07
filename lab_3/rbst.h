@@ -43,7 +43,7 @@ class rbst : public bst<K, T>
   }
 
   node* bst_root_insert(node* ptr_node, K key, T data, bool& is_inserted) {
-      traverse_counter++;
+      super::traverse_counter++;
 
       if (!ptr_node) {
           is_inserted = true;
@@ -77,13 +77,13 @@ public:
 
   bool insert(const K key, const T data) override
   {
-      if (!root) {
-          root = new node(key, data, 1);
+      if (!super::root) {
+          super::root = new node(key, data, 1);
           return true;
       }
 
 
-      node *cur_node = root;
+      node *cur_node = super::root;
       bool traversed_right;
       bool is_inserted = false;
       std::vector<node *> traversed_nodes;
@@ -92,8 +92,8 @@ public:
       {
           if (rand() < RAND_MAX / (cur_node->subtree_size + 1))
           {
-              if (cur_node == root) {
-                  root = bst_root_insert(cur_node, key, data, is_inserted);
+              if (cur_node == super::root) {
+                  super::root = bst_root_insert(cur_node, key, data, is_inserted);
                   if (is_inserted) {
                       return true;
                   }
@@ -143,7 +143,9 @@ public:
           (*traversed_nodes.rbegin())->left = cur_node;
       }
 
-      for (std::vector<node *>::const_reverse_iterator r_iter = traversed_nodes.rbegin(); r_iter != traversed_nodes.rend(); ++r_iter)
+      for (typename std::vector<node *>::const_reverse_iterator r_iter = traversed_nodes.rbegin();
+            r_iter != traversed_nodes.rend();
+            ++r_iter)
       {
           (*r_iter)->subtree_size++;
       }
