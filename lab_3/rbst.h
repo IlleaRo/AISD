@@ -1,4 +1,5 @@
 #include "bst.h"
+#include <stack>
 
 template<class K, class T>
 class rbst : public bst<K, T>
@@ -71,6 +72,57 @@ class rbst : public bst<K, T>
       }
 
       return ptr_node;
+  }
+
+  node* bst_join(node* a, node* b) {
+      if (!a) {
+          return b;
+      }
+
+      if (!b) {
+          return a;
+      }
+
+      node* ret = nullptr;
+      node* parent = nullptr;
+      node* cur_a = a;
+      node* cur_b = b;
+
+      while (cur_a && cur_b) {
+          if (rand() / (RAND_MAX / (cur_a->subtree_size + cur_b->subtree_size + 1)) < cur_b->subtree_size) {
+              if (parent) {
+                  parent->right = cur_a;
+              }
+              else {
+                  ret = cur_a;
+              }
+
+              parent = cur_a;
+              cur_a = cur_a->right;
+          }
+          else {
+              if (parent) {
+                  parent->left = cur_b;
+              }
+              else {
+                  ret = cur_b;
+              }
+
+              parent = cur_b;
+              cur_b = cur_b->left;
+          }
+      }
+
+      if (cur_a) {
+          parent->right = cur_a;
+      }
+      else {
+          parent->left = cur_b;
+      }
+
+      ret->subtree_size = a->subtree_size + b->subtree_size + 1;
+
+      return ret;
   }
 
 public:
@@ -151,5 +203,67 @@ public:
       }
 
       return true;
+  }
+
+  virtual bool remove(K key) override {
+      if (!super::root) {
+          return false;
+      }
+
+      node *ptr_node = super::root;
+      std::stack<node*> traversed_nodes;
+      bool traversed_right;
+
+      while (ptr_node) {
+          if (key < ptr_node->key) {
+              traversed_nodes.push(ptr_node);
+
+              ptr_node = ptr_node->left;
+              traversed_right = false;
+              
+              continue;
+          }
+
+          if (key > ptr_node->key) {
+              traversed_nodes.push(ptr_node);
+
+              ptr_node = ptr_node->right;
+              traversed_right = true;
+
+              continue;
+          }
+
+          node* tmp = bst_join(ptr_node->left, ptr_node->right);
+
+
+          if (ptr_node == super::root) {
+              delete ptr_node;
+              super::root = tmp;
+
+              super::size--;
+              return true;
+          }
+
+          delete ptr_node;
+
+
+          if (traversed_right) {
+              traversed_nodes.top()->right = tmp;
+          }
+          else {
+              traversed_nodes.top()->left = tmp;
+          }
+
+          while (!traversed_nodes.empty()) {
+              node* top_node = traversed_nodes.top();
+              top_node->subtree_size--;
+              traversed_nodes.pop();
+          }
+
+          super::size--;
+          return true;
+      }
+
+      return false;
   }
 };
