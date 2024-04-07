@@ -42,44 +42,79 @@ class rbst : public bst<K, T>
       return new_top;
   }
 
-  node* root_insert(node* ptr_node, const K &key, const T &data)
-  {
-      if(!ptr_node)
-      {
-          node *root = new node(key, data);
-          return root;
+  node* bst_root_insert(node* ptr_node, K key, T data, bool& is_inserted) {
+      traverse_counter++;
+
+      if (!ptr_node) {
+          is_inserted = true;
+          return new node(key, data, 1);
       }
-      if(key < ptr_node->key)
-      {
-          ptr_node->left = root_insert(ptr_node->left, key, data);
-          return rotate_right(ptr_node);
+
+      if (ptr_node->key == key) {
+          is_inserted = false;
+          return ptr_node;
       }
-      else
-      {
-          ptr_node->right = root_insert(ptr_node->right, key, data);
+
+      if (key < ptr_node->key) {
+          ptr_node->left = bst_root_insert(ptr_node->left, key, data, is_inserted);
+          if (is_inserted) {
+              return rotate_right(ptr_node);
+          }
+
+          return ptr_node;
+      }
+
+      ptr_node->right = bst_root_insert(ptr_node->right, key, data, is_inserted);
+
+      if (is_inserted) {
           return rotate_left(ptr_node);
       }
+
+      return ptr_node;
   }
 
-  node *bst_insert(node *ptr_node, const K &key, const T &data, bool &is_inserted)
+public:
+
+  bool insert(const K key, const T data) override
   {
-      node *cur_node = ptr_node;
+      if (!root) {
+          root = new node(key, data, 1);
+          return true;
+      }
+
+
+      node *cur_node = root;
       bool traversed_right;
-      std::vector<node *> traversed_nodes = {};
+      bool is_inserted = false;
+      std::vector<node *> traversed_nodes;
 
       while (cur_node)
       {
           if (rand() < RAND_MAX / (cur_node->subtree_size + 1))
           {
-              ptr_node = root_insert(cur_node, key, data);
-              is_inserted = true;
-              return ptr_node;
+              if (cur_node == root) {
+                  root = bst_root_insert(cur_node, key, data, is_inserted);
+                  if (is_inserted) {
+                      return true;
+                  }
+
+                  return false;
+              }
+
+
+              cur_node = bst_root_insert(cur_node, key, data, is_inserted);
+
+              
+              if (!is_inserted) {
+                  return false;
+              }
+
+              break;
           }
 
           if (key == cur_node->key)
           {
-              is_inserted = false;
-              return ptr_node;
+              return false;
           }
 
           traversed_nodes.push_back(cur_node);
@@ -93,29 +128,26 @@ class rbst : public bst<K, T>
               cur_node = cur_node->right;
               traversed_right = true;
           }
-
       }
 
-      cur_node = new node(key, data);
-      cur_node->subtree_size = 1;
-      if (!traversed_nodes.empty()) {
-          if (traversed_right)
-          {
-              traversed_nodes[traversed_nodes.size() - 1]->right = cur_node;
-          }
-          else
-          {
-              traversed_nodes[traversed_nodes.size() - 1]->left = cur_node;
-          }
-          for (int i = 0; i < traversed_nodes.size(); i++)
-          {
-              traversed_nodes[i]->subtree_size++;
-          }
+      if (!cur_node) {
+          cur_node = new node(key, data, 1);
       }
-      else {
-          ptr_node = cur_node;
+
+      if (traversed_right)
+      {
+          (*traversed_nodes.rbegin())->right = cur_node;
       }
-      is_inserted = true;
-      return ptr_node;
+      else
+      {
+          (*traversed_nodes.rbegin())->left = cur_node;
+      }
+
+      for (std::vector<node *>::const_reverse_iterator r_iter = traversed_nodes.rbegin(); r_iter != traversed_nodes.rend(); ++r_iter)
+      {
+          (*r_iter)->subtree_size++;
+      }
+
+      return true;
   }
 };

@@ -21,6 +21,7 @@ class bst {
 
 
     node(K key, T data) : key(key), data(data), left(nullptr), right(nullptr), subtree_size(0) {};
+    node(K key, T data, unsigned int subtree_size) : key(key), data(data), left(nullptr), right(nullptr), subtree_size(subtree_size) {};
     node(K key, T data, node *left, node *right) : key(key), data(data), left(left), right(right), subtree_size(0) {};
   };
 
@@ -312,7 +313,7 @@ class bst {
   }
 
   /// Включение данных с заданным ключом
-  bool insert(const K key, const T data) {
+  virtual bool insert(const K key, const T data) {
       traverse_counter = 0;
 
       bool is_inserted = false;
