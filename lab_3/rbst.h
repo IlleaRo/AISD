@@ -87,7 +87,27 @@ class rbst : public bst<K, T>
       return ptr_node;
   }
 
+  bool check_subtree_sizes_node(node *ptr_node)
+  {
+      if (!ptr_node)
+          return true;
+
+      bool left_correct = check_subtree_sizes_node(ptr_node->left);
+      bool right_correct = check_subtree_sizes_node(ptr_node->right);
+
+      int expected_size = get_subtree_size(ptr_node->left) + get_subtree_size(ptr_node->right) + 1;
+      if (ptr_node->subtree_size != expected_size) {
+          return false;
+      }
+
+      return left_correct && right_correct;
+  }
+
  public:
+
+  bool check_subtree_sizes() {
+      return check_subtree_sizes_node(super::root);
+  }
 
   bool insert(const K key, const T data) override
   {
