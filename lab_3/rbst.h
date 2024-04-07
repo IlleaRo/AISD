@@ -74,7 +74,7 @@ class rbst : public bst<K, T>
       return ptr_node;
   }
 
-  node* bst_join(node* a, node* b) {
+  node* bst_join(node* a, node* b) { //fixme: скорее всего, я источник проблем при удалении.
       if (!a) {
           return b;
       }
@@ -83,46 +83,50 @@ class rbst : public bst<K, T>
           return a;
       }
 
-      node* ret = nullptr;
-      node* parent = nullptr;
+      node* ret = a;
+      bool is_first = true;
+      node* parent_a = nullptr;
+      node* parent_b = nullptr;
       node* cur_a = a;
       node* cur_b = b;
 
-      while (cur_a && cur_b) {
-          if (rand() / (RAND_MAX / (cur_a->subtree_size + cur_b->subtree_size + 1)) < cur_b->subtree_size) {
-              if (parent) {
-                  parent->right = cur_a;
+      while (true) {
+          if (rand() / (RAND_MAX / (cur_a->subtree_size + cur_b->subtree_size + 1)) < cur_a->subtree_size) {
+              if (!cur_a->right) {
+                  cur_a->right = cur_b;
+
+                  if (is_first) {
+                      return a;
+                  }
+
+                  return ret;
               }
-              else {
-                  ret = cur_a;
+              if (is_first) {
+                  ret = a;
+                  is_first = false;
               }
 
-              parent = cur_a;
               cur_a = cur_a->right;
           }
           else {
-              if (parent) {
-                  parent->left = cur_b;
-              }
-              else {
-                  ret = cur_b;
+              if (!cur_b->left) {
+                  cur_b->left = cur_a;
+
+                  if (is_first) {
+                      return b;
+                  }
+
+                  return ret;
               }
 
-              parent = cur_b;
+              if (is_first) {
+                  ret = b;
+                  is_first = false;
+              }
+
               cur_b = cur_b->left;
           }
       }
-
-      if (cur_a) {
-          parent->right = cur_a;
-      }
-      else {
-          parent->left = cur_b;
-      }
-
-      ret->subtree_size = a->subtree_size + b->subtree_size + 1;
-
-      return ret;
   }
 
 public:
@@ -205,7 +209,7 @@ public:
       return true;
   }
 
-  virtual bool remove(K key) override {
+  bool remove(K key) override {
       if (!super::root) {
           return false;
       }
