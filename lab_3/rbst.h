@@ -12,11 +12,11 @@ class rbst : public bst<K, T>
       return ptr_node ? ptr_node->subtree_size : 0;
   }
 
-  node* rotate_right(node* ptr_node)
+  node *rotate_right(node *ptr_node)
   {
-      node* new_top = ptr_node->left;
+      node *new_top = ptr_node->left;
 
-      if( !new_top ) return ptr_node;
+      if (!new_top) return ptr_node;
 
       ptr_node->left = new_top->right;
       new_top->right = ptr_node;
@@ -27,11 +27,11 @@ class rbst : public bst<K, T>
       return new_top;
   }
 
-  node* rotate_left(node* ptr_node)
+  node *rotate_left(node *ptr_node)
   {
-      node* new_top = ptr_node->right;
+      node *new_top = ptr_node->right;
 
-      if( !new_top ) return ptr_node;
+      if (!new_top) return ptr_node;
 
       ptr_node->right = new_top->left;
       new_top->left = ptr_node;
@@ -42,70 +42,85 @@ class rbst : public bst<K, T>
       return new_top;
   }
 
-  node* bst_root_insert(node* ptr_node, K key, T data, bool& is_inserted) {
-      super::traverse_counter++;
-
+  node *bst_root_insert(node *ptr_node, K key, T data, bool &is_inserted)
+  {
+      node *new_node;
+      node *cur_node;
+      node *parent_node;
       if (!ptr_node) {
           is_inserted = true;
           return new node(key, data, 1);
       }
 
-      if (ptr_node->key == key) {
-          is_inserted = false;
-          return ptr_node;
-      }
+      cur_node = ptr_node;
+      parent_node = nullptr;
 
-      if (key < ptr_node->key) {
-          ptr_node->left = bst_root_insert(ptr_node->left, key, data, is_inserted);
-          if (is_inserted) {
-              return rotate_right(ptr_node);
+      while (cur_node) {
+          if (cur_node->key == key) {
+              is_inserted = false;
+              return ptr_node;
           }
-
-          return ptr_node;
+          parent_node = cur_node;
+          if (key < cur_node->key) {
+              cur_node = cur_node->left;
+          } else {
+              cur_node = cur_node->right;
+          }
       }
 
-      ptr_node->right = bst_root_insert(ptr_node->right, key, data, is_inserted);
+      new_node = new node(key, data, 1);
 
-      if (is_inserted) {
+      if (key < parent_node->key) {
+          parent_node->left = new_node;
+      } else {
+          parent_node->right = new_node;
+      }
+
+      is_inserted = true;
+
+      if (is_inserted && parent_node->left == new_node) {
+          return rotate_right(ptr_node);
+      } else if (is_inserted && parent_node->right == new_node) {
           return rotate_left(ptr_node);
       }
 
       return ptr_node;
   }
 
-public:
+ public:
 
   bool insert(const K key, const T data) override
   {
-      if (!super::root) {
+      if (!super::root)
+      {
           super::root = new node(key, data, 1);
           return true;
       }
 
-
       node *cur_node = super::root;
       bool traversed_right;
-      bool is_inserted = false;
+      bool is_inserted;
       std::vector<node *> traversed_nodes;
 
       while (cur_node)
       {
           if (rand() < RAND_MAX / (cur_node->subtree_size + 1))
           {
-              if (cur_node == super::root) {
+              if (cur_node == super::root)
+              {
                   super::root = bst_root_insert(cur_node, key, data, is_inserted);
-                  if (is_inserted) {
+                  if (is_inserted)
+                  {
                       return true;
                   }
 
                   return false;
               }
 
-
               cur_node = bst_root_insert(cur_node, key, data, is_inserted);
 
-              
-              if (!is_inserted) {
+              if (!is_inserted)
+              {
                   return false;
               }
 
@@ -130,7 +145,8 @@ public:
           }
       }
 
-      if (!cur_node) {
+      if (!cur_node)
+      {
           cur_node = new node(key, data, 1);
       }
 
@@ -144,8 +160,8 @@ public:
       }
 
       for (typename std::vector<node *>::const_reverse_iterator r_iter = traversed_nodes.rbegin();
-            r_iter != traversed_nodes.rend();
-            ++r_iter)
+           r_iter != traversed_nodes.rend();
+           ++r_iter)
       {
           (*r_iter)->subtree_size++;
       }
