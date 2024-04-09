@@ -119,7 +119,7 @@ int main() {
                 cout<<"Ключ ---> ";
                 cin>>key;
 
-                cout<<tree.climbing_greater_node(key)<<"\nПросмотрено: "<<tree.get_traverse_counter();
+                cout<<tree.climbing_greater_node(key);
                 break;
             case 10:
                 iter = tree.begin();

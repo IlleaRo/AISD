@@ -4,7 +4,7 @@
 #include <iostream>
 #include <functional>
 
-#define USE_INSERT_IN_ROOT 0
+#define USE_INSERT_IN_ROOT 1
 
 template <class K, class T>
 class bst {
@@ -117,7 +117,7 @@ protected:
 #if USE_INSERT_IN_ROOT
     node *bst_root_insert(node *ptr_node, K key, T data, bool &is_inserted) {
 
-        auto left_rotate = [](node *_ptr_node) {
+        std::function<node *(node*)> left_rotate = [](node* _ptr_node) {
             node * tmp = _ptr_node->right;
             _ptr_node->right = tmp->left;
             tmp->left = _ptr_node;
@@ -125,7 +125,7 @@ protected:
             return tmp;
         };
 
-        auto right_rotate = [](node *_ptr_node) {
+        std::function<node *(node*)> right_rotate = [](node *_ptr_node) {
             node * tmp = _ptr_node->left;
             _ptr_node->left = tmp->right;
             tmp->right = _ptr_node;
@@ -307,20 +307,30 @@ protected:
     }
 
     // Рекурсивный поиск узла с большим заданного ключом
-    node *bst_find_greater_node(node* ptr_node, node** ptr_parrent, const K &key, bool &is_find) {
+    node *bst_find_greater_node(node* ptr_node, node** ptr_parent, const K &key) {
         traverse_counter++;
 
         if (!ptr_node) {
-            return ptr_node;
+            return nullptr;
         }
 
         if (ptr_node->key > key) {
-            is_find = true;
-            return ptr_node;
-        }
+            // Производим поиск узла с наименьшим значением, удовлетворяющим условию
+            node* tmp_parent = *ptr_parent; // Запоминаем родителя текущего узла
+            *ptr_parent = ptr_node;
 
-        *ptr_parrent = ptr_node;
-        return bst_find_greater_node(ptr_node->right, ptr_parrent, key, is_find);
+            node* tmp = bst_find_greater_node(ptr_node->left, ptr_parent, key);
+            if (tmp) {
+                return tmp;
+            }
+
+            *ptr_parent = tmp_parent;
+            return ptr_node; // Возвращаем текущий узел, как наиболее близкий
+        }
+        
+        // Если ключ текущего узла меньше заданного, продолжаем поиск
+        *ptr_parent = ptr_node;
+        return bst_find_greater_node(ptr_node->right, ptr_parent, key);
     }
 
 public:
@@ -400,12 +410,11 @@ public:
     Трудоёмкость операции – O(log n). */
     bool climbing_greater_node(const K key) {
         traverse_counter = 0;
-        bool is_find = false;
 
-        node *parrent = root;
-        node *tmp = bst_find_greater_node(root, &parrent, key, is_find);
+        node *parent = root;
+        node *tmp = bst_find_greater_node(root, &parent, key);
 
-        if (!is_find) {
+        if (!tmp) {
             return false;
         }
 
@@ -420,18 +429,23 @@ public:
         node * new_root = new node(_key, _data);
 #endif // !(USE_INSERT_IN_ROOT)
 
-        if (parrent->left == tmp) {
-            parrent->left = bst_remove(tmp, tmp->key, is_find);
+        bool flag;
+
+        if (parent->left == tmp) {
+            parent->left = bst_remove(tmp, tmp->key, flag);
         } else {
-            parrent->right = bst_remove(tmp, tmp->key, is_find);
+            parent->right = bst_remove(tmp, tmp->key, flag);
         }
 
 #if USE_INSERT_IN_ROOT
-        root = bst_root_insert(root, _key, _data, is_find);
+        root = bst_root_insert(root, _key, _data, flag);
 #else //USE_INSERT_IN_ROOT
-        new_root->left = root;
-        new_root->right = parrent->right;
-        parrent->right = nullptr;
+        if (_key > root->key) {
+            new_root->left = root;
+        }
+        else {
+            new_root->right = root;
+        }
         root = new_root;
 #endif //USE_INSERT_IN_ROOT
         return true;
