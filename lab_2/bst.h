@@ -74,6 +74,7 @@ protected:
         traverse_counter++;
 
         if (!ptr_node) {
+            is_deleted = false;
             return ptr_node;
         }
 
@@ -379,7 +380,7 @@ public:
     /// Удаление данных с заданным ключом
     bool remove(K key) {
         traverse_counter = 0;
-        bool is_deleted;
+        bool is_deleted = false;
 
         root = bst_remove(root, key, is_deleted);
 

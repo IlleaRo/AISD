@@ -85,7 +85,7 @@ int main() {
                         }
                     }
                 }catch (exception &e) {
-                    cout<<e.what();
+                    cout<<"Исключение";
                 }
 
                 exit_loop_5:
@@ -154,26 +154,23 @@ int main() {
                         }
                     }
                 } catch (exception &e) {
-                    cout<<e.what();
+                    cout<<"Исключение";
                 }
 
                 exit_loop_12:
                 break;
-
-            default:
-                cout<<"---> ";
             case 14:
                 try {
                     ++iter;
                 } catch (exception &e) {
-                    cout<<e.what();
+                    cout<<"Исключение";
                 }
                 break;
             case 15:
                 try {
                     --iter;
                 } catch (exception &e) {
-                    cout<<e.what();
+                    cout<<"Исключение";
                 }
                 break;
             case 16:
@@ -209,7 +206,7 @@ int main() {
                         }
                     }
                 } catch (exception &e) {
-                    cout<<e.what();
+                    cout<<"Исключение";
                 }
 
             exit_loop_17:
@@ -219,14 +216,14 @@ int main() {
                 try {
                     ++rev_iter;
                 } catch (exception &e) {
-                    cout<<e.what();
+                    cout<<"Исключение";
                 }
                 break;
             case 21:
                 try {
                     --rev_iter;
                 } catch (exception &e) {
-                    cout<<e.what();
+                    cout<<"Исключение";
                 }
                 break;
         }
