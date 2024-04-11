@@ -8,6 +8,8 @@
 
 template <class K, class T>
 class bst {
+ private:
+  unsigned int size; // Количество элементов
  protected:
   unsigned long traverse_counter;
   /// Класс узла
@@ -26,7 +28,6 @@ class bst {
   };
 
   node *root; // Корень дерева
-  unsigned int size; // Количество элементов
 
   virtual void bst_show(node *ptr_node, const unsigned int level) {
       if (!ptr_node) {
@@ -289,7 +290,7 @@ class bst {
   }
 
   /// Опрос размера дерева
-  [[nodiscard]] unsigned int get_size() const {
+  [[nodiscard]] virtual unsigned int get_size() const {
       return size;
   }
 

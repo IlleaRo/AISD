@@ -12,6 +12,10 @@ class rbst : public bst<K, T>
       return ptr_node ? ptr_node->subtree_size : 0;
   }
 
+  [[nodiscard]] virtual unsigned int get_size() {
+      return super::root ? get_subtree_size(super::root) : 0;
+  }
+
   node *rotate_right(node *ptr_node)
   {
       node *new_top = ptr_node->left;
