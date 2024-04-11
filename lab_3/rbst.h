@@ -99,13 +99,27 @@ class rbst : public bst<K, T>
 
       while (!traversed_nodes.empty())
       {
-          parent_node = traversed_nodes.top();
+          cur_node = traversed_nodes.top();
           traversed_nodes.pop();
+          parent_node = traversed_nodes.empty() ? nullptr : traversed_nodes.top();
 
           if (went_right) {
-              parent_node->right = rotate_left(parent_node->right);
+              cur_node = rotate_left(cur_node);
           } else {
-              parent_node->left = rotate_right(parent_node->left);
+              cur_node = rotate_right(cur_node);
+          }
+
+          if (parent_node)
+          {
+              if (went_right) {
+                  parent_node->right = cur_node;
+              } else {
+                  parent_node->left = cur_node;
+              }
+          }
+          else
+          {
+              return cur_node;
           }
 
           if (traversed_nodes.empty()) {
@@ -113,7 +127,7 @@ class rbst : public bst<K, T>
               break;
           }
 
-          if (traversed_nodes.top()->left == parent_node) {
+          if (traversed_nodes.top()->left == cur_node) {
               went_right = false;
           } else {
               went_right = true;
@@ -241,7 +255,7 @@ public:
 
       while (cur_node)
       {
-          if (1||rand() < RAND_MAX / (cur_node->subtree_size + 1))
+          if (rand() < RAND_MAX / (cur_node->subtree_size + 1))
           {
               if (cur_node == super::root)
               {
