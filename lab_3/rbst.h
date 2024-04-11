@@ -251,7 +251,7 @@ public:
       node *cur_node = super::root;
       bool traversed_right;
       bool is_inserted;
-      std::vector<node *> traversed_nodes;
+      std::stack<node *> traversed_nodes;
 
       while (cur_node)
       {
@@ -284,7 +284,7 @@ public:
               return false;
           }
 
-          traversed_nodes.push_back(cur_node);
+          traversed_nodes.push(cur_node);
           if (key < cur_node->key)
           {
               cur_node = cur_node->left;
@@ -300,19 +300,24 @@ public:
       if (!cur_node)
       {
           cur_node = new node(key, data, 1);
-          if (traversed_right) {
-              (*traversed_nodes.rbegin())->right = cur_node;
-          } else {
-              (*traversed_nodes.rbegin())->left = cur_node;
+
+          if (traversed_right)
+          {
+              traversed_nodes.top()->right = cur_node;
+          }
+          else
+          {
+              traversed_nodes.top()->left = cur_node;
           }
       }
 
+
+
 _exit:
-      for (typename std::vector<node *>::const_reverse_iterator r_iter = traversed_nodes.rbegin();
-           r_iter != traversed_nodes.rend();
-           ++r_iter)
+      while (!traversed_nodes.empty())
       {
-          (*r_iter)->subtree_size++;
+          traversed_nodes.top()->subtree_size++;
+          traversed_nodes.pop();
       }
 
       return true;
