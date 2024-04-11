@@ -53,7 +53,10 @@ class rbst : public bst<K, T>
     node *bst_root_insert(node *ptr_node, K key, T data, bool &is_inserted)
     {
         if (!ptr_node)
+        {
+            is_inserted = true;
             return new node(key, data, 1);
+        }
         if (key < ptr_node->key)
         {
             ptr_node->left = bst_root_insert(ptr_node->left, key, data, is_inserted);
