@@ -85,8 +85,8 @@ class rbst : public bst<K, T>
 
       node* ret = a;
       bool is_first = true;
-      node* parent_a = nullptr;
-      node* parent_b = nullptr;
+      node *parent = nullptr;
+      bool is_right = false;
       node* cur_a = a;
       node* cur_b = b;
 
@@ -103,12 +103,22 @@ class rbst : public bst<K, T>
               }
               if (is_first) {
                   ret = a;
+                  parent = a;
+
                   is_first = false;
+                  continue;
               }
 
+              if (is_right) {
+                  parent->right = cur_a;
+              } else {
+                  parent->left = cur_a;
+              }
+
+              parent = cur_a;
+              is_right = true;
               cur_a = cur_a->right;
-          }
-          else {
+          } else {
               if (!cur_b->left) {
                   cur_b->left = cur_a;
 
@@ -121,8 +131,19 @@ class rbst : public bst<K, T>
 
               if (is_first) {
                   ret = b;
+                  parent = b;
+
                   is_first = false;
+                  continue;
               }
+              if (is_right) {
+                  parent->right = cur_b;
+              } else {
+                  parent->left = cur_b;
+              }
+
+              parent = cur_b;
+              is_right = false;
 
               cur_b = cur_b->left;
           }
