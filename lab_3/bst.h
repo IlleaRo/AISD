@@ -329,7 +329,7 @@ class bst {
   }
 
   /// Удаление данных с заданным ключом
-  bool remove(K key) {
+  virtual bool remove(K key) {
       traverse_counter = 0;
       bool is_deleted;
 
