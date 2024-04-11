@@ -151,7 +151,7 @@ public:
                   return false;
               }
 
-              goto _exit;
+              break;
           }
 
           if (key == cur_node->key)
@@ -175,14 +175,14 @@ public:
       if (!cur_node)
       {
           cur_node = new node(key, data, 1);
-          if (traversed_right) {
-              (*traversed_nodes.rbegin())->right = cur_node;
-          } else {
-              (*traversed_nodes.rbegin())->left = cur_node;
-          }
       }
 
-_exit:
+      if (traversed_right) {
+          (*traversed_nodes.rbegin())->right = cur_node;
+      } else {
+          (*traversed_nodes.rbegin())->left = cur_node;
+      }
+
       for (typename std::vector<node *>::const_reverse_iterator r_iter = traversed_nodes.rbegin();
            r_iter != traversed_nodes.rend();
            ++r_iter)
