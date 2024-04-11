@@ -284,7 +284,6 @@ public:
               delete ptr_node;
               super::root = tmp;
 
-              super::size--;
               return true;
           }
 
@@ -304,7 +303,6 @@ public:
               traversed_nodes.pop();
           }
 
-          super::size--;
           return true;
       }
 
