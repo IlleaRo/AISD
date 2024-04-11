@@ -101,7 +101,7 @@ node *bst_join(node *a, node *b) {
           return a;
       }
 
-      b->left = bst_join(b->left, b);
+      b->left = bst_join(a, b->left);
       fix_size(b);
       return b;
   }
