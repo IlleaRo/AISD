@@ -7,18 +7,16 @@ class rbst : public bst<K, T>
   typedef class bst<K, T> super;
   typedef typename super::node node;
  protected:
-  unsigned int fix_size(node* p) {
-      if (!p) {
-          return 0;
-      }
 
-      return get_subtree_size(p->left) + get_subtree_size(p->right) + 1;
-  }
 
   int get_subtree_size(node *ptr_node)
   {
       return ptr_node ? ptr_node->subtree_size : 0;
   }
+
+    void fix_size(node* p) {
+        p->subtree_size = get_subtree_size(p->left)+get_subtree_size(p->right)+1;
+    }
 
   node *rotate_right(node *ptr_node)
   {
@@ -29,9 +27,9 @@ class rbst : public bst<K, T>
       ptr_node->left = new_top->right;
       new_top->right = ptr_node;
 
-      if (new_top->left) new_top->left->subtree_size = fix_size(new_top->left);
-      if (new_top->right) new_top->right->subtree_size = fix_size(new_top->right);
-      new_top->subtree_size = fix_size(new_top);
+      if (new_top->left) fix_size(new_top->left);
+      if (new_top->right) fix_size(new_top->right);
+      fix_size(new_top);
 
       return new_top;
   }
@@ -45,99 +43,29 @@ class rbst : public bst<K, T>
       ptr_node->right = new_top->left;
       new_top->left = ptr_node;
 
-      if (new_top->left) new_top->left->subtree_size = fix_size(new_top->left);
-      if (new_top->right) new_top->right->subtree_size = fix_size(new_top->right);
-      new_top->subtree_size = fix_size(new_top);
+      if (new_top->left) fix_size(new_top->left);
+      if (new_top->right) fix_size(new_top->right);
+      fix_size(new_top);
 
       return new_top;
   }
 
-  node *bst_root_insert(node *ptr_node, K key, T data, bool &is_inserted)
-  {
-      node *new_node;
-      node *cur_node;
-      node *parent_node;
-      bool went_right;
-
-      if (!ptr_node) {
-          is_inserted = true;
-          return new node(key, data, 1);
-      }
-      std::stack<node *> traversed_nodes;
-
-      cur_node = ptr_node;
-      parent_node = nullptr;
-
-      while (cur_node) {
-          if (cur_node->key == key) {
-              is_inserted = false;
-              return ptr_node;
-          }
-          traversed_nodes.push(cur_node);
-          parent_node = cur_node;
-          if (key < cur_node->key) {
-              cur_node = cur_node->left;
-          } else {
-              cur_node = cur_node->right;
-          }
-      }
-
-      new_node = new node(key, data, 1);
-
-      if (key < parent_node->key) {
-          parent_node->left = new_node;
-          went_right = false;
-      } else {
-          parent_node->right = new_node;
-          went_right = true;
-      }
-
-      is_inserted = true;
-
-      cur_node = new_node;
-
-
-      while (!traversed_nodes.empty())
-      {
-          cur_node = traversed_nodes.top();
-          traversed_nodes.pop();
-          parent_node = traversed_nodes.empty() ? nullptr : traversed_nodes.top();
-
-          if (went_right) {
-              cur_node = rotate_left(cur_node);
-          } else {
-              cur_node = rotate_right(cur_node);
-          }
-
-          if (parent_node)
-          {
-              if (went_right) {
-                  parent_node->right = cur_node;
-              } else {
-                  parent_node->left = cur_node;
-              }
-          }
-          else
-          {
-              return cur_node;
-          }
-
-          if (traversed_nodes.empty()) {
-
-              break;
-          }
-
-          if (traversed_nodes.top()->left == cur_node) {
-              went_right = false;
-          } else {
-              went_right = true;
-          }
-
-          // TODO: ПОМОГИТЕ
-      }
-
-      return new_node;
-  }
+    node *bst_root_insert(node *ptr_node, K key, T data, bool &is_inserted)
+    {
+        if (!ptr_node)
+            return new node(key, data, 1);
+        if (key < ptr_node->key)
+        {
+            ptr_node->left = bst_root_insert(ptr_node->left, key, data, is_inserted);
+            ptr_node = rotate_right(ptr_node);
+        }
+        else
+        {
+            ptr_node->right = bst_root_insert(ptr_node->right, key, data, is_inserted);
+            ptr_node = rotate_left(ptr_node);
+        }
+        return ptr_node;
+    }
 
   bool check_subtree_sizes_node(node *ptr_node)
   {
@@ -155,7 +83,7 @@ class rbst : public bst<K, T>
       return left_correct && right_correct;
   }
 
-  node* bst_join(node* a, node* b) { //fixme: скорее всего, я источник проблем при удалении.
+node *bst_join(node *a, node *b) {
       if (!a) {
           return b;
       }
@@ -164,71 +92,15 @@ class rbst : public bst<K, T>
           return a;
       }
 
-      node* ret = a;
-      bool is_first = true;
-      node *parent = nullptr;
-      bool is_right = false;
-      node* cur_a = a;
-      node* cur_b = b;
-
-      while (true) {
-          if (rand() / (RAND_MAX / (cur_a->subtree_size + cur_b->subtree_size + 1)) < cur_a->subtree_size) {
-              if (!cur_a->right) {
-                  cur_a->right = cur_b;
-
-                  if (is_first) {
-                      return a;
-                  }
-
-                  return ret;
-              }
-              if (is_first) {
-                  ret = a;
-                  parent = a;
-
-                  is_first = false;
-                  continue;
-              }
-
-              if (is_right) {
-                  parent->right = cur_a;
-              } else {
-                  parent->left = cur_a;
-              }
-
-              parent = cur_a;
-              is_right = true;
-              cur_a = cur_a->right;
-          } else {
-              if (!cur_b->left) {
-                  cur_b->left = cur_a;
-
-                  if (is_first) {
-                      return b;
-                  }
-
-                  return ret;
-              }
-
-              if (is_first) {
-                  ret = b;
-                  parent = b;
-
-                  is_first = false;
-                  continue;
-              }
-              if (is_right) {
-                  parent->right = cur_b;
-              } else {
-                  parent->left = cur_b;
-              }
-
-              parent = cur_b;
-              is_right = false;
-
-              cur_b = cur_b->left;
-          }
+      if (rand() / (RAND_MAX / (a->subtree_size + b->subtree_size + 1)) < a->subtree_size) {
+          a->right = bst_join(a->right, b);
+          fix_size(a);
+          return a;
       }
+
+      b->left = bst_join(b->left, b);
+      fix_size(b);
+      return b;
   }
 
 public:
@@ -347,8 +219,6 @@ _exit:
           }
 
           node* tmp = bst_join(ptr_node->left, ptr_node->right);
-
-          fix_size(tmp);
 
           if (ptr_node == super::root) {
               delete ptr_node;

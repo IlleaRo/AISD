@@ -10,15 +10,25 @@ int main() {
     rbst<KEY_TYPE, DATA_TYPE> tree;
 
     tree.insert(50, 50);
+    cout<<tree<<"\n\n";
     tree.insert(30, 30);
+    cout<<tree<<"\n\n";
     tree.insert(10, 10);
+    cout<<tree<<"\n\n";
     tree.insert(40, 40);
+    cout<<tree<<"\n\n";
     tree.insert(20, 20);
+    cout<<tree<<"\n\n";
     tree.insert(45, 45);
+    cout<<tree<<"\n\n";
     tree.insert(70, 70);
+    cout<<tree<<"\n\n";
     tree.insert(60, 60);
+    cout<<tree<<"\n\n";
     tree.insert(65, 65);
+    cout<<tree<<"\n\n";
     tree.insert(80, 80);
+    cout<<tree<<"\n\n";
 
     rbst<KEY_TYPE, DATA_TYPE>::iterator iter = tree.begin();
     rbst<KEY_TYPE, DATA_TYPE>::reverse_iterator rev_iter = tree.rbegin();

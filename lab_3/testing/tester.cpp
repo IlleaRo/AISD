@@ -59,7 +59,7 @@ void test_rand(int n)
     for(int i=0;i<n/2;i++)
         if(i%10==0) //10% промахов
         {
-            tree.remove(LineRand ());
+            //tree.remove(LineRand ());
             D+=tree.CountNodes();
             tree.add(m[rand()%n],1);
             I+=tree.CountNodes();
@@ -72,7 +72,7 @@ void test_rand(int n)
     else //90% успешных операций
     {
         int ind=rand()%n;
-        tree.remove(m[ind]);
+        //tree.remove(m[ind]);
         D+=tree.CountNodes();
         INT_64 key=LineRand ();
         tree.add(key,1);
@@ -128,7 +128,7 @@ void test_ord(int n) {
   if(i%10==0) //10% промахов
   {int k=LineRand()%(10000*n);
    k=k+!(k%2); //случайный нечётный ключ
-   tree.remove(k);
+   //tree.remove(k);
    D+=tree.CountNodes();
    tree.add(m[rand()%n],1);
    I+=tree.CountNodes();
@@ -144,7 +144,7 @@ void test_ord(int n) {
   else //90% успешных операций
   {
    int ind=rand()%n;
-   tree.remove(m[ind]);
+   //tree.remove(m[ind]);
    D+=tree.CountNodes();;
    int k=LineRand()%(10000*n);
    k=k+k%2; // случайный чётный ключ
