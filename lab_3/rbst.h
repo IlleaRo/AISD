@@ -7,6 +7,13 @@ class rbst : public bst<K, T>
   typedef class bst<K, T> super;
   typedef typename super::node node;
  protected:
+  unsigned int fix_size(node* p) {
+      if (!p) {
+          return 0;
+      }
+
+      return (p->subtree_size = fixsize(p->left) + fixsize(p->right) + 1);
+  }
 
   int get_subtree_size(node *ptr_node)
   {
@@ -260,6 +267,7 @@ public:
 
           node* tmp = bst_join(ptr_node->left, ptr_node->right);
 
+          fix_size(tmp);
 
           if (ptr_node == super::root) {
               delete ptr_node;
