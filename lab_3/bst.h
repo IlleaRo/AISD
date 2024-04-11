@@ -290,7 +290,7 @@ class bst {
   }
 
   /// Опрос размера дерева
-  [[nodiscard]] virtual unsigned int get_size() const {
+  [[nodiscard]] virtual unsigned int get_size() {
       return size;
   }
 
