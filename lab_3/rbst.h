@@ -95,8 +95,30 @@ class rbst : public bst<K, T>
       is_inserted = true;
 
       cur_node = new_node;
+
+
       while (!traversed_nodes.empty())
       {
+          parent_node = traversed_nodes.top();
+          traversed_nodes.pop();
+
+          if (went_right) {
+              parent_node->right = rotate_left(parent_node->right);
+          } else {
+              parent_node->left = rotate_right(parent_node->left);
+          }
+
+          if (traversed_nodes.empty()) {
+
+              break;
+          }
+
+          if (traversed_nodes.top()->left == parent_node) {
+              went_right = false;
+          } else {
+              went_right = true;
+          }
+
           // TODO: ПОМОГИТЕ
       }
 
