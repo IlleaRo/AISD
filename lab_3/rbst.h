@@ -12,7 +12,7 @@ class rbst : public bst<K, T>
           return 0;
       }
 
-      return (p->subtree_size = fixsize(p->left) + fixsize(p->right) + 1);
+      return get_subtree_size(p->left) + get_subtree_size(p->right) + 1;
   }
 
   int get_subtree_size(node *ptr_node)
@@ -28,9 +28,10 @@ class rbst : public bst<K, T>
 
       ptr_node->left = new_top->right;
       new_top->right = ptr_node;
-      new_top->subtree_size = ptr_node->subtree_size;
 
-      ptr_node->subtree_size = get_subtree_size(ptr_node->left) + get_subtree_size(ptr_node->right) + 1;
+      if (new_top->left) new_top->left->subtree_size = fix_size(new_top->left);
+      if (new_top->right) new_top->right->subtree_size = fix_size(new_top->right);
+      new_top->subtree_size = fix_size(new_top);
 
       return new_top;
   }
@@ -43,9 +44,10 @@ class rbst : public bst<K, T>
 
       ptr_node->right = new_top->left;
       new_top->left = ptr_node;
-      new_top->subtree_size = ptr_node->subtree_size;
 
-      ptr_node->subtree_size = get_subtree_size(ptr_node->left) + get_subtree_size(ptr_node->right) + 1;
+      if (new_top->left) new_top->left->subtree_size = fix_size(new_top->left);
+      if (new_top->right) new_top->right->subtree_size = fix_size(new_top->right);
+      new_top->subtree_size = fix_size(new_top);
 
       return new_top;
   }
@@ -55,10 +57,13 @@ class rbst : public bst<K, T>
       node *new_node;
       node *cur_node;
       node *parent_node;
+      bool went_right;
+
       if (!ptr_node) {
           is_inserted = true;
           return new node(key, data, 1);
       }
+      std::stack<node *> traversed_nodes;
 
       cur_node = ptr_node;
       parent_node = nullptr;
@@ -68,6 +73,7 @@ class rbst : public bst<K, T>
               is_inserted = false;
               return ptr_node;
           }
+          traversed_nodes.push(cur_node);
           parent_node = cur_node;
           if (key < cur_node->key) {
               cur_node = cur_node->left;
@@ -80,19 +86,21 @@ class rbst : public bst<K, T>
 
       if (key < parent_node->key) {
           parent_node->left = new_node;
+          went_right = false;
       } else {
           parent_node->right = new_node;
+          went_right = true;
       }
 
       is_inserted = true;
 
-      if (is_inserted && parent_node->left == new_node) {
-          return rotate_right(ptr_node);
-      } else if (is_inserted && parent_node->right == new_node) {
-          return rotate_left(ptr_node);
+      cur_node = new_node;
+      while (!traversed_nodes.empty())
+      {
+          // TODO: ПОМОГИТЕ
       }
 
-      return ptr_node;
+      return new_node;
   }
 
   bool check_subtree_sizes_node(node *ptr_node)
@@ -211,11 +219,12 @@ public:
 
       while (cur_node)
       {
-          if (rand() < RAND_MAX / (cur_node->subtree_size + 1))
+          if (1||rand() < RAND_MAX / (cur_node->subtree_size + 1))
           {
               if (cur_node == super::root)
               {
                   super::root = bst_root_insert(cur_node, key, data, is_inserted);
+
                   if (is_inserted)
                   {
                       return true;
