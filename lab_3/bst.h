@@ -362,8 +362,8 @@ public:
     }
 
     /// Проверка дерева на пустоту
-    [[nodiscard]] bool is_empty() const {
-        return size == 0;
+    [[nodiscard]] bool is_empty() {
+        return !get_size();
     }
 
     /// Доступ по чтению/записи к данным по ключу
