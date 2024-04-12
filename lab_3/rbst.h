@@ -163,6 +163,7 @@ public:
 
   bool insert(const K key, const T data) override
   {
+      super::traverse_counter = 0;
       if (!super::root)
       {
           super::root = new node(key, data, 1);
@@ -176,6 +177,7 @@ public:
 
       while (cur_node)
       {
+          super::traverse_counter++;
           if (rand() < RAND_MAX / (cur_node->subtree_size + 1))
           {
               if (cur_node == super::root)
@@ -239,6 +241,7 @@ _exit:
   }
 
   bool remove(K key) override {
+      super::traverse_counter = 0;
       if (!super::root) {
           return false;
       }
@@ -248,6 +251,7 @@ _exit:
       bool traversed_right;
 
       while (ptr_node) {
+          super::traverse_counter++;
           if (key < ptr_node->key) {
               traversed_nodes.push(ptr_node);
 
