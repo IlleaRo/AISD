@@ -153,8 +153,7 @@ void test_ord(int n) {
     //установка первого случайного числа
     sRand();
     //генерация потока операций, 10% - промахи операций
-    for (int i = 0; i < n / 2; i++)
-    {
+    for (int i = 0; i < n / 2; i++) {
         if (i % 10 == 0) //10% промахов
         {
             int k = LineRand() % (10000 * n);
@@ -173,16 +172,15 @@ void test_ord(int n) {
                 tree1.getItem(k);
                 S1 += tree1.CountNodes();
             }
-            //обработка исключения при ошибке операции поиска
+                //обработка исключения при ошибке операции поиска
             catch (int) { S1 += tree1.CountNodes(); }
             try {
                 tree2.getItem(k);
                 S2 += tree2.CountNodes();
             }
-            //обработка исключения при ошибке операции поиска
+                //обработка исключения при ошибке операции поиска
             catch (int) { S2 += tree2.CountNodes(); }
-        }
-        else //90% успешных операций
+        } else //90% успешных операций
         {
             int ind = rand() % n;
             tree1.remove(m[ind]);
@@ -200,16 +198,16 @@ void test_ord(int n) {
                 tree1.getItem(m[rand() % n]);
                 S1 += tree1.CountNodes();;
             }
-            //обработка исключения при ошибке операции поиска
+                //обработка исключения при ошибке операции поиска
             catch (int) { S1 += tree1.CountNodes(); }
+            try {
+                tree2.getItem(m[rand() % n]);
+                S2 += tree2.CountNodes();
+            }
+                //обработка исключения при ошибке операции поиска
+            catch (int) { S2 += tree2.CountNodes(); }
         }
-
-        try {
-            tree2.getItem(m[rand() % n]);
-            S2 += tree2.CountNodes();
-        }
-        //обработка исключения при ошибке операции поиска
-        catch (int) { S2 += tree2.CountNodes(); }
+    }
         //вывод результатов:
         // вывод размера дерева после теста
         cout << "items count:" << tree1.Size() << " / " << tree2.Size() << endl;
@@ -223,7 +221,7 @@ void test_ord(int n) {
         cout << "Count search: " << S1 / (n / 2) << " / " << S2 / (n / 2) << endl;
         //освобождение памяти массива m[]
         delete[] m;
-    } //конец теста
+     //конец теста
 }
 
 int main(int argc, char *argv[]) {
