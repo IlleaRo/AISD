@@ -12,7 +12,7 @@ class rbst : public bst<K, T>
           return 0;
       }
 
-      return get_subtree_size(p->left) + get_subtree_size(p->right) + 1;
+      return (p->subtree_size = fix_size(p->left) + fix_size(p->right) + 1);
   }
 
   int get_subtree_size(node *ptr_node)
@@ -29,10 +29,6 @@ class rbst : public bst<K, T>
       ptr_node->left = new_top->right;
       new_top->right = ptr_node;
 
-      if (new_top->left) new_top->left->subtree_size = fix_size(new_top->left);
-      if (new_top->right) new_top->right->subtree_size = fix_size(new_top->right);
-      new_top->subtree_size = fix_size(new_top);
-
       return new_top;
   }
 
@@ -44,10 +40,6 @@ class rbst : public bst<K, T>
 
       ptr_node->right = new_top->left;
       new_top->left = ptr_node;
-
-      if (new_top->left) new_top->left->subtree_size = fix_size(new_top->left);
-      if (new_top->right) new_top->right->subtree_size = fix_size(new_top->right);
-      new_top->subtree_size = fix_size(new_top);
 
       return new_top;
   }
@@ -99,44 +91,29 @@ class rbst : public bst<K, T>
 
       while (!traversed_nodes.empty())
       {
-          cur_node = traversed_nodes.top();
+          parent_node = traversed_nodes.top();
           traversed_nodes.pop();
-          parent_node = traversed_nodes.empty() ? nullptr : traversed_nodes.top();
 
-          if (went_right) {
-              cur_node = rotate_left(cur_node);
-          } else {
-              cur_node = rotate_right(cur_node);
-          }
-
-          if (parent_node)
-          {
-              if (went_right) {
-                  parent_node->right = cur_node;
-              } else {
-                  parent_node->left = cur_node;
-              }
-          }
-          else
-          {
-              return cur_node;
-          }
-
-          if (traversed_nodes.empty()) {
-
-              break;
-          }
-
-          if (traversed_nodes.top()->left == cur_node) {
-              went_right = false;
-          } else {
+          if(parent_node->key < cur_node->key) {
+              parent_node->right = went_right ? rotate_left(cur_node) : cur_node;
               went_right = true;
+          } else {
+              parent_node->left = !went_right ? rotate_right(cur_node) : cur_node;
+              went_right = false;
           }
 
-          // TODO: ПОМОГИТЕ
+          cur_node = parent_node;
       }
-
-      return new_node;
+      if (went_right)
+      {
+          cur_node = rotate_left(cur_node);
+      }
+      else
+      {
+          cur_node = rotate_right(cur_node);
+      }
+      fix_size(cur_node);
+      return cur_node;
   }
 
   bool check_subtree_sizes_node(node *ptr_node)
@@ -297,23 +274,17 @@ public:
           }
       }
 
-      if (!cur_node)
-      {
-          cur_node = new node(key, data, 1);
-
-          if (traversed_right)
-          {
-              traversed_nodes.top()->right = cur_node;
-          }
-          else
-          {
-              traversed_nodes.top()->left = cur_node;
-          }
-      }
-
-
+      cur_node = new node(key, data, 1);
 
 _exit:
+      if (traversed_right)
+      {
+          traversed_nodes.top()->right = cur_node;
+      }
+      else
+      {
+          traversed_nodes.top()->left = cur_node;
+      }
       while (!traversed_nodes.empty())
       {
           traversed_nodes.top()->subtree_size++;
