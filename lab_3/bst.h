@@ -38,7 +38,7 @@ protected:
         for (int i = 0; i < level * 3; i++) {
             std::cout<<" ";
         }
-        std::cout<<ptr_node->key<<std::endl;
+        std::cout<<ptr_node->key << "(" << ptr_node->subtree_size << ")" <<std::endl;
 
         bst_show(ptr_node->left, level + 1);
     }
