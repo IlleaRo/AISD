@@ -132,7 +132,7 @@ class rbst : public bst<K, T>
       return left_correct && right_correct;
   }
 
-  node* bst_join(node* a, node* b) { //fixme: скорее всего, я источник проблем при удалении.
+  node* bst_join(node* a, node* b) {
       if (!a) {
           return b;
       }
@@ -141,71 +141,15 @@ class rbst : public bst<K, T>
           return a;
       }
 
-      node* ret = a;
-      bool is_first = true;
-      node *parent = nullptr;
-      bool is_right = false;
-      node* cur_a = a;
-      node* cur_b = b;
-
-      while (true) {
-          if (rand() / (RAND_MAX / (cur_a->subtree_size + cur_b->subtree_size + 1)) < cur_a->subtree_size) {
-              if (!cur_a->right) {
-                  cur_a->right = cur_b;
-
-                  if (is_first) {
-                      return a;
-                  }
-
-                  return ret;
-              }
-              if (is_first) {
-                  ret = a;
-                  parent = a;
-
-                  is_first = false;
-                  continue;
-              }
-
-              if (is_right) {
-                  parent->right = cur_a;
-              } else {
-                  parent->left = cur_a;
-              }
-
-              parent = cur_a;
-              is_right = true;
-              cur_a = cur_a->right;
-          } else {
-              if (!cur_b->left) {
-                  cur_b->left = cur_a;
-
-                  if (is_first) {
-                      return b;
-                  }
-
-                  return ret;
-              }
-
-              if (is_first) {
-                  ret = b;
-                  parent = b;
-
-                  is_first = false;
-                  continue;
-              }
-              if (is_right) {
-                  parent->right = cur_b;
-              } else {
-                  parent->left = cur_b;
-              }
-
-              parent = cur_b;
-              is_right = false;
-
-              cur_b = cur_b->left;
-          }
+      if (rand() / (RAND_MAX / (a->subtree_size + b->subtree_size + 1)) < a->subtree_size) {
+          a->right = bst_join(a->right, b);
+          fix_size(a);
+          return a;
       }
+
+      b->left = bst_join(a, b->left);
+      fix_size(b);
+      return b;
   }
 
 public:
