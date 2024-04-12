@@ -3,7 +3,8 @@
 #include <iostream> 
 #include "../rbst.h"
 
-#define BST rbst
+#define BST bst
+#define RND_Tree rbst
 #define add insert
 #define Size get_size
 #define getItem get_by_key
@@ -101,86 +102,108 @@ void test_rand(int n)
 }
 
 void test_ord(int n) {
- //создание дерева для 64 – разрядных ключей типа INT_64
- BST< INT_64,int > tree;
- //массив для ключей, которые присутствуют в дереве
- INT_64* m=new INT_64 [n];
- //заполнение дерева и массива элементами
- // с возрастающими чётными ключами
- //на интервале [0, 10000, 20000, ... ,10000*n]
- for(int i=0; i<n; i++) {
-  m[i]= i*10000;
-  tree.add(m[i],1);
- }
- //вывод размера дерева до теста
- cout<<"items count:"<<tree.Size()<<endl;
- //обнуление счётчиков трудоёмкости вставки,
- // удаления и поиска
- double I=0;
- double D=0;
- double S=0;
+    //создание дерева для 64 – разрядных ключей типа INT_64
+    BST< INT_64, int > tree1; RND_Tree< INT_64, int > tree2;
+    //массив для ключей, которые присутствуют в дереве
+    INT_64* m = new INT_64[n];
+    //заполнение дерева и массива элементами
+    // с возрастающими чётными ключами
+    //на интервале [0, 10000, 20000, ... ,10000*n]
+    for (int i = 0; i < n; i++) {
+        m[i] = i * 10000;
+        tree1.add(m[i], 1);
+        tree2.add(m[i], 1);
+    }
+    //вывод размера дерева до теста
+    cout << "items count:" << tree1.Size() << " / " << tree2.Size() << endl;
+    //обнуление счётчиков трудоёмкости вставки,
+    // удаления и поиска
+    double I1 = 0, I2 = 0;
+    double D1 = 0, D2 = 0;
+    double S1 = 0, S2 = 0;
 
- //установка первого случайного числа
- sRand ();
- //генерация потока операций, 10% - промахи операций
- for(int i=0;i<n/2;i++)
- {
-  if(i%10==0) //10% промахов
-  {int k=LineRand()%(10000*n);
-   k=k+!(k%2); //случайный нечётный ключ
-   tree.remove(k);
-   D+=tree.CountNodes();
-   tree.add(m[rand()%n],1);
-   I+=tree.CountNodes();
-   k=LineRand()%(10000*n);
-   k=k+!(k%2); // случайный нечётный ключ
-   try{
-    tree.getItem(k);
-    S+=tree.CountNodes();
-   }
-   //обработка исключения при ошибке операции поиска
-   catch(int){S+=tree.CountNodes();}
-  }
-  else //90% успешных операций
-  {
-   int ind=rand()%n;
-   tree.remove(m[ind]);
-   D+=tree.CountNodes();;
-   int k=LineRand()%(10000*n);
-   k=k+k%2; // случайный чётный ключ
-   tree.add(k,1);
-   I+=tree.CountNodes();;
-   m[ind]=k;
-   try{
-    tree.getItem(m[rand()%n]);
-    S+=tree.CountNodes();;
-   }
-   //обработка исключения при ошибке операции поиска
-   catch(int){S+=tree.CountNodes();}
-  }
- }
- //вывод результатов:
- // вывод размера дерева после теста
- cout<<"items count:"<<tree.Size()<<endl;
+    //установка первого случайного числа
+    sRand();
+    //генерация потока операций, 10% - промахи операций
+    for (int i = 0; i < n / 2; i++)
+    {
+        if (i % 10 == 0) //10% промахов
+        {
+            int k = LineRand() % (10000 * n);
+            k = k + !(k % 2); //случайный нечётный ключ
+            tree1.remove(k);
+            D1 += tree1.CountNodes();
+            tree2.remove(k);
+            D2 += tree2.CountNodes();
+            tree1.add(m[rand() % n], 1);
+            I1 += tree1.CountNodes();
+            tree2.add(m[rand() % n], 1);
+            I2 += tree2.CountNodes();
+            k = LineRand() % (10000 * n);
+            k = k + !(k % 2); // случайный нечётный ключ
+            try {
+                tree1.getItem(k);
+                S1 += tree1.CountNodes();
+            }
+            //обработка исключения при ошибке операции поиска
+            catch (int) { S1 += tree1.CountNodes(); }
+            try {
+                tree2.getItem(k);
+                S2 += tree2.CountNodes();
+            }
+            //обработка исключения при ошибке операции поиска
+            catch (int) { S2 += tree2.CountNodes(); }
+        }
+        else //90% успешных операций
+        {
+            int ind = rand() % n;
+            tree1.remove(m[ind]);
+            D1 += tree1.CountNodes();
+            tree2.remove(m[ind]);
+            D2 += tree2.CountNodes();
+            int k = LineRand() % (10000 * n);
+            k = k + k % 2; // случайный чётный ключ
+            tree1.add(k, 1);
+            I1 += tree1.CountNodes();
+            tree2.add(k, 1);
+            I2 += tree2.CountNodes();
+            m[ind] = k;
+            try {
+                tree1.getItem(m[rand() % n]);
+                S1 += tree1.CountNodes();;
+            }
+            //обработка исключения при ошибке операции поиска
+            catch (int) { S1 += tree1.CountNodes(); }
+        }
 
- //теоретической оценки трудоёмкости операций BST
- cout<<"n/2 ="<<n/2<<endl;
- //экспериментальной оценки трудоёмкости вставки
- cout<<"Count insert: " << I/(n/2) <<endl;
- //экспериментальной оценки трудоёмкости удаления
- cout<<"Count delete: " << D/(n/2) <<endl;
- //экспериментальной оценки трудоёмкости поиска
- cout<<"Count search: " << S/(n/2) <<endl;
- //освобождение памяти массива m[]
- delete[] m;
-} //конец теста
+        try {
+            tree2.getItem(m[rand() % n]);
+            S2 += tree2.CountNodes();
+        }
+        //обработка исключения при ошибке операции поиска
+        catch (int) { S2 += tree2.CountNodes(); }
+        //вывод результатов:
+        // вывод размера дерева после теста
+        cout << "items count:" << tree1.Size() << " / " << tree2.Size() << endl;
+        //теоретической оценки трудоёмкости операций BST
+        cout << "n/2 =" << n / 2 << endl;
+        //экспериментальной оценки трудоёмкости вставки
+        cout << "Count insert: " << I1 / (n / 2) << " / " << I2 / (n / 2) << endl;
+        //экспериментальной оценки трудоёмкости удаления
+        cout << "Count delete: " << D1 / (n / 2) << " / " << D2 / (n / 2) << endl;
+        //экспериментальной оценки трудоёмкости поиска
+        cout << "Count search: " << S1 / (n / 2) << " / " << S2 / (n / 2) << endl;
+        //освобождение памяти массива m[]
+        delete[] m;
+    } //конец теста
+}
 
 int main(int argc, char *argv[]) {
- if (argc != 2) {
+ if (argc != 2 && 0) {
   cout<<"Use ./tester <tree size>\n";
   exit(EXIT_FAILURE);
  }
- const int size = atoi(argv[1]);
+ const int size = 10000;
 
  cout<<"Тестирование вырожденного дерева"<<endl;
  test_ord(size);
