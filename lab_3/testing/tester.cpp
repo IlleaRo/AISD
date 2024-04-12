@@ -4,7 +4,7 @@
 #include "../rbst.h"
 
 #define BST bst
-#define RND_Tree rbst
+#define RBST rbst
 #define add insert
 #define Size get_size
 #define getItem get_by_key
@@ -37,9 +37,10 @@ INT_64 LineRand ()
 void test_rand(int n)
 {
     //создание дерева для 64 – разрядных ключей типа INT_64
-    BST< INT_64,int > tree;
+    BST< INT_64,int > tree1; RBST<INT_64,int> tree2;
     //массив для ключей, которые присутствуют в дереве
     INT_64* m=new INT_64 [n];
+    INT_64 key; int ind;
     //установка первого случайного числа
     sRand();
     //заполнение дерева и массива элементами
@@ -47,63 +48,90 @@ void test_rand(int n)
     for(int i=0; i<n; i++)
     {
         m[i]=LineRand();
-        tree.add(m[i],1);
+        tree1.add(m[i], 1);
+        tree2.add(m[i], 1);
     }
     //вывод размера дерева до теста
-    cout<<"items count:"<<tree.Size()<<endl;
+    cout << "items count:" << tree1.Size() << " / " << tree2.Size() << endl;
     //обнуление счётчиков трудоёмкости вставки,
     //удаления и поиска
-    double I=0;
-    double D=0;
-    double S=0;
+    double I1=0, I2=0;
+    double D1=0, D2=0;
+    double S1=0, S2=0;
     //генерация потока операций, 10% - промахи операций
     for(int i=0;i<n/2;i++)
         if(i%10==0) //10% промахов
         {
-            tree.remove(LineRand ());
-            D+=tree.CountNodes();
-            tree.add(m[rand()%n],1);
-            I+=tree.CountNodes();
-            try{
-                tree.getItem(LineRand ());
-                S+=tree.CountNodes();
+            key = LineRand();
+            tree1.remove(key);
+            tree2.remove(key);
+
+            D1+=tree1.CountNodes();
+            D2+=tree2.CountNodes();
+
+            ind = rand() % n;
+
+            tree1.add(m[ind], 1);
+            tree2.add(m[ind], 1);
+
+            I1+=tree1.CountNodes();
+            I2+=tree2.CountNodes();
+
+            try{ tree1.getItem(key);
+                S1+=tree1.CountNodes();
             }
-            //обработка исключения при ошибке операции поиска
-            catch(int){S+=tree.CountNodes();}}
+            catch(int){S1+=tree1.CountNodes();}
+            try{ tree2.getItem(key);
+                S2+=tree2.CountNodes();
+            }
+            catch(int){ S2+=tree2.CountNodes();}}
+
     else //90% успешных операций
     {
         int ind=rand()%n;
-        tree.remove(m[ind]);
-        D+=tree.CountNodes();
+
+        tree1.remove(m[ind]);
+        tree2.remove(m[ind]);
+
+        D1+=tree1.CountNodes();
+        D2+=tree2.CountNodes();
+
         INT_64 key=LineRand ();
-        tree.add(key,1);
-        I+=tree.CountNodes();
+
+        tree1.add(key, 1);
+        tree2.add(key, 1);
+
+        I1+=tree1.CountNodes();
+        I2+=tree2.CountNodes();
+
         m[ind]=key;
-        try{
-            tree.getItem(m[rand()%n]);
-            S+=tree.CountNodes();
+        try{ tree1.getItem(key);
+            S1+=tree1.CountNodes();
         }
- //обработка исключения при ошибке операции поиска
- catch(int){S+=tree.CountNodes();} 
+        catch(int){S1+=tree1.CountNodes();}
+        try{ tree2.getItem(key);
+            S2+=tree2.CountNodes();
+        }
+        catch(int){ S2+=tree2.CountNodes();}
  } //конец теста
 //вывод результатов: 
 //вывод размера дерева после теста
- cout<<"items count:"<<tree.Size()<<endl; 
+ cout << "items count:" << tree1.Size() << " / " << tree2.Size() << endl;
 //теоретической оценки трудоёмкости операций BST 
  cout<<"1.39*log2(n)="<<1.39*(log((double)n)/log(2.0))<<endl;
 //экспериментальной оценки трудоёмкости вставки
- cout<<"Count insert: " << I/(n/2) <<endl; 
+ cout << "Count insert: " << I1 / (n / 2) << " / " << I2 / (n / 2) << endl;
 //экспериментальной оценки трудоёмкости удаления
- cout<<"Count delete: " << D/(n/2) <<endl; 
+ cout << "Count delete: " << D1 / (n / 2) << " / " << D2 / (n / 2) << endl;
 //экспериментальной оценки трудоёмкости поиска
- cout<<"Count search: " << S/(n/2) <<endl; 
+ cout << "Count search: " << S1 / (n / 2) << " / " << S2 / (n / 2) << endl;
 //освобождение памяти массива m[] 
  delete[] m;
 }
 
 void test_ord(int n) {
     //создание дерева для 64 – разрядных ключей типа INT_64
-    BST< INT_64, int > tree1; RND_Tree< INT_64, int > tree2;
+    BST< INT_64, int > tree1; RBST< INT_64, int > tree2;
     //массив для ключей, которые присутствуют в дереве
     INT_64* m = new INT_64[n];
     //заполнение дерева и массива элементами
@@ -199,15 +227,15 @@ void test_ord(int n) {
 }
 
 int main(int argc, char *argv[]) {
- if (argc != 2 && 0) {
+ if (argc != 2) {
   cout<<"Use ./tester <tree size>\n";
   exit(EXIT_FAILURE);
  }
- const int size = 10000;
+ const int size = atoi(argv[1]);
 
- cout<<"Тестирование вырожденного дерева"<<endl;
+ cout<<"Тестирование вырожденного дерева (bst / rbst)"<<endl;
  test_ord(size);
- cout<<"\nТестирование случайного дерева"<<endl;
+ cout<<"\nТестирование случайного дерева (bst / rbst)"<<endl;
 
  test_rand(size);
   return 0;

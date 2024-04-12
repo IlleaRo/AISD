@@ -44,7 +44,7 @@ class rbst : public bst<K, T>
       return new_top;
   }
 
-  node *bst_root_insert(node *ptr_node, K key, T data, bool &is_inserted)
+  node *bst_root_insert(node *ptr_node, K key, T data, bool &is_inserted) override
   {
       node *new_node;
       node *cur_node;
@@ -53,7 +53,7 @@ class rbst : public bst<K, T>
 
       if (!ptr_node) {
           is_inserted = true;
-          return new node(key, data, 1);
+          return new node(key, data);
       }
       std::stack<node *> traversed_nodes;
 
@@ -74,7 +74,7 @@ class rbst : public bst<K, T>
           }
       }
 
-      new_node = new node(key, data, 1);
+      new_node = new node(key, data);
 
       if (key < parent_node->key) {
           parent_node->left = new_node;
@@ -166,7 +166,7 @@ public:
       super::traverse_counter = 0;
       if (!super::root)
       {
-          super::root = new node(key, data, 1);
+          super::root = new node(key, data);
           return true;
       }
 
@@ -220,7 +220,7 @@ public:
           }
       }
 
-      cur_node = new node(key, data, 1);
+      cur_node = new node(key, data);
 
 _exit:
       if (traversed_right)
