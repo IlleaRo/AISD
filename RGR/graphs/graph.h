@@ -11,14 +11,13 @@
 template <class VERTEX_T, class EDGE_T>
 class graph {
 protected:
-    form_of_graphs <EDGE_T> form;
+    form_of_graphs <EDGE_T> *form;
     std::vector<VERTEX_T> vertexes;
 public:
     // Создает пустой L - граф с нулевым числом вершин и ребер
     graph() {
-        L_graph<EDGE_T> graph;
-        form = graph;
-    }
+        form = new L_graph<EDGE_T>;
+    };
 
     //graph(unsigned long num_of_vertex, graph_type_e type, graph_form_e form);
 
@@ -26,12 +25,12 @@ public:
 
     // Возвращает тип графа (ориентированный / неориентированный)
     graph_type_e get_type() {
-        form.get_type();
+        return form->get_type();
     }
 
     // Возвращает форму представления графа (L - матрица смежности / M - матрица инцидентности)
     graph_form_e get_form() {
-        form.get_form();
+        return form->get_form();
     }
 
     // Возвращает число вершин в графе
@@ -41,7 +40,7 @@ public:
 
     // Возвращает число ребер в графе
     unsigned long get_num_of_edges() {
-        return form.get_num_of_edges();
+        return form->get_num_of_edges();
     }
 
     // Добавляет вершину к графу и возвращает адрес дескриптора вновь созданной вершины
@@ -58,8 +57,25 @@ public:
         return vertex;
     }
 
+    VERTEX_T *insert_vertex(std::string name) {
+        VERTEX_T *vertex = insert_vertex();
+        vertex->name = name;
+        return vertex;
+    }
+
     // Удаляет вершину из графа, заданную адресом дескриптора,
-    //bool remove_vertex(vertex<V_NAME_T, V_DATA_T> * vertex_ptr);
+    bool remove_vertex(VERTEX_T *vertex_ptr) {
+        if (vertex_ptr == nullptr) {
+            return false;
+        }
+
+        if (form->remove_vertex(vertex_ptr->index)) {
+            delete vertex_ptr;
+            return true;
+        }
+
+        return false;
+    }
 
 
     friend std::ostream& operator<<(std::ostream &os, graph<VERTEX_T, EDGE_T> &graph_ptr);

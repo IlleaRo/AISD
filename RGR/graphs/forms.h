@@ -24,20 +24,13 @@ protected:
     graph_type_e type;
     graph_form_e form;
 
-    unsigned long num_of_vertex; // Число вершин
     unsigned long num_of_edges; // Число ребер
 
-    virtual void print_graph(std::ostream &os);
+    virtual void print_graph(std::ostream &os) = 0;
 
-    form_of_graphs(graph_type_e type, graph_form_e form, unsigned long num_of_vertex, unsigned long num_of_edges) :
-        type(type), form(form), num_of_vertex(0), num_of_edges(0) {};
+    form_of_graphs(graph_type_e type, graph_form_e form, unsigned long num_of_edges) :
+        type(type), form(form), num_of_edges(num_of_edges) {};
 public:
-
-    // Число вершин в графе
-    [[nodiscard]] unsigned long get_num_of_vertex() const {
-        return num_of_vertex;
-    }
-
     // Число ребер в графе
     [[nodiscard]] unsigned long get_num_of_edges() const {
         return num_of_edges;
@@ -51,7 +44,9 @@ public:
         return form;
     }
 
-    virtual unsigned long insert_vertex();
+    virtual unsigned long insert_vertex() = 0;
+
+    virtual bool remove_vertex(unsigned long vertex_index) = 0;
 
     friend std::ostream& operator<< (std::ostream &os, form_of_graphs<EDGE_T> &plist);
 };
@@ -62,13 +57,14 @@ std::ostream& operator<< (std::ostream &os, form_of_graphs<EDGE_T> &graph_ptr) {
 }
 
 template <class EDGE_T>
-class L_graph : form_of_graphs<EDGE_T> {
+class L_graph : public form_of_graphs<EDGE_T> {
 protected:
     class node {
         EDGE_T *edge;
-        node *next;
 
+    public:
         unsigned int v2;
+        node *next;
     };
 
     std::vector<node *> vertex_vector;
@@ -85,11 +81,37 @@ protected:
     }
 
 public:
-    L_graph() : form_of_graphs<EDGE_T>(NON_DIRECTED, L, 0, 0) {};
+    L_graph() : form_of_graphs<EDGE_T>(NON_DIRECTED, L, 0) {};
 
     unsigned long insert_vertex() override {
         vertex_vector.push_back(nullptr);
         return vertex_vector.size() - 1;
+    }
+
+    bool remove_vertex(unsigned long vertex_index) override {
+        if (vertex_index >= vertex_vector.size()) {
+            return false;
+        }
+
+        for (typename std::vector<node *>::iterator iter = vertex_vector.begin(); iter != vertex_vector.end(); ++iter) {
+            if (*iter != nullptr) {
+                node *current = *iter;
+                while (current != nullptr) {
+                    if (current->v2 == vertex_index) {
+                        node *temp = current;
+                        current = current->next;
+                        delete temp;
+                    } else if (current->v2 > vertex_index) {
+                        current->v2--;
+                        current = current->next;
+                    }
+                }
+            }
+        }
+
+        vertex_vector.erase(vertex_vector.begin() + vertex_index);
+
+        return true;
     }
 };
 
