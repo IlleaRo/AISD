@@ -1,6 +1,7 @@
 #include <iostream>
+#include "graphs/graph.h"
 
 int main() {
-    std::cout << "Hello, World!" << std::endl;
+    graph<vertex<std::string, int>, edge<vertex<std::string, int>, int, int>> graph;
     return 0;
 }
