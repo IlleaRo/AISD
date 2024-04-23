@@ -1,7 +1,3 @@
-//
-// Created by Illea on 19.04.2024.
-//
-
 #ifndef RGR_FORMS_H
 #define RGR_FORMS_H
 
@@ -52,6 +48,10 @@ public:
     [[nodiscard]] graph_form_e get_form() const {
         return form;
     }
+
+    virtual EDGE_T *get_edge(unsigned long v1_index, unsigned long v2_index) = 0;
+
+    virtual bool remove_edge(unsigned long v1_index, unsigned long v2_index) = 0;
 
     virtual unsigned long insert_vertex() = 0;
 
@@ -160,6 +160,54 @@ public:
         vertex_vector.erase(vertex_vector.begin() + vertex_index);
 
         return true;
+    }
+
+    //TODO: перепиши меня под использование итератора
+    EDGE_T *get_edge(unsigned long v1_index, unsigned long v2_index) override {
+        if (v1_index >= vertex_vector.size() || v2_index >= vertex_vector.size()) {
+            return nullptr;
+        }
+
+        node *current = vertex_vector[v1_index];
+        while (current != nullptr) {
+            if (current->v2 == v2_index) {
+                return current->edge;
+            }
+            current = current->next;
+        }
+
+        return nullptr;
+    }
+
+    bool remove_edge(unsigned long v1_index, unsigned long v2_index) override {
+        if (v1_index >= vertex_vector.size() || v2_index >= vertex_vector.size()) {
+            return false;
+        }
+
+        node *current = vertex_vector[v1_index];
+        node *prev = nullptr;
+
+        while (current != nullptr) {
+            if (current->v2 == v2_index) {
+                if (current == vertex_vector[v1_index]) {
+                    vertex_vector[v1_index] = current->next;
+                    delete current;
+                    form_of_graphs<EDGE_T>::num_of_edges--;
+                    return true;
+                }
+
+                node *temp = current;
+                prev->next = current->next;
+                delete temp;
+                form_of_graphs<EDGE_T>::num_of_edges--;
+                return true;
+            }
+
+            prev = current;
+            current = current->next;
+        }
+
+        return false;
     }
 };
 

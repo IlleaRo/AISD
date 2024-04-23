@@ -65,18 +65,37 @@ public:
         return vertex;
     }
 
+    // Добавляет вершину c именем name к графу и возвращает адрес дескриптора вновь созданной вершины
     VERTEX_T *insert_vertex(std::string name) {
         VERTEX_T *vertex = insert_vertex();
-        vertex->name = name;
+        vertex->set_name(name);
         return vertex;
     }
 
+    //fixme: что делать, если ребро уже существует?
+    // Добавляет ребро между вершинами графа, заданными адресами дескрипторов v1 и v2 и возвращает
+    // адрес дескриптора вновь созданного ребра.
     EDGE_T *insert_edge(VERTEX_T *v1, VERTEX_T *v2) {
         if (v1 == nullptr || v2 == nullptr) {
             return nullptr;
         }
 
-        EDGE_T *edge = new EDGE_T;
+        EDGE_T *edge = new EDGE_T(v1, v2);
+
+        form->insert_edge(v1->get_index(), v2->get_index(), edge);
+
+        return edge;
+    }
+
+    //fixme: что делать, если ребро уже существует?
+    // Добавляет ребро между вершинами графа, заданными адресами
+    // дескрипторов v1 и v2, с весом w и возвращает адрес дескриптора вновь созданного ребра.
+    EDGE_T *insert_edge(VERTEX_T *v1, VERTEX_T *v2, double weight) {
+        if (v1 == nullptr || v2 == nullptr) {
+            return nullptr;
+        }
+
+        EDGE_T *edge = new EDGE_T(v1, v2, weight);
         edge->v1 = v1;
         edge->v2 = v2;
 
@@ -85,7 +104,25 @@ public:
         return edge;
     }
 
-    // Удаляет вершину из графа, заданную адресом дескриптора,
+    EDGE_T *get_edge(VERTEX_T *v1, VERTEX_T *v2) {
+        if (v1 == nullptr || v2 == nullptr) {
+            return nullptr;
+        }
+
+        return form->get_edge(v1->get_index(), v2->get_index());
+    }
+
+    // Удаляет ребро, соединяющее вершины, заданные адресами дескрипторов v1 и v2
+    bool remove_edge(VERTEX_T *v1, VERTEX_T *v2) {
+        if (v1 == nullptr || v2 == nullptr) {
+            return false;
+        }
+
+        return form->remove_edge(v1->get_index(), v2->get_index());
+    }
+
+
+    // Удаляет вершину из графа, заданную адресом дескриптора
     bool remove_vertex(VERTEX_T *vertex_ptr) {
         if (vertex_ptr == nullptr) {
             return false;
