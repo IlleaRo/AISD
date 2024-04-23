@@ -5,6 +5,7 @@
 
 template <class VERTEX_T, class E_WEIGHT_T, class E_DATA_T>
 class edge {
+public:
     VERTEX_T *v1; // Дескриптор вершины, из которой исходит ребро.
     VERTEX_T *v2; // Дескриптор вершины, в которую входит ребро.
 
