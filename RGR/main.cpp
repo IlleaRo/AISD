@@ -2,7 +2,7 @@
 #include "graphs/graph.h"
 
 int main() {
-    graph<vertex<std::string, int>, edge<vertex<std::string, int>, int, int>> pretty_graph;
+    graph<vertex<std::string, int>, edge<vertex<std::string, int>, double, int>> pretty_graph;
     pretty_graph.insert_vertex();
     pretty_graph.insert_vertex("Hello");
 
