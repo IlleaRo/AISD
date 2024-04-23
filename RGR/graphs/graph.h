@@ -5,8 +5,17 @@
 #include "edge.h"
 #include "forms.h"
 
-#include <iostream>
+#include <ostream>
 #include <vector>
+
+template <class VERTEX_T, class EDGE_T>
+class graph;
+
+template <class VERTEX_T, class EDGE_T>
+std::ostream& operator<< (std::ostream &os, graph<VERTEX_T, EDGE_T> &graph_ptr) {
+    os<<*graph_ptr.form;
+    return os;
+}
 
 template <class VERTEX_T, class EDGE_T>
 class graph {
@@ -50,8 +59,7 @@ public:
             return nullptr;
         }
 
-        VERTEX_T *vertex = new VERTEX_T;
-        vertex->index = index;
+        VERTEX_T *vertex = new VERTEX_T(index);
         vertexes.push_back(*vertex);
 
         return vertex;
@@ -63,13 +71,27 @@ public:
         return vertex;
     }
 
+    EDGE_T *insert_edge(VERTEX_T *v1, VERTEX_T *v2) {
+        if (v1 == nullptr || v2 == nullptr) {
+            return nullptr;
+        }
+
+        EDGE_T *edge = new EDGE_T;
+        edge->v1 = v1;
+        edge->v2 = v2;
+
+        form->insert_edge(v1->get_index(), v2->get_index(), edge);
+
+        return edge;
+    }
+
     // Удаляет вершину из графа, заданную адресом дескриптора,
     bool remove_vertex(VERTEX_T *vertex_ptr) {
         if (vertex_ptr == nullptr) {
             return false;
         }
 
-        if (form->remove_vertex(vertex_ptr->index)) {
+        if (form->remove_vertex(vertex_ptr->get_index())) {
             delete vertex_ptr;
             return true;
         }
@@ -77,15 +99,8 @@ public:
         return false;
     }
 
-
-    friend std::ostream& operator<<(std::ostream &os, graph<VERTEX_T, EDGE_T> &graph_ptr);
+    friend std::ostream& operator<< <>(std::ostream &os, graph<VERTEX_T, EDGE_T> &graph_ptr);
 };
-
-template <class VERTEX_T, class EDGE_T>
-std::ostream& operator<< (std::ostream &os, graph<VERTEX_T, EDGE_T> &graph_ptr) {
-    os<<graph_ptr.form;
-    return os;
-}
 
 #endif //RGR_GRAPH_H
 

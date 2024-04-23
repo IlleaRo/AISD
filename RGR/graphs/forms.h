@@ -19,6 +19,15 @@ typedef enum {
 } graph_form_e;
 
 template <class EDGE_T>
+class form_of_graphs;
+
+template <class EDGE_T>
+std::ostream& operator<< (std::ostream &os, form_of_graphs<EDGE_T> &plist) {
+    plist.print_graph(os);
+    return os;
+}
+
+template <class EDGE_T>
 class form_of_graphs{
 protected:
     graph_type_e type;
@@ -48,21 +57,17 @@ public:
 
     virtual bool remove_vertex(unsigned long vertex_index) = 0;
 
-    friend std::ostream& operator<< (std::ostream &os, form_of_graphs<EDGE_T> &plist);
-};
+    virtual void insert_edge(unsigned long v_index_1, unsigned long v_index_2, EDGE_T *edge) = 0;
 
-template <class EDGE_T>
-std::ostream& operator<< (std::ostream &os, form_of_graphs<EDGE_T> &graph_ptr) {
-    graph_ptr.print_graph();
-}
+    friend std::ostream& operator<< <>(std::ostream &os, form_of_graphs<EDGE_T> &plist);
+};
 
 template <class EDGE_T>
 class L_graph : public form_of_graphs<EDGE_T> {
 protected:
     class node {
-        EDGE_T *edge;
-
     public:
+        EDGE_T *edge;
         unsigned int v2;
         node *next;
     };
@@ -71,12 +76,13 @@ protected:
 
     void print_graph(std::ostream &os) override {
         for (int i = 0; i < vertex_vector.size(); ++i) {
-            os << i << "\t:\t";
+            os << i << " : ";
             node *current = vertex_vector[i];
             while (current != nullptr) {
                 os << current->v2 << " ";
                 current = current->next;
             }
+            os << std::endl;
         }
     }
 
@@ -88,23 +94,65 @@ public:
         return vertex_vector.size() - 1;
     }
 
+    void insert_edge(unsigned long v_index_1, unsigned long v_index_2, EDGE_T *edge) override {
+        if (v_index_1 >= vertex_vector.size() || v_index_2 >= vertex_vector.size()) {
+            return;
+        }
+
+        node *new_node = new node;
+        new_node->edge = edge;
+        new_node->v2 = v_index_2;
+        new_node->next = vertex_vector[v_index_1];
+        vertex_vector[v_index_1] = new_node;
+
+        new_node = new node;
+        new_node->edge = edge;
+        new_node->v2 = v_index_1;
+        new_node->next = vertex_vector[v_index_2];
+        vertex_vector[v_index_2] = new_node;
+
+        form_of_graphs<EDGE_T>::num_of_edges++;
+    }
+
     bool remove_vertex(unsigned long vertex_index) override {
         if (vertex_index >= vertex_vector.size()) {
             return false;
         }
 
-        for (typename std::vector<node *>::iterator iter = vertex_vector.begin(); iter != vertex_vector.end(); ++iter) {
-            if (*iter != nullptr) {
-                node *current = *iter;
+        for (unsigned int i = 0; i < vertex_vector.size(); ++i) {
+            if (i == vertex_index) {
+                node *current = vertex_vector[i];
+                while (current != nullptr) {
+                    node *temp = current;
+                    current = current->next;
+                    delete temp;
+                }
+                continue;
+            }
+
+            if (vertex_vector[i] != nullptr) {
+
+                node *current = vertex_vector[i];
+                node *prev = nullptr;
+
                 while (current != nullptr) {
                     if (current->v2 == vertex_index) {
+                        if (current == vertex_vector[i]) {
+                            vertex_vector[i] = current->next;
+                            delete current;
+                            current = vertex_vector[i];
+                            continue;
+                        }
+
                         node *temp = current;
-                        current = current->next;
+                        prev->next = current->next;
                         delete temp;
                     } else if (current->v2 > vertex_index) {
                         current->v2--;
-                        current = current->next;
                     }
+
+                    prev = current;
+                    current = current->next;
                 }
             }
         }
