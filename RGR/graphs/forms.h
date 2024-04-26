@@ -57,13 +57,13 @@ public:
 
     virtual bool remove_vertex(unsigned long vertex_index) = 0;
 
-    virtual void insert_edge(unsigned long v_index_1, unsigned long v_index_2, EDGE_T *edge) = 0;
+    virtual EDGE_T *insert_edge(unsigned long v_index_1, unsigned long v_index_2, EDGE_T *edge) = 0;
 
     friend std::ostream& operator<< <>(std::ostream &os, form_of_graphs<EDGE_T> &plist);
 };
 
 template <class EDGE_T>
-class L_graph : public form_of_graphs<EDGE_T> {
+class L_graph_non_directed : public form_of_graphs<EDGE_T> {
 protected:
     class node {
     public:
@@ -87,23 +87,50 @@ protected:
     }
 
 public:
-    L_graph() : form_of_graphs<EDGE_T>(NON_DIRECTED, L, 0) {};
+    L_graph_non_directed() : form_of_graphs<EDGE_T>(NON_DIRECTED, L, 0) {};
 
     unsigned long insert_vertex() override {
         vertex_vector.push_back(nullptr);
         return vertex_vector.size() - 1;
     }
 
-    void insert_edge(unsigned long v_index_1, unsigned long v_index_2, EDGE_T *edge) override {
+    EDGE_T *insert_edge(unsigned long v_index_1, unsigned long v_index_2, EDGE_T *edge) override {
         if (v_index_1 >= vertex_vector.size() || v_index_2 >= vertex_vector.size()) {
-            return;
+            throw std::runtime_error("Vertex index out of range");
+        }
+
+        node *tmp = vertex_vector[v_index_1];
+        if (tmp == nullptr) {
+            node *new_node = new node;
+            new_node->edge = edge;
+            new_node->v2 = v_index_2;
+            new_node->next = nullptr;
+            vertex_vector[v_index_1] = new_node;
+
+            new_node = new node;
+            new_node->edge = edge;
+            new_node->v2 = v_index_1;
+            new_node->next = nullptr;
+            vertex_vector[v_index_2] = new_node;
+
+            form_of_graphs<EDGE_T>::num_of_edges++;
+
+            return edge;
+        }
+
+        while (tmp->next) {
+            if (tmp->v2 == v_index_2) {
+                return tmp->edge;
+            }
+            tmp = tmp->next;
         }
 
         node *new_node = new node;
         new_node->edge = edge;
         new_node->v2 = v_index_2;
-        new_node->next = vertex_vector[v_index_1];
-        vertex_vector[v_index_1] = new_node;
+        new_node->next = nullptr;
+
+        tmp->next = new_node;
 
         new_node = new node;
         new_node->edge = edge;
@@ -112,6 +139,8 @@ public:
         vertex_vector[v_index_2] = new_node;
 
         form_of_graphs<EDGE_T>::num_of_edges++;
+
+        return edge;
     }
 
     bool remove_vertex(unsigned long vertex_index) override {
@@ -177,6 +206,108 @@ public:
         }
 
         return nullptr;
+    }
+
+    bool remove_edge(unsigned long v1_index, unsigned long v2_index) override {
+        if (v1_index >= vertex_vector.size() || v2_index >= vertex_vector.size()) {
+            return false;
+        }
+
+        node *current = vertex_vector[v1_index];
+        node *prev = nullptr;
+        bool v1_v2_removed = false;
+
+        while (current != nullptr) {
+            if (current->v2 == v2_index) {
+                if (current == vertex_vector[v1_index]) {
+                    vertex_vector[v1_index] = current->next;
+                    delete current;
+                    //form_of_graphs<EDGE_T>::num_of_edges--;
+                    v1_v2_removed = true;
+                    break;
+                }
+
+                node *temp = current;
+                prev->next = current->next;
+                delete temp;
+                //form_of_graphs<EDGE_T>::num_of_edges--;
+                v1_v2_removed = true;
+                break;
+            }
+
+            prev = current;
+            current = current->next;
+        }
+
+        if (!v1_v2_removed) {
+            return false;
+        }
+
+        current = vertex_vector[v2_index];
+        prev = nullptr;
+
+        while (current != nullptr) {
+            if (current->v2 == v1_index) {
+                if (current == vertex_vector[v2_index]) {
+                    vertex_vector[v2_index] = current->next;
+                    delete current;
+                    form_of_graphs<EDGE_T>::num_of_edges--;
+                    return true;
+                }
+
+                node *temp = current;
+                prev->next = current->next;
+                delete temp;
+                form_of_graphs<EDGE_T>::num_of_edges--;
+                return true;
+            }
+
+            prev = current;
+            current = current->next;
+        }
+
+        throw std::runtime_error("Edge not found for second vertex!");
+    }
+};
+
+template <class EDGE_T>
+class L_graph_directed : public L_graph_non_directed<EDGE_T> {
+    using typename L_graph_non_directed<EDGE_T>::node;
+    using L_graph_non_directed<EDGE_T>::vertex_vector;
+
+public:
+    L_graph_directed() : L_graph_non_directed<EDGE_T>() {
+        form_of_graphs<EDGE_T>::type = DIRECTED;
+    }
+
+    EDGE_T *insert_edge(unsigned long v_index_1, unsigned long v_index_2, EDGE_T *edge) override {
+        node *tmp = vertex_vector[v_index_1];
+        if (tmp == nullptr) {
+            node *new_node = new node;
+            new_node->edge = edge;
+            new_node->v2 = v_index_2;
+            new_node->next = nullptr;
+            vertex_vector[v_index_1] = new_node;
+
+            form_of_graphs<EDGE_T>::num_of_edges++;
+
+            return edge;
+        }
+
+        while (tmp->next) {
+            if (tmp->v2 == v_index_2) {
+                return tmp->edge;
+            }
+            tmp = tmp->next;
+        }
+
+        node *new_node = new node;
+        new_node->edge = edge;
+        new_node->v2 = v_index_2;
+        new_node->next = nullptr;
+        tmp->next = new_node;
+
+        return edge;
     }
 
     bool remove_edge(unsigned long v1_index, unsigned long v2_index) override {

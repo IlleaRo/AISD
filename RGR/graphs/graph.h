@@ -4,6 +4,7 @@
 #include "vertex.h"
 #include "edge.h"
 #include "forms.h"
+#include "iterators.h"
 
 #include <ostream>
 #include <vector>
@@ -25,10 +26,29 @@ protected:
 public:
     // Создает пустой L - граф с нулевым числом вершин и ребер
     graph() {
-        form = new L_graph<EDGE_T>;
+        form = new L_graph_non_directed<EDGE_T>;
     };
 
-    //graph(unsigned long num_of_vertex, graph_type_e type, graph_form_e form);
+    graph(unsigned long num_of_vertex, graph_type_e type, graph_form_e form) {
+        if (form == L) {
+            if (type == DIRECTED) {
+                this->form = new L_graph_directed<EDGE_T>;
+            } else {
+                this->form = new L_graph_non_directed<EDGE_T>;
+            }
+        } else {
+            //TODO: M_graph
+            if (type == DIRECTED) {
+                //this->form = new M_graph_directed<EDGE_T>;
+            } else {
+                //this->form = new M_graph_non_directed<EDGE_T>;
+            }
+        }
+
+        for (int i = 0; i < num_of_vertex; ++i) {
+            insert_vertex();
+        }
+    }
 
     //graph(unsigned long num_of_vertex, unsigned long num_of_edges, graph_type_e type, graph_form_e form);
 
@@ -72,9 +92,8 @@ public:
         return vertex;
     }
 
-    //fixme: что делать, если ребро уже существует?
     // Добавляет ребро между вершинами графа, заданными адресами дескрипторов v1 и v2 и возвращает
-    // адрес дескриптора вновь созданного ребра.
+    // адрес дескриптора вновь созданного ребра (или уже существующего).
     EDGE_T *insert_edge(VERTEX_T *v1, VERTEX_T *v2) {
         if (v1 == nullptr || v2 == nullptr) {
             return nullptr;
@@ -82,14 +101,17 @@ public:
 
         EDGE_T *edge = new EDGE_T(v1, v2);
 
-        form->insert_edge(v1->get_index(), v2->get_index(), edge);
+        EDGE_T *inserted_edge = form->insert_edge(v1->get_index(), v2->get_index(), edge);
 
-        return edge;
+        if (edge != inserted_edge) {
+            delete edge;
+        }
+
+        return inserted_edge;
     }
 
-    //fixme: что делать, если ребро уже существует?
     // Добавляет ребро между вершинами графа, заданными адресами
-    // дескрипторов v1 и v2, с весом w и возвращает адрес дескриптора вновь созданного ребра.
+    // дескрипторов v1 и v2, с весом w и возвращает адрес дескриптора вновь созданного ребра (или уже существующего).
     EDGE_T *insert_edge(VERTEX_T *v1, VERTEX_T *v2, double weight) {
         if (v1 == nullptr || v2 == nullptr) {
             return nullptr;
@@ -134,6 +156,14 @@ public:
         }
 
         return false;
+    }
+
+    vertex_iterator<VERTEX_T> begin() {
+        return vertex_iterator<VERTEX_T>(vertexes.begin());
+    }
+
+    vertex_iterator<VERTEX_T> end() {
+        return vertex_iterator<VERTEX_T>(vertexes.end());
     }
 
     friend std::ostream& operator<< <>(std::ostream &os, graph<VERTEX_T, EDGE_T> &graph_ptr);
