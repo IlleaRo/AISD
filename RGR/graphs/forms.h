@@ -70,10 +70,6 @@ protected:
         EDGE_T *edge;
         unsigned int v2;
         node *next;
-
-        ~node() {
-            delete edge;
-        }
     };
 
     std::vector<node *> vertex_vector;
@@ -165,12 +161,15 @@ public:
             return false;
         }
 
+        EDGE_T *to_remove_edge = nullptr;
+
         for (unsigned int i = 0; i < vertex_vector.size(); ++i) {
             if (i == vertex_index) {
                 node *current = vertex_vector[i];
                 while (current != nullptr) {
                     node *temp = current;
                     current = current->next;
+                    to_remove_edge = temp->edge;
                     delete temp;
                 }
                 continue;
@@ -204,6 +203,7 @@ public:
         }
 
         vertex_vector.erase(vertex_vector.begin() + vertex_index);
+        delete to_remove_edge;
 
         return true;
     }
@@ -238,7 +238,7 @@ public:
             if (current->v2 == v2_index) {
                 if (current == vertex_vector[v1_index]) {
                     vertex_vector[v1_index] = current->next;
-                    //delete current;
+                    delete current;
                     //form_of_graphs<EDGE_T>::num_of_edges--;
                     v1_v2_removed = true;
                     break;
@@ -246,7 +246,7 @@ public:
 
                 node *temp = current;
                 prev->next = current->next;
-                //delete temp; // We use every edge two times!!!
+                delete temp;
                 //form_of_graphs<EDGE_T>::num_of_edges--;
                 v1_v2_removed = true;
                 break;

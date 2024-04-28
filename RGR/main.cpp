@@ -29,7 +29,7 @@ int main() {
 
 
     for (vertex_iterator<vertex<std::string, int>> it = directed_graph.begin(); it != directed_graph.end(); ++it) {
-        std::cout<<(*it).get_index()<<std::endl;
+        std::cout<<(*it)->get_index()<<std::endl;
     }
 
     return 0;
