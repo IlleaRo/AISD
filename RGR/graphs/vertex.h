@@ -32,6 +32,10 @@ public:
     DATA_T &get_data() {
         return data;
     }
+
+    void set_index(unsigned long new_index) {
+        index = new_index;
+    }
 };
 
 #endif //RGR_VERTEX_H

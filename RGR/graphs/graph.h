@@ -163,13 +163,20 @@ public:
 
         unsigned long index = vertex_ptr->get_index();
 
-        if (form->remove_vertex(index)) {
+        bool is_removed;
+
+        if ((is_removed = form->remove_vertex(index))) {
             vertexes.erase(vertexes.begin() + index);
             delete vertex_ptr;
-            return true;
         }
 
-        return false;
+        if (is_removed) {
+            for (unsigned long i = index; i < vertexes.size(); ++i) {
+                vertexes[i]->set_index(i);
+            }
+        }
+
+        return is_removed;
     }
 
     vertex_iterator<VERTEX_T> begin() {
