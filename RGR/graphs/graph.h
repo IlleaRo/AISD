@@ -41,7 +41,7 @@ public:
             if (type == DIRECTED) {
                 //this->form = new M_graph_directed<EDGE_T>;
             } else {
-                //this->form = new M_graph_non_directed<EDGE_T>;
+                this->form = new M_graph_non_directed<EDGE_T>;
             }
         }
 

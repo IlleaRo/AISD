@@ -32,5 +32,36 @@ int main() {
         std::cout<<(*it)->get_index()<<std::endl;
     }
 
+    graph<vertex<std::string, int>, edge<vertex<std::string, int>, double, int>> graph_M(2, NON_DIRECTED, M);
+    std::cout<<graph_M<<std::endl;
+
+    vertex<std::string, int> *for_del_d_vertex_1 = graph_M.insert_vertex("d_vertex_2");
+    d_vertex_2 = graph_M.insert_vertex("d_vertex_3");
+
+    graph_M.insert_edge(for_del_d_vertex_1, d_vertex_2);
+    std::cout<<graph_M<<std::endl;
+
+    vertex<std::string, int> *for_del_d_vertex_4 = graph_M.insert_vertex("d_vertex_4");
+    vertex<std::string, int> *for_del_d_vertex_5 = graph_M.insert_vertex("d_vertex_5");
+
+    graph_M.insert_edge(for_del_d_vertex_4, for_del_d_vertex_5);
+    std::cout<<graph_M<<std::endl;
+
+    d_vertex_1 = graph_M.insert_vertex("d_vertex_6");
+    d_vertex_2 = graph_M.insert_vertex("d_vertex_7");
+
+    graph_M.insert_edge(d_vertex_1, for_del_d_vertex_1);
+
+    std::cout<<graph_M<<std::endl;
+
+    graph_M.remove_edge(d_vertex_1, d_vertex_2);
+
+    graph_M.remove_edge(for_del_d_vertex_4, for_del_d_vertex_5);
+
+    graph_M.remove_vertex(for_del_d_vertex_1);
+
+    std::cout<<graph_M<<std::endl;
+
+
     return 0;
 }
