@@ -70,6 +70,10 @@ protected:
         EDGE_T *edge;
         unsigned int v2;
         node *next;
+
+        ~node() {
+            delete edge;
+        }
     };
 
     std::vector<node *> vertex_vector;
@@ -88,6 +92,19 @@ protected:
 
 public:
     L_graph_non_directed() : form_of_graphs<EDGE_T>(NON_DIRECTED, L, 0) {};
+
+    ~L_graph_non_directed() {
+        for (typename std::vector<node *>::iterator it = vertex_vector.begin(); it != vertex_vector.end(); ++it) {
+            node *current = *it;
+            while (current != nullptr) {
+                node *temp = current;
+                current = current->next;
+                delete temp;
+            }
+        }
+
+        vertex_vector.clear();
+    }
 
     unsigned long insert_vertex() override {
         vertex_vector.push_back(nullptr);
@@ -221,7 +238,7 @@ public:
             if (current->v2 == v2_index) {
                 if (current == vertex_vector[v1_index]) {
                     vertex_vector[v1_index] = current->next;
-                    delete current;
+                    //delete current;
                     //form_of_graphs<EDGE_T>::num_of_edges--;
                     v1_v2_removed = true;
                     break;
@@ -229,7 +246,7 @@ public:
 
                 node *temp = current;
                 prev->next = current->next;
-                delete temp;
+                //delete temp; // We use every edge two times!!!
                 //form_of_graphs<EDGE_T>::num_of_edges--;
                 v1_v2_removed = true;
                 break;

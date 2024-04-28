@@ -16,6 +16,11 @@ public:
     edge(VERTEX_T *v1, VERTEX_T *v2) : v1(v1), v2(v2), weight(0) {};
     edge(VERTEX_T *v1, VERTEX_T *v2, E_WEIGHT_T weight) : v1(v1), v2(v2), weight(weight) {};
 
+    ~edge() {
+        delete v1;
+        delete v2;
+    }
+
     [[nodiscard]] VERTEX_T *get_v1() const {
         return v1;
     }

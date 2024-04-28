@@ -52,6 +52,10 @@ public:
 
     //graph(unsigned long num_of_vertex, unsigned long num_of_edges, graph_type_e type, graph_form_e form);
 
+    ~graph() {
+        delete form;
+    }
+
     // Возвращает тип графа (ориентированный / неориентированный)
     graph_type_e get_type() {
         return form->get_type();
