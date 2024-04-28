@@ -22,7 +22,7 @@ template <class VERTEX_T, class EDGE_T>
 class graph {
 protected:
     form_of_graphs <EDGE_T> *form;
-    std::vector<VERTEX_T> vertexes;
+    std::vector<VERTEX_T *> vertexes;
 public:
     // Создает пустой L - граф с нулевым числом вершин и ребер
     graph() {
@@ -53,7 +53,14 @@ public:
     //graph(unsigned long num_of_vertex, unsigned long num_of_edges, graph_type_e type, graph_form_e form);
 
     ~graph() {
+
         delete form;
+
+        for (VERTEX_T *vertex : vertexes) {
+            delete vertex;
+        }
+
+        vertexes.clear();
     }
 
     // Возвращает тип графа (ориентированный / неориентированный)
@@ -84,7 +91,7 @@ public:
         }
 
         VERTEX_T *vertex = new VERTEX_T(index);
-        vertexes.push_back(*vertex);
+        vertexes.push_back(vertex);
 
         return vertex;
     }
@@ -154,7 +161,10 @@ public:
             return false;
         }
 
-        if (form->remove_vertex(vertex_ptr->get_index())) {
+        unsigned long index = vertex_ptr->get_index();
+
+        if (form->remove_vertex(index)) {
+            vertexes.erase(vertexes.begin() + index);
             delete vertex_ptr;
             return true;
         }
