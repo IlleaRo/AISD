@@ -20,11 +20,6 @@ public:
         return *this;
     }
 
-    vertex_iterator &operator--() {
-        --it;
-        return *this;
-    }
-
     bool operator!=(const vertex_iterator& other) const {
         return it != other.it;
     }
@@ -66,15 +61,6 @@ public:
         }
 
         cur_edge = graph_ptr->get_next_edge(vertex, cur_edge);
-        return *this;
-    }
-
-    edge_iterator_for_v &operator--() {
-        if (*this == graph_ptr->edge_v_end(vertex)) {
-            throw std::out_of_range("Out of range");
-        }
-
-        cur_edge = graph_ptr->get_prev_edge(vertex, cur_edge);
         return *this;
     }
 
@@ -128,40 +114,16 @@ public:
             throw std::out_of_range("Out of range");
         }
 
-        if (cur_edge == nullptr) {
-            if (cur_vertex->get_index() == graph_ptr->vertexes.size() - 1) {
-                *this = graph_ptr->edge_end();
+        for (unsigned long i = cur_vertex->get_index(); i < graph_ptr->vertexes.size() - 1; ++i) {
+            if ((cur_edge = graph_ptr->get_next_edge(graph_ptr->vertexes[i], cur_edge))) {
+                cur_vertex = graph_ptr->vertexes[i];
 
                 return *this;
             }
-
-            cur_vertex = graph_ptr->vertexes[cur_vertex->get_index() + 1];
-            cur_edge = graph_ptr->get_first_edge(cur_vertex);
-            return *this;
         }
 
-        cur_edge = graph_ptr->get_next_edge(cur_vertex, cur_edge);
-        return *this;
-    }
+        *this = graph_ptr->edge_end();
 
-    edge_iterator &operator--() {
-        if (*this == graph_ptr->edge_end()) {
-            throw std::out_of_range("Out of range");
-        }
-
-        if (cur_edge == nullptr) {
-            if (cur_vertex->get_index() == 0) {
-                *this = graph_ptr->edge_end();
-
-                return *this;
-            }
-
-            cur_vertex = graph_ptr->vertexes[cur_vertex->get_index() - 1];
-            cur_edge = graph_ptr->get_last_edge(cur_vertex);
-            return *this;
-        }
-
-        cur_edge = graph_ptr->get_prev_edge(cur_edge);
         return *this;
     }
 

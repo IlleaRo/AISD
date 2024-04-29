@@ -35,10 +35,6 @@ protected:
         return form->get_next_edge(vertex->get_index(), cur_edge);
     }
 
-    EDGE_T *get_previous_edge(VERTEX_T *vertex, EDGE_T *cur_edge) {
-        return form->get_previous_edge(vertex->get_index(), cur_edge);
-    }
-
 public:
     // Создает пустой L - граф с нулевым числом вершин и ребер
     graph() {
@@ -145,8 +141,6 @@ public:
         }
 
         EDGE_T *edge = new EDGE_T(v1, v2, weight);
-        edge->v1 = v1;
-        edge->v2 = v2;
 
         form->insert_edge(v1->get_index(), v2->get_index(), edge);
 
@@ -218,15 +212,26 @@ public:
 
     edge_iterator<VERTEX_T, EDGE_T> edge_begin() {
         edge_iterator<VERTEX_T, EDGE_T> iter(this);
-        iter.set_cur_vertex(vertexes[0]);
-        iter.set_cur_edge(get_first_edge(vertexes[0]));
+
+        EDGE_T *tmp;
+
+        for (VERTEX_T *vertex : vertexes) {
+            if ((tmp = get_first_edge(vertex)) != nullptr) {
+                iter.set_cur_vertex(vertex);
+                iter.set_cur_edge(tmp);
+
+                return iter;
+            }
+        }
+
+        iter = edge_end();
         return iter;
     }
 
     edge_iterator<VERTEX_T, EDGE_T> edge_end() {
         edge_iterator<VERTEX_T, EDGE_T> iter(this);
-        iter.set_cur_vertex(nullptr);
         iter.set_cur_edge(nullptr);
+        iter.set_cur_vertex(*vertexes.rbegin());
 
         return iter;
     }

@@ -63,8 +63,6 @@ public:
 
     virtual EDGE_T *get_next_edge(unsigned long vertex_index, EDGE_T *edge) = 0;
 
-    virtual EDGE_T *get_previous_edge(unsigned long vertex_index, EDGE_T *edge) = 0;
-
     friend std::ostream& operator<< <>(std::ostream &os, form_of_graphs<EDGE_T> &plist);
 };
 
@@ -317,22 +315,6 @@ public:
 
         return nullptr;
     }
-
-    EDGE_T *get_previous_edge(unsigned long vertex_index, EDGE_T *edge) {
-        if (vertex_index >= vertex_vector.size()) {
-            throw std::runtime_error("Vertex index out of range");
-        }
-
-        node *current = vertex_vector[vertex_index];
-        while (current != nullptr) {
-            if (current->next->edge == edge) {
-                return current->edge;
-            }
-            current = current->next;
-        }
-
-        return nullptr;
-    }
 };
 
 template <class EDGE_T>
@@ -558,25 +540,6 @@ public:
         for (unsigned long i = 0; i < vertex_vector.size(); ++i) {
             if (vertex_vector[vertex_index][i] == edge) {
                 for (unsigned long j = i + 1; j < vertex_vector.size(); ++j) {
-                    if (vertex_vector[vertex_index][j] != nullptr) {
-                        return vertex_vector[vertex_index][j];
-                    }
-                }
-                return nullptr;
-            }
-        }
-
-        return nullptr;
-    }
-
-    EDGE_T *get_previous_edge(unsigned long vertex_index, EDGE_T *edge) {
-        if (vertex_index >= vertex_vector.size()) {
-            throw std::runtime_error("Vertex index out of range");
-        }
-
-        for (unsigned long i = 0; i < vertex_vector.size(); ++i) {
-            if (vertex_vector[vertex_index][i] == edge) {
-                for (unsigned long j = i - 1; j >= 0; --j) {
                     if (vertex_vector[vertex_index][j] != nullptr) {
                         return vertex_vector[vertex_index][j];
                     }
