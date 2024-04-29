@@ -1,79 +1,124 @@
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 #include <iostream>
+#include <cstring>
+#include "ui/test.h"
+#include "ui/prompts.h"
+#include "ui/menu.h"
 #include "graphs/graph.h"
 
-int main() {
-    graph<vertex<std::string, int>, edge<vertex<std::string, int>, double, int>> pretty_graph;
-    pretty_graph.insert_vertex();
-    pretty_graph.insert_vertex("Hello");
+#pragma execution_character_set( "utf-8" )
+#define WIN_UTF_ID 65001
+#define GRAPH_TYPE L // TODO: надо бы в рантайме разрешить указывать тип
 
-    vertex<std::string, int> *ptr_1 = pretty_graph.insert_vertex();
-    vertex<std::string, int> *ptr_2 = pretty_graph.insert_vertex("Hello_2");
-    pretty_graph.insert_edge(ptr_1, ptr_2);
-    pretty_graph.insert_edge(ptr_1, pretty_graph.insert_vertex("Hello_3"));
+typedef graph<vertex<std::string, int>, edge<vertex<std::string, int>, double, int>> example_graph;
 
-    std::cout<<pretty_graph<<std::endl;
+int main(int argc, char *argv[]) {
+    int input;
+    bool use_weights;
+    bool correct_input = false;
+    example_graph pretty_graph;
 
-    pretty_graph.remove_vertex(ptr_2);
+#ifdef _WIN32
+    SetConsoleOutputCP( WIN_UTF_ID);
+#endif
 
-    std::cout<<pretty_graph<<std::endl;
-
-    graph<vertex<std::string, int>, edge<vertex<std::string, int>, double, int>> directed_graph(5, DIRECTED, L);
-    vertex<std::string, int> *d_vertex_1 = directed_graph.insert_vertex("d_vertex_1");
-    vertex<std::string, int> *d_vertex_2 = directed_graph.insert_vertex("d_vertex_2");
-
-    directed_graph.insert_edge(d_vertex_1, d_vertex_2);
-    directed_graph.insert_edge(d_vertex_2, d_vertex_1);
-
-    directed_graph.remove_edge(d_vertex_2, d_vertex_1);
-    std::cout<<directed_graph<<std::endl;
-
-
-    for (vertex_iterator<vertex<std::string, int>> it = directed_graph.vertex_begin(); it != directed_graph.vertex_end(); ++it) {
-        std::cout<<(*it)->get_index()<<std::endl;
+    if (argc > 1 && (strcmp(argv[1], "test") == 0)) {
+        return run_test();
     }
 
-    graph<vertex<std::string, int>, edge<vertex<std::string, int>, double, int>> graph_M(2, DIRECTED, M);
-    std::cout<<graph_M<<std::endl;
+    while (!correct_input) {
+        input = get_user_input(prompt_type);
+        switch (input) {
+            case 1:
+                // Неориентированный, невзвешенный
+                pretty_graph = *new example_graph(0, NON_DIRECTED, GRAPH_TYPE);
+                use_weights = false;
+                break;
+            case 2:
+                // Ориентированный, невзвешенный
+                pretty_graph = *new example_graph(0, DIRECTED, GRAPH_TYPE);
+                use_weights = false;
+                break;
+            case 3:
+                // Неориентированный, взвешенный
+                pretty_graph = *new example_graph(0, NON_DIRECTED, GRAPH_TYPE);
+                use_weights = true;
+                break;
+            case 4:
+                // Ориентированный, взвешенный
+                pretty_graph = *new example_graph(0, DIRECTED, GRAPH_TYPE);
+                use_weights = true;
+                break;
 
-    vertex<std::string, int> *for_del_d_vertex_1 = graph_M.insert_vertex("d_vertex_2");
-    d_vertex_2 = graph_M.insert_vertex("d_vertex_3");
-
-    graph_M.insert_edge(for_del_d_vertex_1, d_vertex_2);
-    std::cout<<graph_M<<std::endl;
-
-    vertex<std::string, int> *for_del_d_vertex_4 = graph_M.insert_vertex("d_vertex_4");
-    vertex<std::string, int> *for_del_d_vertex_5 = graph_M.insert_vertex("d_vertex_5");
-
-    graph_M.insert_edge(for_del_d_vertex_4, for_del_d_vertex_5);
-    std::cout<<graph_M<<std::endl;
-
-    d_vertex_1 = graph_M.insert_vertex("d_vertex_6");
-    d_vertex_2 = graph_M.insert_vertex("d_vertex_7");
-
-    graph_M.insert_edge(d_vertex_1, for_del_d_vertex_1);
-
-    std::cout<<graph_M<<std::endl;
-
-    graph_M.remove_edge(d_vertex_1, d_vertex_2);
-
-    //graph_M.remove_edge(for_del_d_vertex_4, for_del_d_vertex_5);
-
-    graph_M.remove_vertex(for_del_d_vertex_1);
-
-    std::cout<<graph_M<<std::endl;
-
-
-    edge_iterator_for_v<vertex<std::string, int>, edge<vertex<std::string, int>, double, int>> it = graph_M.edge_v_begin(for_del_d_vertex_4);
-
-    for (; it != graph_M.edge_v_end(for_del_d_vertex_4); ++it) {
-        std::cout<<(*it)->get_weight()<<std::endl;
+            default:
+                continue;
+        }
+        correct_input = true;
     }
 
-    edge_iterator<vertex<std::string, int>, edge<vertex<std::string, int>, double, int>> ite = graph_M.edge_begin();
-
-    for (; ite != graph_M.edge_end(); ++ite) {
-        std::cout<<(*ite)->get_weight()<<std::endl;
+    while (true) {
+        input = get_user_input(prompt_main_menu);
+        switch (input) {
+            case 1:
+                // Получить тип
+                menu_get_type(pretty_graph, use_weights);
+                break;
+            case 2:
+                // Получить форму
+                menu_get_form(pretty_graph, use_weights);
+                break;
+            case 3:
+                // Получить количество вершин
+                menu_get_vertices_count(pretty_graph, use_weights);
+                break;
+            case 4:
+                // Получить количество рёбер
+                menu_get_edges_count(pretty_graph, use_weights);
+                break;
+            case 5:
+                // Вставить вершину
+                menu_insert_vertex(pretty_graph, use_weights);
+                break;
+            case 6:
+                // Вставить ребро
+                menu_insert_edge(pretty_graph, use_weights);
+                break;
+            case 7:
+                // Получить вершину
+                menu_get_vertex(pretty_graph, use_weights);
+                break;
+            case 8:
+                // Получить ребро
+                menu_get_edge(pretty_graph, use_weights);
+                break;
+            case 9:
+                // Удалить вершину
+                menu_delete_vertex(pretty_graph, use_weights);
+                break;
+            case 10:
+                // Вывести граф
+                menu_print_graph(pretty_graph, use_weights);
+                break;
+            case 11:
+                // Очистить граф
+                menu_clear_graph(pretty_graph, use_weights);
+                break;
+            case 12:
+                // Управление итератором
+                menu_control_iterator(pretty_graph, use_weights);
+                break;
+            case 13:
+                // Меню с заданиями, согласно варианту
+                menu_tasks(pretty_graph, use_weights);
+                break;
+            case 0:
+                return 0;
+            default:
+                continue;
+        }
+        anykey();
     }
-
-    return 0;
 }
