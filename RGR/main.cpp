@@ -70,7 +70,19 @@ int main(int argc, char *argv[]) {
                 // Удалить вершину
                 break;
             case 10:
+                // Вывести граф
+                break;
+            case 11:
+                // Очистить граф
+                break;
+            case 12:
                 // Управление итератором
+                break;
+            case 13:
+                // Меню с заданиями, согласно варианту
+                break;
+            case 0:
+                // Выйти из программы
                 break;
             default:
                 break;
