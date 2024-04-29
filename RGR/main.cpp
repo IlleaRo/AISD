@@ -1,14 +1,23 @@
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 #include <iostream>
 #include <cstring>
 #include "ui/test.h"
 #include "ui/prompts.h"
 #include "graphs/graph.h"
 
+#pragma execution_character_set( "utf-8" )
+#define WIN_UTF_ID 65001
 
 int main(int argc, char *argv[]) {
     int input;
     bool correct_input = false;
-    int
+
+#ifdef _WIN32
+    SetConsoleOutputCP( WIN_UTF_ID);
+#endif
 
     if (argc > 1 && (strcmp(argv[1], "test") == 0)) {
         return run_test();
@@ -33,10 +42,12 @@ int main(int argc, char *argv[]) {
                 break;
 
             default:
-                break;
+                continue;
         }
+        correct_input = true;
     }
 
+    correct_input = false;
     while (!correct_input)
     {
         input = get_user_input(prompt_main_menu);
@@ -82,12 +93,9 @@ int main(int argc, char *argv[]) {
                 // Меню с заданиями, согласно варианту
                 break;
             case 0:
-                // Выйти из программы
-                break;
+                return 0;
             default:
-                break;
+                continue;
         }
     }
-
-    return 0;
 }

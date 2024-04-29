@@ -3,7 +3,7 @@
 
 using namespace std;
 
-int get_user_input(char *prompt) {
+int get_user_input(const char *prompt) {
     int input;
 
     if (prompt) {
