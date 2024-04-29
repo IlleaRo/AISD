@@ -8,4 +8,5 @@ add_executable(RGR main.cpp
         graphs/forms.h
         graphs/iterators.h
         ui/test.cpp
-        ui/prompts.cpp)
+        ui/prompts.cpp
+        ui/menu.cpp)
