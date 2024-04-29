@@ -59,8 +59,7 @@ int main(int argc, char *argv[]) {
         correct_input = true;
     }
 
-    correct_input = false;
-    while (!correct_input) {
+    while (true) {
         input = get_user_input(prompt_main_menu);
         switch (input) {
             case 1:
@@ -120,5 +119,6 @@ int main(int argc, char *argv[]) {
             default:
                 continue;
         }
+        anykey();
     }
 }

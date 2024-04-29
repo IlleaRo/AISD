@@ -26,6 +26,10 @@ const char prompt_main_menu[] = "Выберите операцию:\n"
                                     "\t0.  Выйти из программы\n"
                                 "Ввод: ";
 
+const char prompt_continue[] = "Нажмите ENTER, чтобы продолжить";
+
+void anykey();
+
 int get_user_input(const char *prompt);
 
 #endif //RGR_PROMPTS_H

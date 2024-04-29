@@ -13,3 +13,17 @@ int get_user_input(const char *prompt) {
 
     return input;
 }
+
+#ifdef _WIN32
+void anykey()
+{
+    system("pause");
+}
+#else
+void anykey()
+{
+    std::cout << "Нажмите ENTER, чтобы продолжить";
+    std::cout.flush();
+    system("bash -c read");
+}
+#endif
