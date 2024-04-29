@@ -28,11 +28,11 @@ int main() {
     std::cout<<directed_graph<<std::endl;
 
 
-    for (vertex_iterator<vertex<std::string, int>> it = directed_graph.begin(); it != directed_graph.end(); ++it) {
+    for (vertex_iterator<vertex<std::string, int>> it = directed_graph.vertex_begin(); it != directed_graph.vertex_end(); ++it) {
         std::cout<<(*it)->get_index()<<std::endl;
     }
 
-    graph<vertex<std::string, int>, edge<vertex<std::string, int>, double, int>> graph_M(2, NON_DIRECTED, M);
+    graph<vertex<std::string, int>, edge<vertex<std::string, int>, double, int>> graph_M(2, DIRECTED, M);
     std::cout<<graph_M<<std::endl;
 
     vertex<std::string, int> *for_del_d_vertex_1 = graph_M.insert_vertex("d_vertex_2");
@@ -56,12 +56,24 @@ int main() {
 
     graph_M.remove_edge(d_vertex_1, d_vertex_2);
 
-    graph_M.remove_edge(for_del_d_vertex_4, for_del_d_vertex_5);
+    //graph_M.remove_edge(for_del_d_vertex_4, for_del_d_vertex_5);
 
     graph_M.remove_vertex(for_del_d_vertex_1);
 
     std::cout<<graph_M<<std::endl;
 
+
+    edge_iterator_for_v<vertex<std::string, int>, edge<vertex<std::string, int>, double, int>> it = graph_M.edge_v_begin(for_del_d_vertex_4);
+
+    for (; it != graph_M.edge_v_end(for_del_d_vertex_4); ++it) {
+        std::cout<<(*it)->get_weight()<<std::endl;
+    }
+
+    edge_iterator<vertex<std::string, int>, edge<vertex<std::string, int>, double, int>> ite = graph_M.edge_begin();
+
+    for (; ite != graph_M.edge_end(); ++ite) {
+        std::cout<<(*ite)->get_weight()<<std::endl;
+    }
 
     return 0;
 }

@@ -59,6 +59,12 @@ public:
 
     virtual EDGE_T *insert_edge(unsigned long v_index_1, unsigned long v_index_2, EDGE_T *edge) = 0;
 
+    virtual EDGE_T *get_first_edge(unsigned long vertex_index) = 0;
+
+    virtual EDGE_T *get_next_edge(unsigned long vertex_index, EDGE_T *edge) = 0;
+
+    virtual EDGE_T *get_previous_edge(unsigned long vertex_index, EDGE_T *edge) = 0;
+
     friend std::ostream& operator<< <>(std::ostream &os, form_of_graphs<EDGE_T> &plist);
 };
 
@@ -287,6 +293,46 @@ public:
 
         throw std::runtime_error("Edge not found for second vertex!");
     }
+
+    EDGE_T *get_first_edge(unsigned long vertex_index) {
+        if (vertex_index >= vertex_vector.size()) {
+            throw std::runtime_error("Vertex index out of range");
+        }
+
+        return vertex_vector[vertex_index] ? vertex_vector[vertex_index]->edge : nullptr;
+    }
+
+    EDGE_T *get_next_edge(unsigned long vertex_index, EDGE_T *edge) {
+        if (vertex_index >= vertex_vector.size()) {
+            throw std::runtime_error("Vertex index out of range");
+        }
+
+        node *current = vertex_vector[vertex_index];
+        while (current != nullptr) {
+            if (current->edge == edge) {
+                return current->next ? current->next->edge : nullptr;
+            }
+            current = current->next;
+        }
+
+        return nullptr;
+    }
+
+    EDGE_T *get_previous_edge(unsigned long vertex_index, EDGE_T *edge) {
+        if (vertex_index >= vertex_vector.size()) {
+            throw std::runtime_error("Vertex index out of range");
+        }
+
+        node *current = vertex_vector[vertex_index];
+        while (current != nullptr) {
+            if (current->next->edge == edge) {
+                return current->edge;
+            }
+            current = current->next;
+        }
+
+        return nullptr;
+    }
 };
 
 template <class EDGE_T>
@@ -488,6 +534,58 @@ public:
         num_of_edges--;
 
         return true;
+    }
+
+    EDGE_T *get_first_edge(unsigned long vertex_index) {
+        if (vertex_index >= vertex_vector.size()) {
+            throw std::runtime_error("Vertex index out of range");
+        }
+
+        for (unsigned long i = 0; i < vertex_vector.size(); ++i) {
+            if (vertex_vector[vertex_index][i] != nullptr) {
+                return vertex_vector[vertex_index][i];
+            }
+        }
+
+        return nullptr;
+    }
+
+    EDGE_T *get_next_edge(unsigned long vertex_index, EDGE_T *edge) {
+        if (vertex_index >= vertex_vector.size()) {
+            throw std::runtime_error("Vertex index out of range");
+        }
+
+        for (unsigned long i = 0; i < vertex_vector.size(); ++i) {
+            if (vertex_vector[vertex_index][i] == edge) {
+                for (unsigned long j = i + 1; j < vertex_vector.size(); ++j) {
+                    if (vertex_vector[vertex_index][j] != nullptr) {
+                        return vertex_vector[vertex_index][j];
+                    }
+                }
+                return nullptr;
+            }
+        }
+
+        return nullptr;
+    }
+
+    EDGE_T *get_previous_edge(unsigned long vertex_index, EDGE_T *edge) {
+        if (vertex_index >= vertex_vector.size()) {
+            throw std::runtime_error("Vertex index out of range");
+        }
+
+        for (unsigned long i = 0; i < vertex_vector.size(); ++i) {
+            if (vertex_vector[vertex_index][i] == edge) {
+                for (unsigned long j = i - 1; j >= 0; --j) {
+                    if (vertex_vector[vertex_index][j] != nullptr) {
+                        return vertex_vector[vertex_index][j];
+                    }
+                }
+                return nullptr;
+            }
+        }
+
+        return nullptr;
     }
 };
 

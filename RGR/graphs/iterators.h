@@ -2,6 +2,7 @@
 #define RGR_ITERATORS_H
 
 #include <vector>
+#include "graph.h"
 
 template <class VERTEX_T>
 class vertex_iterator {
@@ -32,4 +33,169 @@ public:
         return it == other.it;
     }
 };
+
+template <class VERTEX_T, class EDGE_T>
+class graph;
+
+template <class VERTEX_T, class EDGE_T>
+class edge_iterator_for_v {
+    VERTEX_T *vertex;
+    graph<VERTEX_T, EDGE_T> *graph_ptr;
+    EDGE_T *cur_edge;
+public:
+    edge_iterator_for_v(graph<VERTEX_T, EDGE_T> *graph, VERTEX_T *vertex)
+    : vertex(vertex), graph_ptr(graph) {}
+
+    edge_iterator_for_v(edge_iterator_for_v const &other) {
+        vertex = other.vertex;
+        graph_ptr = other.graph_ptr;
+        cur_edge = other.cur_edge;
+    }
+
+    EDGE_T *operator*() {
+        if (*this == graph_ptr->edge_v_end(vertex)) {
+            throw std::out_of_range("Out of range");
+        }
+
+        return cur_edge;
+    }
+
+    edge_iterator_for_v &operator++() {
+        if (*this == graph_ptr->edge_v_end(vertex)) {
+            throw std::out_of_range("Out of range");
+        }
+
+        cur_edge = graph_ptr->get_next_edge(vertex, cur_edge);
+        return *this;
+    }
+
+    edge_iterator_for_v &operator--() {
+        if (*this == graph_ptr->edge_v_end(vertex)) {
+            throw std::out_of_range("Out of range");
+        }
+
+        cur_edge = graph_ptr->get_prev_edge(vertex, cur_edge);
+        return *this;
+    }
+
+    bool operator!=(const edge_iterator_for_v& other) const {
+        if (vertex != other.vertex) {
+            return true;
+        }
+
+        if (cur_edge != other.cur_edge) {
+            return true;
+        }
+
+        return false;
+    }
+
+    bool operator==(const edge_iterator_for_v& other) const {
+        if (vertex != other.vertex) {
+            return false;
+        }
+
+        if (cur_edge != other.cur_edge) {
+            return false;
+        }
+
+        return true;
+    }
+
+    void set_cur_edge(EDGE_T *new_cur_edge) {
+        cur_edge = new_cur_edge;
+    }
+};
+
+template <class VERTEX_T, class EDGE_T>
+class edge_iterator {
+    VERTEX_T *cur_vertex;
+    graph<VERTEX_T, EDGE_T> *graph_ptr;
+    EDGE_T *cur_edge;
+public:
+    explicit edge_iterator(graph<VERTEX_T, EDGE_T> *graph) : graph_ptr(graph) {}
+
+    EDGE_T *operator*() {
+        if (*this == graph_ptr->edge_end()) {
+            throw std::out_of_range("Out of range");
+        }
+
+        return cur_edge;
+    }
+
+    edge_iterator &operator++() {
+        if (*this == graph_ptr->edge_end()) {
+            throw std::out_of_range("Out of range");
+        }
+
+        if (cur_edge == nullptr) {
+            if (cur_vertex->get_index() == graph_ptr->vertexes.size() - 1) {
+                *this = graph_ptr->edge_end();
+
+                return *this;
+            }
+
+            cur_vertex = graph_ptr->vertexes[cur_vertex->get_index() + 1];
+            cur_edge = graph_ptr->get_first_edge(cur_vertex);
+            return *this;
+        }
+
+        cur_edge = graph_ptr->get_next_edge(cur_vertex, cur_edge);
+        return *this;
+    }
+
+    edge_iterator &operator--() {
+        if (*this == graph_ptr->edge_end()) {
+            throw std::out_of_range("Out of range");
+        }
+
+        if (cur_edge == nullptr) {
+            if (cur_vertex->get_index() == 0) {
+                *this = graph_ptr->edge_end();
+
+                return *this;
+            }
+
+            cur_vertex = graph_ptr->vertexes[cur_vertex->get_index() - 1];
+            cur_edge = graph_ptr->get_last_edge(cur_vertex);
+            return *this;
+        }
+
+        cur_edge = graph_ptr->get_prev_edge(cur_edge);
+        return *this;
+    }
+
+    bool operator!=(const edge_iterator& other) const {
+        if (cur_vertex != other.cur_vertex) {
+            return true;
+        }
+
+        if (cur_edge != other.cur_edge) {
+            return true;
+        }
+
+        return false;
+    }
+
+    bool operator==(const edge_iterator& other) const {
+        if (cur_vertex != other.cur_vertex) {
+            return false;
+        }
+
+        if (cur_edge != other.cur_edge) {
+            return false;
+        }
+
+        return true;
+    }
+
+    void set_cur_edge(EDGE_T *new_cur_edge) {
+        cur_edge = new_cur_edge;
+    }
+
+    void set_cur_vertex(VERTEX_T *new_cur_vertex) {
+        cur_vertex = new_cur_vertex;
+    }
+};
+
 #endif //RGR_ITERATORS_H

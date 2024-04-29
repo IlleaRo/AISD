@@ -23,6 +23,22 @@ class graph {
 protected:
     form_of_graphs <EDGE_T> *form;
     std::vector<VERTEX_T *> vertexes;
+
+    friend class edge_iterator_for_v<VERTEX_T, EDGE_T>;
+    friend class edge_iterator<VERTEX_T, EDGE_T>;
+
+    EDGE_T *get_first_edge(VERTEX_T *vertex) {
+        return form->get_first_edge(vertex->get_index());
+    }
+
+    EDGE_T *get_next_edge(VERTEX_T *vertex, EDGE_T *cur_edge) {
+        return form->get_next_edge(vertex->get_index(), cur_edge);
+    }
+
+    EDGE_T *get_previous_edge(VERTEX_T *vertex, EDGE_T *cur_edge) {
+        return form->get_previous_edge(vertex->get_index(), cur_edge);
+    }
+
 public:
     // Создает пустой L - граф с нулевым числом вершин и ребер
     graph() {
@@ -179,12 +195,40 @@ public:
         return is_removed;
     }
 
-    vertex_iterator<VERTEX_T> begin() {
+    vertex_iterator<VERTEX_T> vertex_begin() {
         return vertex_iterator<VERTEX_T>(vertexes.begin());
     }
 
-    vertex_iterator<VERTEX_T> end() {
+    vertex_iterator<VERTEX_T> vertex_end() {
         return vertex_iterator<VERTEX_T>(vertexes.end());
+    }
+
+    edge_iterator_for_v<VERTEX_T, EDGE_T> edge_v_begin(VERTEX_T *vertex) {
+        edge_iterator_for_v<VERTEX_T, EDGE_T> iter(this, vertex);
+        iter.set_cur_edge(get_first_edge(vertex));
+        return iter;
+    }
+
+    edge_iterator_for_v<VERTEX_T, EDGE_T> edge_v_end(VERTEX_T *vertex) {
+        edge_iterator_for_v<VERTEX_T, EDGE_T> iter(this, vertex);
+        iter.set_cur_edge(nullptr);
+
+        return iter;
+    }
+
+    edge_iterator<VERTEX_T, EDGE_T> edge_begin() {
+        edge_iterator<VERTEX_T, EDGE_T> iter(this);
+        iter.set_cur_vertex(vertexes[0]);
+        iter.set_cur_edge(get_first_edge(vertexes[0]));
+        return iter;
+    }
+
+    edge_iterator<VERTEX_T, EDGE_T> edge_end() {
+        edge_iterator<VERTEX_T, EDGE_T> iter(this);
+        iter.set_cur_vertex(nullptr);
+        iter.set_cur_edge(nullptr);
+
+        return iter;
     }
 
     friend std::ostream& operator<< <>(std::ostream &os, graph<VERTEX_T, EDGE_T> &graph_ptr);
