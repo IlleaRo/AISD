@@ -128,13 +128,26 @@ public:
             throw std::out_of_range("Out of range");
         }
 
-        if ((cur_edge = graph_ptr->get_next_edge(cur_vertex, cur_edge))) {
-            return *this;
-        }
+        next:
+        do {
+            if ((cur_edge = graph_ptr->get_next_edge(cur_vertex, cur_edge))) {
+                if (graph_ptr->get_type() == NON_DIRECTED &&
+                    cur_vertex == cur_edge->get_v2()) {
+                    continue;
+                }
+
+                return *this;
+            }
+        } while (cur_edge);
 
         for (unsigned long i = cur_vertex->get_index() + 1; i < graph_ptr->get_num_of_vertex(); ++i) {
             cur_vertex = graph_ptr->vertexes[i];
             if ((cur_edge = graph_ptr->get_first_edge(cur_vertex))) {
+                // Пропускаем повторные рёбра
+                if (graph_ptr->get_type() == NON_DIRECTED && cur_vertex == cur_edge->get_v2()) {
+                    goto next;
+                }
+
                 return *this;
             }
         }

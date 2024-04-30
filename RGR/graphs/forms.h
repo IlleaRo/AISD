@@ -119,25 +119,8 @@ public:
         }
 
         node *tmp = vertex_vector[v_index_1];
-        if (tmp == nullptr) {
-            node *new_node = new node;
-            new_node->edge = edge;
-            new_node->v2 = v_index_2;
-            new_node->next = nullptr;
-            vertex_vector[v_index_1] = new_node;
 
-            new_node = new node;
-            new_node->edge = edge;
-            new_node->v2 = v_index_1;
-            new_node->next = nullptr;
-            vertex_vector[v_index_2] = new_node;
-
-            num_of_edges++;
-
-            return edge;
-        }
-
-        while (tmp->next) {
+        while (tmp) {
             if (tmp->v2 == v_index_2) {
                 return tmp->edge;
             }
@@ -147,9 +130,8 @@ public:
         node *new_node = new node;
         new_node->edge = edge;
         new_node->v2 = v_index_2;
-        new_node->next = nullptr;
-
-        tmp->next = new_node;
+        new_node->next = vertex_vector[v_index_1];
+        vertex_vector[v_index_1] = new_node;
 
         new_node = new node;
         new_node->edge = edge;

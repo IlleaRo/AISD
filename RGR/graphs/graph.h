@@ -272,6 +272,20 @@ public:
 
         for (VERTEX_T *vertex : vertexes) {
             if ((tmp = get_first_edge(vertex)) != nullptr) {
+                if (get_type() == NON_DIRECTED) {
+                    do {
+                        if (vertex == tmp->get_v2()) {
+                            continue;
+                        }
+
+                        break;
+                    } while ((tmp = get_next_edge(vertex, tmp)));
+
+                    if (tmp == nullptr) {
+                        continue;
+                    }
+                }
+
                 iter.set_cur_vertex(vertex);
                 iter.set_cur_edge(tmp);
 
