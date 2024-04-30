@@ -8,6 +8,7 @@
 
 #include <ostream>
 #include <vector>
+#include <random>
 
 template <class VERTEX_T, class EDGE_T>
 class graph;
@@ -49,7 +50,6 @@ public:
                 this->form = new L_graph_non_directed<EDGE_T>;
             }
         } else {
-            //TODO: M_graph
             if (type == DIRECTED) {
                 this->form = new M_graph_directed<EDGE_T>;
             } else {
@@ -62,7 +62,62 @@ public:
         }
     }
 
-    //graph(unsigned long num_of_vertex, unsigned long num_of_edges, graph_type_e type, graph_form_e form);
+    graph(unsigned long num_of_vertex, unsigned long num_of_edges, graph_type_e type, graph_form_e form) {
+        if (form == L) {
+            if (type == DIRECTED) {
+                this->form = new L_graph_directed<EDGE_T>;
+            } else {
+                this->form = new L_graph_non_directed<EDGE_T>;
+            }
+        } else {
+            if (type == DIRECTED) {
+                this->form = new M_graph_directed<EDGE_T>;
+            } else {
+                this->form = new M_graph_non_directed<EDGE_T>;
+            }
+        }
+
+        for (int i = 0; i < num_of_vertex; ++i) {
+            insert_vertex();
+        }
+
+        if (type == DIRECTED) {
+            if (num_of_edges > num_of_vertex * (num_of_vertex - 1)) {
+                num_of_edges = num_of_vertex * (num_of_vertex - 1);
+            }
+        } else {
+            if (num_of_edges > num_of_vertex * (num_of_vertex - 1) / 2) {
+                num_of_edges = num_of_vertex * (num_of_vertex - 1) / 2;
+            }
+        }
+
+        // Seed with a real random value, if available
+        std::random_device r;
+
+        std::default_random_engine e(r());
+        std::uniform_int_distribution<int> uniform_dist(0, (int)num_of_vertex - 1); // Равномерное распределение
+
+        unsigned long i = 0;
+
+        while (i < num_of_edges) {
+            unsigned long v1 = uniform_dist(e);
+            unsigned long v2 = uniform_dist(e);
+
+            if (v1 == v2) {
+                continue;
+            }
+
+            if (get_edge(vertexes[v1], vertexes[v2]) == nullptr) {
+                insert_edge(vertexes[v1], vertexes[v2]);
+
+                if (type == NON_DIRECTED) {
+                    i+=2;
+                } else {
+                    ++i;
+                }
+            }
+        }
+    }
 
     ~graph() {
 

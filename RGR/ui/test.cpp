@@ -62,5 +62,9 @@ int run_test() {
 
     std::cout<<graph_M<<std::endl;
 
+    graph<vertex<std::string, int>, edge<vertex<std::string, int>, double, int>> graph_M_2(10, 5, NON_DIRECTED, M);
+
+    std::cout<<graph_M_2<<std::endl;
+
     return 0;
 }
