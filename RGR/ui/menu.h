@@ -2,7 +2,11 @@
 #define RGR_MENU_H
 #include "../graphs/graph.h"
 
-typedef graph<vertex<std::string, int>, edge<vertex<std::string, int>, double, int>> example_graph;
+typedef vertex<std::string, int> example_vertex;
+typedef edge<vertex<std::string, int>, double, int> example_edge;
+typedef graph<example_vertex, example_edge> example_graph;
+typedef vertex_iterator<example_vertex> example_vertex_iterator;
+typedef edge_iterator<example_vertex, example_edge> example_edge_iterator;
 
 // 1.
 void menu_get_type(example_graph &pretty_graph, bool use_weights);
@@ -38,9 +42,12 @@ void menu_print_graph(example_graph &pretty_graph, bool use_weights);
 void menu_clear_graph(example_graph &pretty_graph, bool use_weights);
 
 // 12.
-void menu_control_iterator(example_graph &pretty_graph, bool use_weights);
+void menu_control_vertex_iterator(example_graph &pretty_graph, bool use_weights);
 
 // 13.
+void menu_control_edge_iterator(example_graph &pretty_graph, bool use_weights);
+
+// 14.
 void menu_tasks(example_graph &pretty_graph, bool use_weights);
 
 #endif //RGR_MENU_H

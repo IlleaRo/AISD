@@ -1,14 +1,14 @@
 #ifndef RGR_PROMPTS_H
 #define RGR_PROMPTS_H
 
-const char prompt_type[] = "Выберите тип графа:\n"
+const std::string prompt_type = "Выберите тип графа:\n"
                               "\t1. Неориентированный, невзвешенный\n"
                               "\t2. Ориентированный, невзвешенный\n"
                               "\t3. Неориентированный, взвешенный\n"
                               "\t4. Ориентированный, взвешенный\n"
                             "Ввод: ";
 
-const char prompt_main_menu[] = "Выберите операцию:\n"
+const std::string prompt_main_menu = "Выберите операцию:\n"
                                     "\t1.  Получить тип\n"
                                     "\t2.  Получить форму\n"
                                     "\t3.  Получить количество вершин\n"
@@ -21,15 +21,40 @@ const char prompt_main_menu[] = "Выберите операцию:\n"
                                     "\t9.  Удалить ребро\n"
                                     "\t10. Вывести граф\n"
                                     "\t11. Очистить граф\n"
-                                    "\t12. Управление итератором\n"
-                                    "\t13. Меню с заданиями, согласно варианту\n"
+                                    "\t12. Управление итератором вершин\n"
+                                    "\t13. Управление итератором рёбер\n"
+                                    "\t14. Меню с заданиями, согласно варианту\n"
                                     "\t0.  Выйти из программы\n"
                                 "Ввод: ";
 
-const char prompt_continue[] = "Нажмите ENTER, чтобы продолжить";
+const std::string prompt_continue = "Нажмите ENTER, чтобы продолжить";
+
+const std::string prompt_vertex_iter_menu = "Выберите операцию:\n"
+                                               "\t1. Изменить значение\n"
+                                               "\t2. Инкрементировать\n"
+                                               "\t3. Установить в начало\n"
+                                               "\t4. Установить в конец\n"
+                                               "\t0. Выйти в главное меню\n"
+                                            "Ввод: ";
+
+const std::string prompt_edge_iter_menu = "Выберите операцию:\n"
+                                            "\t1. Изменить значение\n"
+                                            "\t2. Инкрементировать\n"
+                                            "\t3. Установить в начало\n"
+                                            "\t4. Установить в конец\n"
+                                            "\t0. Выйти в главное меню\n"
+                                          "Ввод: ";
 
 void anykey();
 
-int get_user_input(const char *prompt);
+template <class Type>
+Type get_user_input(const std::string &prompt) {
+    Type input;
+
+    std::cout << prompt;
+    std::cin >> input;
+
+    return input;
+}
 
 #endif //RGR_PROMPTS_H

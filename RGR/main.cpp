@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
     }
 
     while (!correct_input) {
-        input = get_user_input(prompt_type);
+        input = get_user_input<int>(prompt_type);
         switch (input) {
             case 1:
                 // Неориентированный, невзвешенный
@@ -60,7 +60,7 @@ int main(int argc, char *argv[]) {
     }
 
     while (true) {
-        input = get_user_input(prompt_main_menu);
+        input = get_user_input<int>(prompt_main_menu);
         switch (input) {
             case 1:
                 // Получить тип
@@ -107,10 +107,14 @@ int main(int argc, char *argv[]) {
                 menu_clear_graph(pretty_graph, use_weights);
                 break;
             case 12:
-                // Управление итератором
-                menu_control_iterator(pretty_graph, use_weights);
+                // Управление итератором вершин
+                menu_control_vertex_iterator(pretty_graph, use_weights);
                 break;
             case 13:
+                // Управление итератором рёбер
+                menu_control_edge_iterator(pretty_graph, use_weights);
+                break;
+            case 14:
                 // Меню с заданиями, согласно варианту
                 menu_tasks(pretty_graph, use_weights);
                 break;

@@ -3,17 +3,6 @@
 
 using namespace std;
 
-int get_user_input(const char *prompt) {
-    int input;
-
-    if (prompt) {
-        cout << prompt;
-    }
-    cin >> input;
-
-    return input;
-}
-
 #ifdef _WIN32
 void anykey()
 {
