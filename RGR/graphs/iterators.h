@@ -115,8 +115,7 @@ public:
     explicit edge_iterator(graph<VERTEX_T, EDGE_T> *graph) : graph_ptr(graph), undefined(false) {}
 
     EDGE_T *operator*() {
-        if (undefined) return nullptr;
-        if (*this == graph_ptr->edge_end()) {
+        if (undefined || *this == graph_ptr->edge_end()) {
             throw std::out_of_range("Out of range");
         }
 
@@ -124,7 +123,7 @@ public:
     }
 
     edge_iterator &operator++() {
-        if (undefined) return nullptr;
+        if (undefined) return *this;
         if (*this == graph_ptr->edge_end()) {
             throw std::out_of_range("Out of range");
         }
