@@ -7,25 +7,35 @@
 template <class VERTEX_T>
 class vertex_iterator {
     typename std::vector<VERTEX_T *>::iterator it;
+    bool undefined;
 
 public:
-    explicit vertex_iterator(typename std::vector<VERTEX_T *>::iterator it) : it(it) {}
+    explicit vertex_iterator() : it(), undefined(true) {}
+    explicit vertex_iterator(typename std::vector<VERTEX_T *>::iterator it) : it(it), undefined(false) {}
 
     VERTEX_T *operator*() {
+        if (undefined) return nullptr;
         return *it;
     }
 
     vertex_iterator &operator++() {
+        if (undefined) return *this;
         ++it;
         return *this;
     }
 
     bool operator!=(const vertex_iterator& other) const {
+        if (undefined) return false;
         return it != other.it;
     }
 
     bool operator==(const vertex_iterator& other) const {
+        if (undefined) return false;
         return it == other.it;
+    }
+
+    bool is_undefined() {
+        return undefined;
     }
 };
 
@@ -98,10 +108,14 @@ class edge_iterator {
     VERTEX_T *cur_vertex;
     graph<VERTEX_T, EDGE_T> *graph_ptr;
     EDGE_T *cur_edge;
+    bool undefined;
+
 public:
-    explicit edge_iterator(graph<VERTEX_T, EDGE_T> *graph) : graph_ptr(graph) {}
+    explicit edge_iterator() : graph_ptr(0), undefined(true) {}
+    explicit edge_iterator(graph<VERTEX_T, EDGE_T> *graph) : graph_ptr(graph), undefined(false) {}
 
     EDGE_T *operator*() {
+        if (undefined) return nullptr;
         if (*this == graph_ptr->edge_end()) {
             throw std::out_of_range("Out of range");
         }
@@ -110,6 +124,7 @@ public:
     }
 
     edge_iterator &operator++() {
+        if (undefined) return nullptr;
         if (*this == graph_ptr->edge_end()) {
             throw std::out_of_range("Out of range");
         }
@@ -128,6 +143,7 @@ public:
     }
 
     bool operator!=(const edge_iterator& other) const {
+        if (undefined) return false;
         if (cur_vertex != other.cur_vertex) {
             return true;
         }
@@ -140,6 +156,7 @@ public:
     }
 
     bool operator==(const edge_iterator& other) const {
+        if (undefined) return false;
         if (cur_vertex != other.cur_vertex) {
             return false;
         }
@@ -152,11 +169,17 @@ public:
     }
 
     void set_cur_edge(EDGE_T *new_cur_edge) {
+        if (undefined) return;
         cur_edge = new_cur_edge;
     }
 
     void set_cur_vertex(VERTEX_T *new_cur_vertex) {
+        if (undefined) return;
         cur_vertex = new_cur_vertex;
+    }
+
+    bool is_undefined() {
+        return undefined;
     }
 };
 
