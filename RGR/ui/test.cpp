@@ -62,7 +62,24 @@ int run_test() {
 
     std::cout<<graph_M<<std::endl;
 
-    graph<vertex<std::string, int>, edge<vertex<std::string, int>, double, int>> graph_M_2(10, 5, NON_DIRECTED, M);
+    graph<vertex<std::string, int>, edge<vertex<std::string, int>, double, int>> graph_M_2(10, 5, DIRECTED, L);
+
+    vertex<std::string, int> *d_vertex10 = graph_M_2.insert_vertex("d_vertex_10");
+    vertex<std::string, int> *d_vertex11 = graph_M_2.insert_vertex("d_vertex_11");
+
+    graph_M_2.insert_edge(d_vertex11, d_vertex10);
+
+    std::cout<<graph_M_2<<std::endl;
+
+    graph_M_2.to_matrix_graph();
+
+    std::cout<<graph_M_2<<std::endl;
+
+    graph_M_2.to_list_graph();
+
+    std::cout<<graph_M_2<<std::endl;
+
+    graph_M_2.to_matrix_graph();
 
     std::cout<<graph_M_2<<std::endl;
 

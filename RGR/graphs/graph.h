@@ -291,6 +291,70 @@ public:
         return iter;
     }
 
+    [[nodiscard]] float get_koeff() const {
+        if (get_type() == DIRECTED) {
+            return (float) get_num_of_edges() / (get_num_of_vertex() * (get_num_of_vertex() - 1));
+        } else {
+            return (float) get_num_of_edges() / (get_num_of_vertex() * (get_num_of_vertex() - 1) / 2);
+        }
+    }
+
+    void to_list_graph() {
+        if (get_form() == L) {
+            return;
+        }
+
+        form_of_graphs<EDGE_T> *new_form;
+
+        if (get_type() == DIRECTED) {
+            new_form = new L_graph_directed<EDGE_T>;
+        } else {
+            new_form = new L_graph_non_directed<EDGE_T>;
+        }
+
+        for (VERTEX_T *vertex : vertexes) {
+            new_form->insert_vertex();
+        }
+
+        edge_iterator<VERTEX_T, EDGE_T> iter(this);
+
+        for (iter = edge_begin(); iter != edge_end(); ++iter) {
+            new_form->insert_edge((*iter)->get_v1()->get_index(),
+                                  (*iter)->get_v2()->get_index(), new EDGE_T(**iter));
+        }
+
+        delete form;
+        form = new_form;
+    }
+
+    void to_matrix_graph() {
+        if (get_form() == M) {
+            return;
+        }
+
+        form_of_graphs<EDGE_T> *new_form;
+
+        if (get_type() == DIRECTED) {
+            new_form = new M_graph_directed<EDGE_T>;
+        } else {
+            new_form = new M_graph_non_directed<EDGE_T>;
+        }
+
+        for (VERTEX_T *vertex : vertexes) {
+            new_form->insert_vertex();
+        }
+
+        edge_iterator<VERTEX_T, EDGE_T> iter(this);
+
+        for (iter = edge_begin(); iter != edge_end(); ++iter) {
+            new_form->insert_edge((*iter)->get_v1()->get_index(),
+                                  (*iter)->get_v2()->get_index(), new EDGE_T(**iter));
+        }
+
+        delete form;
+        form = new_form;
+    }
+
     friend std::ostream& operator<< <>(std::ostream &os, graph<VERTEX_T, EDGE_T> &graph_ptr);
 };
 

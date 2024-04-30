@@ -128,10 +128,13 @@ public:
             throw std::out_of_range("Out of range");
         }
 
-        for (unsigned long i = cur_vertex->get_index(); i < graph_ptr->vertexes.size() - 1; ++i) {
-            if ((cur_edge = graph_ptr->get_next_edge(graph_ptr->vertexes[i], cur_edge))) {
-                cur_vertex = graph_ptr->vertexes[i];
+        if ((cur_edge = graph_ptr->get_next_edge(cur_vertex, cur_edge))) {
+            return *this;
+        }
 
+        for (unsigned long i = cur_vertex->get_index() + 1; i < graph_ptr->get_num_of_vertex(); ++i) {
+            cur_vertex = graph_ptr->vertexes[i];
+            if ((cur_edge = graph_ptr->get_first_edge(cur_vertex))) {
                 return *this;
             }
         }
