@@ -5,6 +5,7 @@
 #include "GQ.h"
 
 #include <vector>
+#include <algorithm>
 
 
 template <class VERTEX_T, class EDGE_T>
@@ -32,10 +33,6 @@ class shortest_way : public SEARCH<VERTEX_T, EDGE_T>{
                 if (ord[(*iter)->get_v2()->get_index()] == -1) {
                     queue.put(EDGE_T(edge.get_v2(), (*iter)->get_v2()));
                     ord[(*iter)->get_v2()->get_index()] = cnt++;
-                } else {
-                    if (st[(*iter)->get_v2()->get_index()] == -1) {
-                        queue.update(EDGE_T(edge.get_v2(), (*iter)->get_v2()));
-                    }
                 }
             }
         }
@@ -52,10 +49,40 @@ public:
         }
 
         search();
+        for (unsigned long i = 0; i < graph_ptr->get_num_of_vertex(); i++) {
+            shortest(i);
+        }
     }
 
     [[nodiscard]] unsigned long ST(const unsigned long v) const {
         return st[v];
+    }
+
+    void shortest(unsigned long to) {
+        std::vector<unsigned long> path;
+
+        unsigned long cur = to;         //текущая вершина пути
+        path.push_back(cur);
+
+        while (ST(cur) != cur) {   //пока существует предыдущая вершина
+            cur = ST(cur);        //переходим в неё
+            path.push_back(cur);    //и дописываем к пути
+        }
+
+
+
+        std::reverse(path.begin(), path.end());
+
+        std::cout<<to<<" : ";
+        if (ST(cur) != 0) {
+            std::cout<<"НЕУДАЧА\n";
+            return;
+        }
+        for (unsigned long v: path) {
+            std::cout << v << " ";
+        }
+
+        std::cout<<std::endl;
     }
 };
 
