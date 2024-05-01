@@ -9,4 +9,7 @@ add_executable(RGR main.cpp
         graphs/iterators.h
         ui/test.cpp
         ui/prompts.cpp
-        ui/menu.cpp)
+        ui/menu.cpp
+        tasks/task_2/shortest_way.h
+        tasks/task_2/GQ.h
+        tasks/task_2/SEARCH.h)

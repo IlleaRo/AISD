@@ -1,6 +1,7 @@
 #include "test.h"
 #include "menu.h"
 #include "../graphs/graph.h"
+#include "../tasks/task_2/shortest_way.h"
 
 #define TEST_EDGE_REMOVAL (1)
 #define TEST_EDGE_TYPE NON_DIRECTED
@@ -133,6 +134,9 @@ int run_test() {
     graph_M_2.to_matrix_graph();
 
     std::cout<<graph_M_2<<std::endl;
+
+    shortest_way shortest_way(&graph_M_2);
+
 #endif
     return 0;
 }
