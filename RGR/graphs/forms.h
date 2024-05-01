@@ -74,7 +74,7 @@ protected:
     class node {
     public:
         EDGE_T *edge;
-        unsigned int v2;
+        unsigned long v2;
         node *next;
     };
 
@@ -149,15 +149,12 @@ public:
             return false;
         }
 
-        EDGE_T *to_remove_edge = nullptr;
-
         for (unsigned int i = 0; i < vertex_vector.size(); ++i) {
             if (i == vertex_index) {
                 node *current = vertex_vector[i];
                 while (current != nullptr) {
                     node *temp = current;
                     current = current->next;
-                    to_remove_edge = temp->edge;
                     delete temp;
                 }
                 continue;
@@ -172,6 +169,9 @@ public:
                     if (current->v2 == vertex_index) {
                         if (current == vertex_vector[i]) {
                             vertex_vector[i] = current->next;
+                            if (form_of_graphs<EDGE_T>::type == DIRECTED) {
+                                delete current->edge;
+                            }
                             delete current;
                             current = vertex_vector[i];
                             continue;
@@ -179,7 +179,10 @@ public:
 
                         node *temp = current;
                         prev->next = current->next;
+                        current = current->next;
+                        delete temp->edge;
                         delete temp;
+                        continue;
                     } else if (current->v2 > vertex_index) {
                         current->v2--;
                     }
@@ -191,7 +194,6 @@ public:
         }
 
         vertex_vector.erase(vertex_vector.begin() + vertex_index);
-        delete to_remove_edge;
 
         return true;
     }
