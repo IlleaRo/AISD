@@ -13,6 +13,7 @@ protected:
     E_DATA_T data; // Данные, связанные с ребром
 
 public:
+    edge() : v1(nullptr), v2(nullptr), weight(0) {};
     edge(VERTEX_T *v1, VERTEX_T *v2) : v1(v1), v2(v2), weight(0) {};
     edge(VERTEX_T *v1, VERTEX_T *v2, E_WEIGHT_T weight) : v1(v1), v2(v2), weight(weight) {};
 

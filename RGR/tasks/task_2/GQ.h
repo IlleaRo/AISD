@@ -5,7 +5,7 @@
 
 #include "GQ.h"
 #include "SEARCH.h"
-
+// Рандомизированная очередь
 template <class ITEM>
 class GQ {
     std::vector<ITEM> s;
@@ -23,7 +23,7 @@ public:
         s[N++] = item;
     }
 
-    [[nodiscard]] ITEM &get() {
+    [[nodiscard]] ITEM get() {
         unsigned long i = N * rand()/(1.0 + RAND_MAX);
         ITEM tmp = s[i];
         s[i] = s[N-1];

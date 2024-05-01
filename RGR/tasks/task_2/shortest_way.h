@@ -54,7 +54,7 @@ public:
         search();
     }
 
-    [[nodiscard]] int ST(const int v) const {
+    [[nodiscard]] unsigned long ST(const unsigned long v) const {
         return st[v];
     }
 };

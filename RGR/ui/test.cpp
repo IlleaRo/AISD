@@ -114,7 +114,7 @@ int run_test() {
 
     std::cout<<graph_M<<std::endl;
 
-    graph<vertex<std::string, int>, edge<vertex<std::string, int>, double, int>> graph_M_2(10, 13, NON_DIRECTED, L);
+    graph<vertex<std::string, int>, edge<vertex<std::string, int>, double, int>> graph_M_2(10, 13, DIRECTED, L);
 
     vertex<std::string, int> *d_vertex10 = graph_M_2.insert_vertex("d_vertex_10");
     vertex<std::string, int> *d_vertex11 = graph_M_2.insert_vertex("d_vertex_11");
@@ -136,6 +136,10 @@ int run_test() {
     std::cout<<graph_M_2<<std::endl;
 
     shortest_way shortest_way(&graph_M_2);
+
+    for (unsigned long i = 0; i < graph_M_2.get_num_of_vertex(); ++i) {
+        std::cout<<"ST("<<i<<") = "<<shortest_way.ST(i)<<std::endl;
+    }
 
 #endif
     return 0;
