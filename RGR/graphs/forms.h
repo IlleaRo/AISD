@@ -171,6 +171,7 @@ public:
                             vertex_vector[i] = current->next;
                             if (form_of_graphs<EDGE_T>::type == DIRECTED) {
                                 delete current->edge;
+                                num_of_edges--;
                             }
                             delete current;
                             current = vertex_vector[i];
@@ -180,7 +181,10 @@ public:
                         node *temp = current;
                         prev->next = current->next;
                         current = current->next;
+
                         delete temp->edge;
+                        num_of_edges--;
+
                         delete temp;
                         continue;
                     } else if (current->v2 > vertex_index) {
