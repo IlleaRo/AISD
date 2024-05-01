@@ -16,7 +16,7 @@ protected:
 
     void search() {
         for (vertex_iterator iter = graph_ptr->vertex_begin(); iter != graph_ptr->vertex_end(); ++iter) {
-            if ((*iter)->get_index() == -1) {
+            if (ord[(*iter)->get_index()] == -1) {
                 searchC(EDGE_T(*iter, *iter));
             }
         }
