@@ -299,7 +299,22 @@ void menu_control_edge_iterator(example_graph &pretty_graph, bool use_weights) {
     }
 }
 
+static void menu_weighted_task(example_graph &pretty_graph) {
+    // сюда вторая задача
+}
+
+static void menu_nonweighted_task(example_graph &pretty_graph) {
+    // сюда вторая задача
+}
+
 // 16.
 void menu_tasks(example_graph &pretty_graph, bool use_weights) {
-    // TODO: implement menu_tasks
+    if (use_weights)
+    {
+        menu_weighted_task(pretty_graph);
+    }
+    else
+    {
+        menu_nonweighted_task(pretty_graph);
+    }
 }
