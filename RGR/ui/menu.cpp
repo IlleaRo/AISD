@@ -103,11 +103,22 @@ void menu_print_graph(example_graph &pretty_graph, bool use_weights) {
 }
 
 // 11.
+void menu_print_vertex(example_graph &pretty_graph, bool use_weights) {
+    example_vertex_iterator iter = pretty_graph.vertex_begin();
+
+    while (iter != pretty_graph.vertex_end())
+    {
+        cout << (*iter)->get_index() << ". Данные: " << (*iter)->get_data() << " Имя: " << (*iter)->get_name() << endl;
+        ++iter;
+    }
+}
+
+// 12.
 void menu_clear_graph(example_graph &pretty_graph, bool use_weights) {
     // TODO: API для очистки графа? в задании его нет, но в меню вроде полезная функция... может сделать итератором?
 }
 
-// 12. TODO: проверить работоспособность
+// 13. TODO: проверить работоспособность
 void menu_control_vertex_iterator(example_graph &pretty_graph, bool use_weights) {
     int option = 1;
 
@@ -152,7 +163,7 @@ void menu_control_vertex_iterator(example_graph &pretty_graph, bool use_weights)
     }
 }
 
-// 13. TODO: проверить работоспособность
+// 14. TODO: проверить работоспособность
 void menu_control_edge_iterator(example_graph &pretty_graph, bool use_weights) {
     int option = 1;
 
@@ -194,7 +205,7 @@ void menu_control_edge_iterator(example_graph &pretty_graph, bool use_weights) {
     }
 }
 
-// 14.
+// 15.
 void menu_tasks(example_graph &pretty_graph, bool use_weights) {
     // TODO: implement menu_tasks
 }

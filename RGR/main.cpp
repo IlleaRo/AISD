@@ -59,6 +59,9 @@ int main(int argc, char *argv[]) {
         correct_input = true;
     }
 
+    pretty_graph.insert_vertex();
+    pretty_graph.insert_vertex("Hello");
+
     while (true) {
         input = get_user_input<int>(prompt_main_menu);
         switch (input) {
@@ -103,18 +106,22 @@ int main(int argc, char *argv[]) {
                 menu_print_graph(pretty_graph, use_weights);
                 break;
             case 11:
+                // Вывести список вершин
+                menu_print_vertex(pretty_graph, use_weights);
+                break;
+            case 12:
                 // Очистить граф
                 menu_clear_graph(pretty_graph, use_weights);
                 break;
-            case 12:
+            case 13:
                 // Управление итератором вершин
                 menu_control_vertex_iterator(pretty_graph, use_weights);
                 break;
-            case 13:
+            case 14:
                 // Управление итератором рёбер
                 menu_control_edge_iterator(pretty_graph, use_weights);
                 break;
-            case 14:
+            case 15:
                 // Меню с заданиями, согласно варианту
                 menu_tasks(pretty_graph, use_weights);
                 break;
