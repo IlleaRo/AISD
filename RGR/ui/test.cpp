@@ -6,6 +6,9 @@ int run_test() {
     pretty_graph.insert_vertex();
     pretty_graph.insert_vertex("Hello");
 
+    std::cout << "Вершина 0: " << pretty_graph.get_vertex(0)->get_name() << std::endl;
+    std::cout << "Вершина 1: " << pretty_graph.get_vertex(1)->get_name() << std::endl;
+
     vertex<std::string, int> *ptr_1 = pretty_graph.insert_vertex();
     vertex<std::string, int> *ptr_2 = pretty_graph.insert_vertex("Hello_2");
     pretty_graph.insert_edge(ptr_1, ptr_2);

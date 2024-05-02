@@ -210,6 +210,14 @@ public:
         return form->get_edge(v1->get_index(), v2->get_index());
     }
 
+    VERTEX_T *get_vertex(size_t idx) {
+        if (idx > this->vertexes.size()) {
+            return nullptr;
+        }
+
+        return this->vertexes[idx];
+    }
+
     // Удаляет ребро, соединяющее вершины, заданные адресами дескрипторов v1 и v2
     bool remove_edge(VERTEX_T *v1, VERTEX_T *v2) {
         if (v1 == nullptr || v2 == nullptr) {
