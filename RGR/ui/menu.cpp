@@ -257,7 +257,7 @@ void menu_control_vertex_iterator(example_graph &pretty_graph, bool use_weights)
     }
 }
 
-// 15. TODO: починить итераторы рёбер
+// 15.
 void menu_control_edge_iterator(example_graph &pretty_graph, bool use_weights) {
     int option = 1;
 
