@@ -109,7 +109,17 @@ void menu_insert_edge(example_graph &pretty_graph, bool use_weights) {
 
 // 7.
 void menu_get_vertex(example_graph &pretty_graph, bool use_weights) {
-    // TODO: то же, что и сверху
+    example_vertex *vertex;
+    size_t index = get_user_input<size_t>("Введите индекс вершины: ");
+
+    vertex = pretty_graph.get_vertex(index);
+
+    cout << "Адрес: " << vertex << endl;
+    if (vertex)
+    {
+        cout << "Данные: " << vertex->get_data() << endl;
+        cout << "Имя: " << vertex->get_name() << endl;
+    }
 }
 
 // 8.
