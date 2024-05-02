@@ -98,7 +98,7 @@ void menu_insert_edge(example_graph &pretty_graph, bool use_weights) {
 
     if (use_weights) {
         weight = get_user_input<int>("Введите вес ребра: ");
-        pretty_graph.insert_edge(vertex1, vertex2, weight);
+        edge = pretty_graph.insert_edge(vertex1, vertex2, weight);
     }
     else {
         edge = pretty_graph.insert_edge(vertex1, vertex2);
