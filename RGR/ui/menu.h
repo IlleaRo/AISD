@@ -3,7 +3,7 @@
 #include "../graphs/graph.h"
 
 typedef vertex<std::string, int> example_vertex;
-typedef edge<vertex<std::string, int>, double, int> example_edge;
+typedef edge<vertex<std::string, int>, int, int> example_edge;
 typedef graph<example_vertex, example_edge> example_graph;
 typedef vertex_iterator<example_vertex> example_vertex_iterator;
 typedef edge_iterator<example_vertex, example_edge> example_edge_iterator;

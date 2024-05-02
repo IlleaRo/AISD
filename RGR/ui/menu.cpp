@@ -75,10 +75,36 @@ void menu_insert_vertex(example_graph &pretty_graph, bool use_weights) {
 
 // 6.
 void menu_insert_edge(example_graph &pretty_graph, bool use_weights) {
+    int weight;
     example_vertex *vertex1, *vertex2;
-    string name = get_user_input<string>("Введите имя первой вершины: ");
+    example_edge *edge;
+    size_t v1_index, v2_index;
 
-    // TODO: сделать API для получения вершины по имени (привет хэш-таблицам)
+    v1_index = get_user_input<size_t>("Введите индекс первой вершины: ");
+    vertex1 = pretty_graph.get_vertex(v1_index);
+
+    if (!vertex1) {
+        cout << "Такой вершины нет" << endl;
+        return;
+    }
+
+    v2_index = get_user_input<size_t>("Введите индекс второй вершины: ");
+    vertex2 = pretty_graph.get_vertex(v2_index);
+
+    if (!vertex2) {
+        cout << "Такой вершины нет" << endl;
+        return;
+    }
+
+    if (use_weights) {
+        weight = get_user_input<int>("Введите вес ребра: ");
+        pretty_graph.insert_edge(vertex1, vertex2, weight);
+    }
+    else {
+        edge = pretty_graph.insert_edge(vertex1, vertex2);
+    }
+
+    cout << edge << endl;
 }
 
 // 7.

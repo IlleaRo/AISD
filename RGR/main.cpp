@@ -13,8 +13,6 @@
 #define WIN_UTF_ID 65001
 #define GRAPH_TYPE L // TODO: надо бы в рантайме разрешить указывать тип
 
-typedef graph<vertex<std::string, int>, edge<vertex<std::string, int>, double, int>> example_graph;
-
 int main(int argc, char *argv[]) {
     int input;
     bool use_weights;
