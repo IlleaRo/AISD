@@ -36,13 +36,7 @@ protected:
         return form->get_next_edge(vertex->get_index(), cur_edge);
     }
 
-public:
-    // Создает пустой L - граф с нулевым числом вершин и ребер
-    graph() {
-        form = new L_graph_non_directed<EDGE_T>;
-    };
-
-    graph(unsigned long num_of_vertex, graph_type_e type, graph_form_e form) {
+    void set_form(unsigned long num_of_vertex, graph_type_e type, graph_form_e form) {
         if (form == L) {
             if (type == DIRECTED) {
                 this->form = new L_graph_directed<EDGE_T>;
@@ -60,6 +54,16 @@ public:
         for (int i = 0; i < num_of_vertex; ++i) {
             insert_vertex();
         }
+    }
+
+public:
+    // Создает пустой L - граф с нулевым числом вершин и ребер
+    graph() {
+        form = new L_graph_non_directed<EDGE_T>;
+    };
+
+    graph(unsigned long num_of_vertex, graph_type_e type, graph_form_e form) {
+        set_form(num_of_vertex, type, form);
     }
 
     graph(unsigned long num_of_vertex, unsigned long num_of_edges, graph_type_e type, graph_form_e form) {
@@ -138,6 +142,18 @@ public:
     // Возвращает форму представления графа (L - матрица смежности / M - матрица инцидентности)
     graph_form_e get_form() {
         return form->get_form();
+    }
+
+    void clear() {
+        form_of_graphs <EDGE_T> *temp = form;
+        set_form(0, form->get_type(), form->get_form());
+        delete temp;
+
+        for (VERTEX_T *vertex : vertexes) {
+            delete vertex;
+        }
+
+        vertexes.clear();
     }
 
     // Возвращает число вершин в графе

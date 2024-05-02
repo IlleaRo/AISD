@@ -180,7 +180,7 @@ void menu_print_vertex(example_graph &pretty_graph, bool use_weights) {
 
 // 12.
 void menu_clear_graph(example_graph &pretty_graph, bool use_weights) {
-    // TODO: API для очистки графа? в задании его нет, но в меню вроде полезная функция... может сделать итератором?
+    pretty_graph.clear();
 }
 
 // 13. TODO: проверить работоспособность
