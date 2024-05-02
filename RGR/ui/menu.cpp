@@ -124,8 +124,37 @@ void menu_get_vertex(example_graph &pretty_graph, bool use_weights) {
 
 // 8.
 void menu_get_edge(example_graph &pretty_graph, bool use_weights) {
-    // TODO: почему публично торчат методы, которые требуют вершины, но при этом нет публичных методов для получения
-    //  вершин? тупое задание
+    example_vertex *vertex1, *vertex2;
+    example_edge *edge;
+    size_t v1_index, v2_index;
+
+    v1_index = get_user_input<size_t>("Введите индекс первой вершины: ");
+    vertex1 = pretty_graph.get_vertex(v1_index);
+
+    if (!vertex1) {
+        cout << "Такой вершины нет" << endl;
+        return;
+    }
+
+    v2_index = get_user_input<size_t>("Введите индекс второй вершины: ");
+    vertex2 = pretty_graph.get_vertex(v2_index);
+
+    if (!vertex2) {
+        cout << "Такой вершины нет" << endl;
+        return;
+    }
+
+    edge = pretty_graph.get_edge(vertex1, vertex2);
+
+    cout << "Адрес: " << edge << endl;
+    if (edge)
+    {
+        cout << "Данные: " << edge->get_data() << endl;
+        if (use_weights)
+        {
+            cout << "Вес: " << edge->get_weight() << endl;
+        }
+    }
 }
 
 // 9.
