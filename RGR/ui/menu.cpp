@@ -1,6 +1,7 @@
 #include <iostream>
 #include "menu.h"
 #include "prompts.h"
+#include "../tasks/task_2/PFS.h"
 
 using namespace std;
 
@@ -428,8 +429,30 @@ static void menu_weighted_task(example_graph *pretty_graph) {
     // сюда вторая задача
 }
 
-static void menu_nonweighted_task(example_graph *pretty_graph) {
-    // сюда вторая задача
+static void menu_nonweighted_task(example_graph &pretty_graph) {
+    PFS<example_vertex, example_edge> pfs(&pretty_graph);
+
+    int decision;
+
+    while (true) {
+        decision = get_user_input<int>(task_2_menu);
+        switch (decision)
+        {
+            case 1:
+                pfs.restart();
+                break;
+            case 2:
+                pfs.result();
+                break;
+            case 3:
+                pfs.result();
+                break;
+            case 0:
+                return;
+            default:
+                continue;
+        }
+    }
 }
 
 // 19.
