@@ -10,6 +10,6 @@ add_executable(RGR main.cpp
         ui/test.cpp
         ui/prompts.cpp
         ui/menu.cpp
-        tasks/task_2/shortest_way.h
-        tasks/task_2/GQ.h
+        tasks/task_2/PFS.h
+        tasks/task_2/randomized_queue.h
         tasks/task_2/SEARCH.h)

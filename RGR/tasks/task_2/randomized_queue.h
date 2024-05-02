@@ -3,17 +3,13 @@
 
 #include <vector>
 
-#include "GQ.h"
-#include "SEARCH.h"
 // Рандомизированная очередь
 template <class ITEM>
-class GQ {
+class randomized_queue {
     std::vector<ITEM> s;
     unsigned long N;
 public:
-    explicit GQ(const unsigned long max_N) : s(max_N + 1), N(0) {}
-
-    static void update (ITEM x) {}
+    explicit randomized_queue(const unsigned long max_N) : s(max_N + 1), N(0) {}
 
     [[nodiscard]] bool is_empty() const {
         return N == 0;

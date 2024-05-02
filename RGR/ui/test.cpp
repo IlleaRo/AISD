@@ -1,7 +1,7 @@
 #include "test.h"
 #include "menu.h"
 #include "../graphs/graph.h"
-#include "../tasks/task_2/shortest_way.h"
+#include "../tasks/task_2/PFS.h"
 
 #define TEST_EDGE_REMOVAL (1)
 #define TEST_EDGE_TYPE NON_DIRECTED
@@ -114,12 +114,13 @@ int run_test() {
 
     std::cout<<graph_M<<std::endl;
 
-    graph<vertex<std::string, int>, edge<vertex<std::string, int>, double, int>> graph_M_2(10, 13, DIRECTED, L);
+    graph<vertex<std::string, int>, edge<vertex<std::string, int>, double, int>> graph_M_2(10, 15, DIRECTED, L);
 
     vertex<std::string, int> *d_vertex10 = graph_M_2.insert_vertex("d_vertex_10");
     vertex<std::string, int> *d_vertex11 = graph_M_2.insert_vertex("d_vertex_11");
 
     graph_M_2.insert_edge(d_vertex11, d_vertex10);
+    graph_M_2.insert_edge(d_vertex10, d_vertex10);
 
     std::cout<<graph_M_2<<std::endl;
 
@@ -135,11 +136,20 @@ int run_test() {
 
     std::cout<<graph_M_2<<std::endl;
 
-    shortest_way shortest_way(&graph_M_2);
+    PFS shortest_way(&graph_M_2);
 
-    for (unsigned long i = 0; i < graph_M_2.get_num_of_vertex(); ++i) {
-        std::cout<<"ST("<<i<<") = "<<shortest_way.ST(i)<<std::endl;
-    }
+    shortest_way.result();
+
+    PFS shortest_way_2(shortest_way);
+
+    shortest_way.result();
+
+    std::cout<<directed_graph;
+    shortest_way_2.set_graph(&directed_graph);
+
+    shortest_way_2.restart();
+    shortest_way_2.result();
+
 
 #endif
     return 0;
