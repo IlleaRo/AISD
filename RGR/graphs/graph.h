@@ -250,7 +250,20 @@ public:
             return false;
         }
 
-        unsigned long index = vertex_ptr->get_index();
+        size_t index = vertex_ptr->get_index();
+
+
+        return remove_vertex(index);
+    }
+
+    // Удаляет вершину из графа по её индексу
+    bool remove_vertex(size_t index) {
+        VERTEX_T *vertex_ptr;
+        if (index >= vertexes.size()) {
+            return false;
+        }
+
+        vertex_ptr = vertexes[index];
 
         bool is_removed;
 

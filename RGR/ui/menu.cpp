@@ -159,7 +159,10 @@ void menu_get_edge(example_graph &pretty_graph, bool use_weights) {
 
 // 9.
 void menu_delete_vertex(example_graph &pretty_graph, bool use_weights) {
-    // TODO: парни, вы издеваетесь?
+    example_vertex *vertex;
+    size_t index = get_user_input<size_t>("Введите индекс вершины: ");
+
+    cout << "Результат: " << pretty_graph.remove_vertex(index) << endl;
 }
 
 // 10.
