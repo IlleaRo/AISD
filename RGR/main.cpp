@@ -111,26 +111,30 @@ int main(int argc, char *argv[]) {
                 menu_delete_vertex(pretty_graph, use_weights);
                 break;
             case 10:
+                // Удалить ребро
+                menu_delete_edge(pretty_graph, use_weights);
+                break;
+            case 11:
                 // Вывести граф
                 menu_print_graph(pretty_graph, use_weights);
                 break;
-            case 11:
+            case 12:
                 // Вывести список вершин
                 menu_print_vertex(pretty_graph, use_weights);
                 break;
-            case 12:
+            case 13:
                 // Очистить граф
                 menu_clear_graph(pretty_graph, use_weights);
                 break;
-            case 13:
+            case 14:
                 // Управление итератором вершин
                 menu_control_vertex_iterator(pretty_graph, use_weights);
                 break;
-            case 14:
+            case 15:
                 // Управление итератором рёбер
                 menu_control_edge_iterator(pretty_graph, use_weights);
                 break;
-            case 15:
+            case 16:
                 // Меню с заданиями, согласно варианту
                 menu_tasks(pretty_graph, use_weights);
                 break;

@@ -166,11 +166,36 @@ void menu_delete_vertex(example_graph &pretty_graph, bool use_weights) {
 }
 
 // 10.
+void menu_delete_edge(example_graph &pretty_graph, bool use_weights) {
+    example_vertex *vertex1, *vertex2;
+    example_edge *edge;
+    size_t v1_index, v2_index;
+
+    v1_index = get_user_input<size_t>("Введите индекс первой вершины: ");
+    vertex1 = pretty_graph.get_vertex(v1_index);
+
+    if (!vertex1) {
+        cout << "Такой вершины нет" << endl;
+        return;
+    }
+
+    v2_index = get_user_input<size_t>("Введите индекс второй вершины: ");
+    vertex2 = pretty_graph.get_vertex(v2_index);
+
+    if (!vertex2) {
+        cout << "Такой вершины нет" << endl;
+        return;
+    }
+
+    cout << "Результат: " << pretty_graph.remove_edge(vertex1, vertex2) << endl;
+}
+
+// 11.
 void menu_print_graph(example_graph &pretty_graph, bool use_weights) {
     cout << pretty_graph << endl;
 }
 
-// 11.
+// 12.
 void menu_print_vertex(example_graph &pretty_graph, bool use_weights) {
     example_vertex_iterator iter = pretty_graph.vertex_begin();
 
@@ -181,12 +206,12 @@ void menu_print_vertex(example_graph &pretty_graph, bool use_weights) {
     }
 }
 
-// 12.
+// 13.
 void menu_clear_graph(example_graph &pretty_graph, bool use_weights) {
     pretty_graph.clear();
 }
 
-// 13.
+// 14.
 void menu_control_vertex_iterator(example_graph &pretty_graph, bool use_weights) {
     int option = 1;
 
@@ -232,7 +257,7 @@ void menu_control_vertex_iterator(example_graph &pretty_graph, bool use_weights)
     }
 }
 
-// 14. TODO: починить итераторы рёбер
+// 15. TODO: починить итераторы рёбер
 void menu_control_edge_iterator(example_graph &pretty_graph, bool use_weights) {
     int option = 1;
 
@@ -274,7 +299,7 @@ void menu_control_edge_iterator(example_graph &pretty_graph, bool use_weights) {
     }
 }
 
-// 15.
+// 16.
 void menu_tasks(example_graph &pretty_graph, bool use_weights) {
     // TODO: implement menu_tasks
 }
