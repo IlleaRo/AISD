@@ -9,9 +9,8 @@ protected:
     NAME_T name; // Имя вершины
     DATA_T data; // Хранимые данные
 public:
-    vertex() : index(-1){};
     explicit vertex(unsigned long index) : index(index){};
-    explicit vertex(NAME_T name) : index(-1), name(name){};
+    explicit vertex(unsigned long index, NAME_T name) : index(index), name(name){};
 
     [[nodiscard]] unsigned long get_index() const {
         return index;
