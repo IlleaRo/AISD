@@ -183,7 +183,7 @@ void menu_clear_graph(example_graph &pretty_graph, bool use_weights) {
     pretty_graph.clear();
 }
 
-// 13. TODO: проверить работоспособность
+// 13.
 void menu_control_vertex_iterator(example_graph &pretty_graph, bool use_weights) {
     int option = 1;
 
@@ -192,11 +192,12 @@ void menu_control_vertex_iterator(example_graph &pretty_graph, bool use_weights)
         return;
     }
 
-    if (menu_vertex_iterator.is_undefined()) {
-        menu_vertex_iterator = pretty_graph.vertex_begin();
-    }
-
     while (true) {
+        if (menu_vertex_iterator.is_undefined() || menu_vertex_iterator == pretty_graph.vertex_end()) {
+            cout << "Итератор не установлен, установка итератора в начало" << endl;
+            menu_vertex_iterator = pretty_graph.vertex_begin();
+        }
+
         cout << "Имя итератора: " << (*menu_vertex_iterator)->get_name() << endl;
         cout << "Значение итератора: " << (*menu_vertex_iterator)->get_data() << endl;
 
@@ -217,7 +218,7 @@ void menu_control_vertex_iterator(example_graph &pretty_graph, bool use_weights)
                 break;
             case 4:
                 // Установить в конец
-                menu_vertex_iterator = pretty_graph.vertex_end();
+                menu_vertex_iterator = pretty_graph.vertex_end(); // TODO: есть ли в этом смысл?
                 break;
             case 0:
                 return;
@@ -228,7 +229,7 @@ void menu_control_vertex_iterator(example_graph &pretty_graph, bool use_weights)
     }
 }
 
-// 14. TODO: проверить работоспособность
+// 14. TODO: починить итераторы рёбер
 void menu_control_edge_iterator(example_graph &pretty_graph, bool use_weights) {
     int option = 1;
 
@@ -237,14 +238,14 @@ void menu_control_edge_iterator(example_graph &pretty_graph, bool use_weights) {
         return;
     }
 
-    if (menu_edge_iterator.is_undefined()) {
-        menu_edge_iterator = pretty_graph.edge_begin();
-    }
-
     while (true) {
+        if (menu_edge_iterator.is_undefined() || menu_edge_iterator == pretty_graph.edge_end()) {
+            cout << "Итератор не установлен, установка итератора в начало" << endl;
+            menu_edge_iterator = pretty_graph.edge_begin();
+        }
         cout << "Имя первой вершины: " << (*menu_edge_iterator)->get_v1()->get_name() << endl;
         cout << "Имя второй вершины: " << (*menu_edge_iterator)->get_v2()->get_name() << endl;
-        cout << "Значение итератора: " << (int) (*menu_edge_iterator)->get_data() << endl;
+        cout << "Значение итератора: " << (*menu_edge_iterator)->get_data() << endl;
 
         option = get_user_input<int>(prompt_edge_iter_menu);
         switch (option)
@@ -259,7 +260,7 @@ void menu_control_edge_iterator(example_graph &pretty_graph, bool use_weights) {
                 break;
             case 3:
                 // Установить в конец
-                menu_edge_iterator = pretty_graph.edge_end();
+                menu_edge_iterator = pretty_graph.edge_end(); // TODO: есть ли в этом смысл?
                 break;
             case 0:
                 return;

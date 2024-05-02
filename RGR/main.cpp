@@ -57,8 +57,19 @@ int main(int argc, char *argv[]) {
         correct_input = true;
     }
 
-    pretty_graph.insert_vertex();
-    pretty_graph.insert_vertex("Hello");
+    pretty_graph.insert_edge(
+        pretty_graph.insert_vertex("A1"),
+        pretty_graph.insert_vertex("A2"),
+        use_weights ? 10 : 0
+        );
+
+    pretty_graph.insert_edge(
+        pretty_graph.insert_vertex("B1"),
+        pretty_graph.insert_vertex("B2"),
+        use_weights ? 20 : 0
+        );
+
+
 
     while (true) {
         input = get_user_input<int>(prompt_main_menu);
