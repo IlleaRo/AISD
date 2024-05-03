@@ -36,6 +36,8 @@ protected:
     form_of_graphs(graph_type_e type, graph_form_e form, unsigned long num_of_edges) :
         type(type), form(form), num_of_edges(num_of_edges) {};
 public:
+     virtual ~form_of_graphs() = default;
+
     // Число ребер в графе
     [[nodiscard]] unsigned long get_num_of_edges() const {
         return num_of_edges;
@@ -78,7 +80,7 @@ protected:
         node *next;
     };
 
-    std::vector<node *> vertex_vector;
+    std::vector<node *> vertex_vector; //TODO: переименуй меня
 
     void print_graph(std::ostream &os) override {
         for (int i = 0; i < vertex_vector.size(); ++i) {
@@ -96,11 +98,15 @@ public:
     L_graph_non_directed() : form_of_graphs<EDGE_T>(NON_DIRECTED, L, 0) {};
 
     ~L_graph_non_directed() {
-        for (typename std::vector<node *>::iterator it = vertex_vector.begin(); it != vertex_vector.end(); ++it) {
-            node *current = *it;
+        for (int i = 0; i < vertex_vector.size(); ++i) {
+            node *current = vertex_vector[i];
             while (current != nullptr) {
                 node *temp = current;
                 current = current->next;
+
+                if (temp->v2 < i) { // Очищаем память каждого ребра только единожды
+                    delete temp->edge;
+                }
                 delete temp;
             }
         }
@@ -155,7 +161,7 @@ public:
                 while (current != nullptr) {
                     node *temp = current;
                     current = current->next;
-                    delete temp;
+                    delete temp; // Удаляем ребро один раз (при втором проходе по графу)
                 }
                 continue;
             }
@@ -202,7 +208,6 @@ public:
         return true;
     }
 
-    //TODO: перепиши меня под использование итератора
     EDGE_T *get_edge(unsigned long v1_index, unsigned long v2_index) override {
         if (v1_index >= vertex_vector.size() || v2_index >= vertex_vector.size()) {
             return nullptr;
@@ -280,7 +285,7 @@ public:
         throw std::runtime_error("Edge not found for second vertex!");
     }
 
-    EDGE_T *get_first_edge(unsigned long vertex_index) {
+    EDGE_T *get_first_edge(unsigned long vertex_index) override {
         if (vertex_index >= vertex_vector.size()) {
             throw std::runtime_error("Vertex index out of range");
         }
@@ -288,7 +293,7 @@ public:
         return vertex_vector[vertex_index] ? vertex_vector[vertex_index]->edge : nullptr;
     }
 
-    EDGE_T *get_next_edge(unsigned long vertex_index, EDGE_T *edge) {
+    EDGE_T *get_next_edge(unsigned long vertex_index, EDGE_T *edge) override {
         if (vertex_index >= vertex_vector.size()) {
             throw std::runtime_error("Vertex index out of range");
         }
@@ -315,6 +320,20 @@ class L_graph_directed : public L_graph_non_directed<EDGE_T> {
 public:
     L_graph_directed() : L_graph_non_directed<EDGE_T>() {
         type = DIRECTED;
+    }
+
+    ~L_graph_directed() { // Деструктор неориентированного графа не удаляет петли
+        for (typename std::vector<node *>::iterator it = vertex_vector.begin(); it != vertex_vector.end(); ++it) {
+            node *current = *it;
+            while (current != nullptr) {
+                node *temp = current;
+                current = current->next;
+                delete temp->edge;
+                delete temp;
+            }
+        }
+
+        vertex_vector.clear();
     }
 
     EDGE_T *insert_edge(unsigned long v_index_1, unsigned long v_index_2, EDGE_T *edge) override {
@@ -377,6 +396,63 @@ public:
 
         return false;
     }
+
+    bool remove_vertex(unsigned long vertex_index) override {
+        if (vertex_index >= vertex_vector.size()) {
+            return false;
+        }
+
+        for (unsigned int i = 0; i < vertex_vector.size(); ++i) {
+            if (i == vertex_index) {
+                node *current = vertex_vector[i];
+                while (current != nullptr) {
+                    node *temp = current;
+                    current = current->next;
+                    delete temp;
+                }
+                continue;
+            }
+
+            if (vertex_vector[i] != nullptr) {
+
+                node *current = vertex_vector[i];
+                node *prev = nullptr;
+
+                while (current != nullptr) {
+                    if (current->v2 == vertex_index) {
+                        if (current == vertex_vector[i]) {
+                            vertex_vector[i] = current->next;
+                            delete current->edge;
+                            num_of_edges--;
+
+                            delete current;
+                            current = vertex_vector[i];
+                            continue;
+                        }
+
+                        node *temp = current;
+                        prev->next = current->next;
+                        current = current->next;
+
+                        delete temp->edge;
+                        num_of_edges--;
+
+                        delete temp;
+                        continue;
+                    } else if (current->v2 > vertex_index) {
+                        current->v2--;
+                    }
+
+                    prev = current;
+                    current = current->next;
+                }
+            }
+        }
+
+        vertex_vector.erase(vertex_vector.begin() + vertex_index);
+
+        return true;
+    }
 };
 
 
@@ -406,9 +482,11 @@ public:
     M_graph_non_directed() : form_of_graphs<EDGE_T>(NON_DIRECTED, M, 0) {};
 
     ~M_graph_non_directed() {
-        for (std::vector<EDGE_T *> &edge : vertex_vector) {
-            for (EDGE_T *e: edge) {
-                delete e;
+        for (std::vector<EDGE_T *> &edges : vertex_vector) {
+            for (unsigned long i = 0; i < edges.size(); ++i) {
+                if (edges[i] != nullptr && edges[i]->get_v2()->get_index() < i) {
+                    delete edges[i];
+                }
             }
         }
     }
@@ -506,7 +584,7 @@ public:
         return true;
     }
 
-    EDGE_T *get_first_edge(unsigned long vertex_index) {
+    EDGE_T *get_first_edge(unsigned long vertex_index) override {
         if (vertex_index >= vertex_vector.size()) {
             throw std::runtime_error("Vertex index out of range");
         }
@@ -520,7 +598,7 @@ public:
         return nullptr;
     }
 
-    EDGE_T *get_next_edge(unsigned long vertex_index, EDGE_T *edge) {
+    EDGE_T *get_next_edge(unsigned long vertex_index, EDGE_T *edge) override {
         if (vertex_index >= vertex_vector.size()) {
             throw std::runtime_error("Vertex index out of range");
         }
@@ -548,6 +626,14 @@ class M_graph_directed : public M_graph_non_directed<EDGE_T> {
 public:
     M_graph_directed() : M_graph_non_directed<EDGE_T>() {
         type = DIRECTED;
+    }
+
+    ~M_graph_directed() {
+        for (std::vector<EDGE_T *> &edge : vertex_vector) {
+            for (EDGE_T *e: edge) {
+                delete e;
+            }
+        }
     }
 
     EDGE_T *insert_edge(unsigned long v_index_1, unsigned long v_index_2, EDGE_T *edge) override {
