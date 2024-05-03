@@ -66,6 +66,32 @@ public:
         set_form(num_of_vertex, type, form);
     }
 
+    graph(graph<VERTEX_T, EDGE_T> &old_graph) {
+        if (old_graph.form == L) {
+            if (old_graph.get_type() == DIRECTED) {
+                this->form = new L_graph_directed<EDGE_T>;
+            } else {
+                this->form = new L_graph_non_directed<EDGE_T>;
+            }
+        } else {
+            if (old_graph.get_type() == DIRECTED) {
+                this->form = new M_graph_directed<EDGE_T>;
+            } else {
+                this->form = new M_graph_non_directed<EDGE_T>;
+            }
+        }
+
+
+        for (VERTEX_T *vertex : old_graph.vertexes) {
+            insert_vertex(vertex->get_name());
+        }
+
+        for (edge_iterator<VERTEX_T, EDGE_T> iter = old_graph.edge_begin(); iter != old_graph.edge_end(); ++iter) {
+            insert_edge(get_vertex((*iter)->get_v1()->get_index()),
+                        get_vertex((*iter)->get_v2()->get_index()), (*iter)->get_weight());
+        }
+    }
+
     graph(unsigned long num_of_vertex, unsigned long num_of_edges, graph_type_e type, graph_form_e form) {
         if (form == L) {
             if (type == DIRECTED) {
@@ -135,12 +161,12 @@ public:
     }
 
     // Возвращает тип графа (ориентированный / неориентированный)
-    graph_type_e get_type() {
+    [[nodiscard]] graph_type_e get_type() const {
         return form->get_type();
     }
 
     // Возвращает форму представления графа (L - матрица смежности / M - матрица инцидентности)
-    graph_form_e get_form() {
+    [[nodiscard]] graph_form_e get_form() const {
         return form->get_form();
     }
 
@@ -157,12 +183,12 @@ public:
     }
 
     // Возвращает число вершин в графе
-    unsigned long get_num_of_vertex() {
+    [[nodiscard]] unsigned long get_num_of_vertex() const {
         return vertexes.size();
     }
 
     // Возвращает число ребер в графе
-    unsigned long get_num_of_edges() {
+    [[nodiscard]] unsigned long get_num_of_edges() const {
         return form->get_num_of_edges();
     }
 
