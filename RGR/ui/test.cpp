@@ -1,7 +1,55 @@
 #include "test.h"
+#include "menu.h"
 #include "../graphs/graph.h"
 
+#define TEST_EDGE_REMOVAL (1)
+#define TEST_EDGE_TYPE NON_DIRECTED
+#define TEST_EDGE_FORM L
+
 int run_test() {
+#if TEST_EDGE_REMOVAL
+    std::vector<example_vertex *> test_vertices;
+    example_graph pretty_graph = *(new example_graph(0, TEST_EDGE_TYPE, TEST_EDGE_FORM));
+
+    for (int i = 0; i < 10; i++)
+    {
+        example_vertex *vertex = pretty_graph.insert_vertex();
+        test_vertices.push_back(vertex);
+    }
+
+    for (int i = 0; i < 9; i += 2)
+    {
+        pretty_graph.insert_edge(test_vertices[i], test_vertices[i + 1]);
+    }
+
+    std::cout << "Исходный граф:" << std::endl;
+    std::cout << pretty_graph << std::endl;
+
+    std::cout << "Удаление вершин:" << std::endl;
+    for (int i = 0; i < 9; i += 2)
+    {
+        pretty_graph.remove_edge(test_vertices[i], test_vertices[i + 1]);
+        std::cout << pretty_graph << std::endl;
+    }
+
+    std::cout << "------------------------------------------" << std::endl;
+
+    for (int i = 0; i < 9; i++)
+    {
+        pretty_graph.insert_edge(test_vertices[i], test_vertices[i + 1]);
+    }
+
+    std::cout << "Исходный граф:" << std::endl;
+    std::cout << pretty_graph << std::endl;
+
+    std::cout << "Удаление вершин:" << std::endl;
+    for (int i = 0; i < 9; i++)
+    {
+        pretty_graph.remove_edge(test_vertices[i], test_vertices[i + 1]);
+        std::cout << pretty_graph << std::endl;
+    }
+
+#else
     graph<vertex<std::string, int>, edge<vertex<std::string, int>, double, int>> pretty_graph;
     pretty_graph.insert_vertex();
     pretty_graph.insert_vertex("Hello");
@@ -85,6 +133,6 @@ int run_test() {
     graph_M_2.to_matrix_graph();
 
     std::cout<<graph_M_2<<std::endl;
-
+#endif
     return 0;
 }
