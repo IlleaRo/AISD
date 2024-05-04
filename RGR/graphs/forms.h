@@ -496,10 +496,10 @@ public:
     M_graph_non_directed() : form_of_graphs<EDGE_T>(NON_DIRECTED, M, 0) {};
 
     ~M_graph_non_directed() {
-        for (std::vector<EDGE_T *> &edges : vertex_vector) {
-            for (unsigned long i = 0; i < edges.size(); ++i) {
-                if (edges[i] != nullptr && edges[i]->get_v2()->get_index() < i) {
-                    delete edges[i];
+        for (unsigned long i = 0; i < vertex_vector.size(); ++i) {
+            for (unsigned long j = 0; j < vertex_vector[i].size(); ++j) {
+                if (vertex_vector[i][j] != nullptr && vertex_vector[i][j]->get_v2()->get_index() < i) {
+                    delete vertex_vector[i][j];
                 }
             }
         }
