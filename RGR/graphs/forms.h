@@ -237,16 +237,18 @@ public:
             if (current->v2 == v2_index) {
                 if (current == vertex_vector[v1_index]) {
                     vertex_vector[v1_index] = current->next;
-                    delete current;
-                    //num_of_edges--;
+
+                    delete current; // We will delete the edge at the node of the second vertex
+
                     v1_v2_removed = true;
                     break;
                 }
 
                 node *temp = current;
                 prev->next = current->next;
-                delete temp;
-                //num_of_edges--;
+
+                delete temp; // We will delete the edge at the node of the second vertex
+
                 v1_v2_removed = true;
                 break;
             }
@@ -266,14 +268,20 @@ public:
             if (current->v2 == v1_index) {
                 if (current == vertex_vector[v2_index]) {
                     vertex_vector[v2_index] = current->next;
+
+                    delete current->edge; // We use same pointer for both vertices
                     delete current;
+
                     num_of_edges--;
                     return true;
                 }
 
                 node *temp = current;
                 prev->next = current->next;
+
+                delete temp->edge; // We use same pointer for both vertices
                 delete temp;
+
                 num_of_edges--;
                 return true;
             }
@@ -378,14 +386,20 @@ public:
             if (current->v2 == v2_index) {
                 if (current == vertex_vector[v1_index]) {
                     vertex_vector[v1_index] = current->next;
+
+                    delete current->edge;
                     delete current;
+
                     num_of_edges--;
                     return true;
                 }
 
                 node *temp = current;
                 prev->next = current->next;
+
+                delete current->edge;
                 delete temp;
+
                 num_of_edges--;
                 return true;
             }
