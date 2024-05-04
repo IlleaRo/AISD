@@ -67,7 +67,7 @@ public:
     }
 
     graph(graph<VERTEX_T, EDGE_T> &old_graph) {
-        if (old_graph.form == L) {
+        if (old_graph.get_form() == L) {
             if (old_graph.get_type() == DIRECTED) {
                 this->form = new L_graph_directed<EDGE_T>;
             } else {
