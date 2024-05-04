@@ -239,12 +239,12 @@ void menu_control_vertex_iterator(example_graph &pretty_graph, bool use_weights)
         cout << "Имя итератора: " << (*menu_vertex_iterator)->get_name() << endl;
         cout << "Значение итератора: " << (*menu_vertex_iterator)->get_data() << endl;
 
-        option = get_user_input<int>(prompt_vertex_iter_menu);
+        option = get_user_input<int>(prompt_iter_menu);
         switch (option)
         {
             case 1:
                 // Изменить значение
-                (*menu_vertex_iterator)->get_data() = get_user_input<int>("Введите новое значение: ");
+                (*menu_vertex_iterator)->set_data(get_user_input<int>("Введите новое значение: "));
                 break;
             case 2:
                 // Инкрементировать
@@ -256,7 +256,7 @@ void menu_control_vertex_iterator(example_graph &pretty_graph, bool use_weights)
                 break;
             case 4:
                 // Установить в конец
-                menu_vertex_iterator = pretty_graph.vertex_end(); // TODO: есть ли в этом смысл?
+                menu_vertex_iterator = pretty_graph.vertex_end();
                 break;
             case 0:
                 return;
@@ -285,20 +285,24 @@ void menu_control_edge_iterator(example_graph &pretty_graph, bool use_weights) {
         cout << "Имя второй вершины: " << (*menu_edge_iterator)->get_v2()->get_name() << endl;
         cout << "Значение итератора: " << (*menu_edge_iterator)->get_data() << endl;
 
-        option = get_user_input<int>(prompt_edge_iter_menu);
+        option = get_user_input<int>(prompt_iter_menu);
         switch (option)
         {
             case 1:
+                // Изменить значение
+                (*menu_edge_iterator)->set_data(get_user_input<int>("Введите новое значение: "));
+                break;
+            case 2:
                 // Инкрементировать
                 ++menu_edge_iterator;
                 break;
-            case 2:
+            case 3:
                 // Установить в начало
                 menu_edge_iterator = pretty_graph.edge_begin();
                 break;
-            case 3:
+            case 4:
                 // Установить в конец
-                menu_edge_iterator = pretty_graph.edge_end(); // TODO: есть ли в этом смысл?
+                menu_edge_iterator = pretty_graph.edge_end();
                 break;
             case 0:
                 return;

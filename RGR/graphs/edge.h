@@ -35,6 +35,10 @@ public:
     [[nodiscard]] E_DATA_T get_data() const {
         return data;
     }
+
+    void set_data(E_DATA_T new_data) {
+        data = new_data;
+    }
 };
 
 #endif //RGR_EDGE_H

@@ -32,20 +32,13 @@ const std::string prompt_main_menu = "Выберите операцию:\n"
 
 const std::string prompt_continue = "Нажмите ENTER, чтобы продолжить";
 
-const std::string prompt_vertex_iter_menu = "Выберите операцию:\n"
+const std::string prompt_iter_menu = "Выберите операцию:\n"
                                                "\t1. Изменить значение\n"
                                                "\t2. Инкрементировать\n"
                                                "\t3. Установить в начало\n"
                                                "\t4. Установить в конец\n"
                                                "\t0. Выйти в главное меню\n"
                                             "Ввод: ";
-
-const std::string prompt_edge_iter_menu = "Выберите операцию:\n"
-                                            "\t1. Инкрементировать\n"
-                                            "\t2. Установить в начало\n"
-                                            "\t3. Установить в конец\n"
-                                            "\t0. Выйти в главное меню\n"
-                                          "Ввод: ";
 
 void anykey();
 
