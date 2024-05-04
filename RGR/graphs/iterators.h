@@ -14,23 +14,25 @@ public:
     explicit vertex_iterator(typename std::vector<VERTEX_T *>::iterator it) : it(it), undefined(false) {}
 
     VERTEX_T *operator*() {
-        if (undefined) return nullptr;
+        if (undefined || *it == nullptr) {
+            throw std::out_of_range("Out of range");
+        }
         return *it;
     }
 
     vertex_iterator &operator++() {
-        if (undefined) return *this;
+        if (undefined || *it == nullptr) return *this;
         ++it;
         return *this;
     }
 
     bool operator!=(const vertex_iterator& other) const {
-        if (undefined) return false;
+        if (undefined || *it == nullptr) return false;
         return it != other.it;
     }
 
     bool operator==(const vertex_iterator& other) const {
-        if (undefined) return false;
+        if (undefined || *it == nullptr) return false;
         return it == other.it;
     }
 

@@ -231,39 +231,53 @@ void menu_control_vertex_iterator(example_graph &pretty_graph, bool use_weights)
     }
 
     while (true) {
-        if (menu_vertex_iterator.is_undefined() || menu_vertex_iterator == pretty_graph.vertex_end()) { //fixme: НЕЗЯ ПРОВЕРЯТЬ НА НЕОПРЕДЕЛЕННОСТЬ выводим исключение!
-            cout << "Итератор не установлен, установка итератора в начало" << endl;
-            menu_vertex_iterator = pretty_graph.vertex_begin();
+        if (menu_vertex_iterator.is_undefined()) {
+            menu_vertex_iterator = pretty_graph.vertex_begin(); // это происходит только при первом заходе в меню, всё нормально
         }
 
-        cout << "Имя итератора: " << (*menu_vertex_iterator)->get_name() << endl;
-        cout << "Значение итератора: " << (*menu_vertex_iterator)->get_data() << endl;
+        try
+        {
+            *menu_vertex_iterator; // проверка, чтобы при ошибке в консоль не начало "Имя итератора: " выводиться
+            cout << "Имя итератора: " << (*menu_vertex_iterator)->get_name() << endl;
+            cout << "Значение итератора: " << (*menu_vertex_iterator)->get_data() << endl;
+        }
+        catch (std::exception &exception)
+        {
+            cout << "Ошибка получения данных итератора: " << exception.what() << endl;
+        }
 
         option = get_user_input<int>(prompt_iter_menu);
-        switch (option)
+        try
         {
-            case 1:
-                // Изменить значение
-                (*menu_vertex_iterator)->set_data(get_user_input<int>("Введите новое значение: "));
-                break;
-            case 2:
-                // Инкрементировать
-                ++menu_vertex_iterator;
-                break;
-            case 3:
-                // Установить в начало
-                menu_vertex_iterator = pretty_graph.vertex_begin();
-                break;
-            case 4:
-                // Установить в конец
-                menu_vertex_iterator = pretty_graph.vertex_end();
-                break;
-            case 0:
-                return;
-            default:
-                continue;
+            switch (option)
+            {
+                case 1:
+                    // Изменить значение
+                    (*menu_vertex_iterator)->set_data(get_user_input<int>("Введите новое значение: "));
+                    break;
+                case 2:
+                    // Инкрементировать
+                    ++menu_vertex_iterator;
+                    break;
+                case 3:
+                    // Установить в начало
+                    menu_vertex_iterator = pretty_graph.vertex_begin();
+                    break;
+                case 4:
+                    // Установить в конец
+                    menu_vertex_iterator = pretty_graph.vertex_end();
+                    break;
+                case 0:
+                    return;
+                default:
+                    continue;
+            }
+            anykey();
         }
-        anykey();
+        catch (std::exception &exception)
+        {
+            cout << "Ошибка выполнения операции: " << exception.what() << endl;
+        }
     }
 }
 
@@ -277,39 +291,56 @@ void menu_control_edge_iterator(example_graph &pretty_graph, bool use_weights) {
     }
 
     while (true) {
-        if (menu_edge_iterator.is_undefined() || menu_edge_iterator == pretty_graph.edge_end()) {
-            cout << "Итератор не установлен, установка итератора в начало" << endl;
-            menu_edge_iterator = pretty_graph.edge_begin();
+        if (menu_edge_iterator.is_undefined()) {
+            menu_edge_iterator = pretty_graph.edge_begin(); // это происходит только при первом заходе в меню, всё нормально
         }
-        cout << "Имя первой вершины: " << (*menu_edge_iterator)->get_v1()->get_name() << endl;
-        cout << "Имя второй вершины: " << (*menu_edge_iterator)->get_v2()->get_name() << endl;
-        cout << "Значение итератора: " << (*menu_edge_iterator)->get_data() << endl;
+
+        try
+        {
+            *menu_edge_iterator; // проверка, чтобы при ошибке в консоль не начало "Имя первой вершины: " выводиться
+            cout << "Имя первой вершины: " << (*menu_edge_iterator)->get_v1()->get_name() << endl;
+            cout << "Имя второй вершины: " << (*menu_edge_iterator)->get_v2()->get_name() << endl;
+            cout << "Значение итератора: " << (*menu_edge_iterator)->get_data() << endl;
+        }
+        catch (std::exception &exception)
+        {
+            cout << "Ошибка получения данных итератора: " << exception.what() << endl;
+        }
 
         option = get_user_input<int>(prompt_iter_menu);
-        switch (option)
+
+        try
         {
-            case 1:
-                // Изменить значение
-                (*menu_edge_iterator)->set_data(get_user_input<int>("Введите новое значение: "));
-                break;
-            case 2:
-                // Инкрементировать
-                ++menu_edge_iterator;
-                break;
-            case 3:
-                // Установить в начало
-                menu_edge_iterator = pretty_graph.edge_begin();
-                break;
-            case 4:
-                // Установить в конец
-                menu_edge_iterator = pretty_graph.edge_end();
-                break;
-            case 0:
-                return;
-            default:
-                continue;
+            switch (option)
+            {
+                case 1:
+                    // Изменить значение
+                    (*menu_edge_iterator)->set_data(get_user_input<int>("Введите новое значение: "));
+                    break;
+                case 2:
+                    // Инкрементировать
+                    ++menu_edge_iterator;
+                    break;
+                case 3:
+                    // Установить в начало
+                    menu_edge_iterator = pretty_graph.edge_begin();
+                    break;
+                case 4:
+                    // Установить в конец
+                    menu_edge_iterator = pretty_graph.edge_end();
+                    break;
+                case 0:
+                    return;
+                default:
+                    continue;
+            }
+            anykey();
         }
-        anykey();
+        catch (std::exception &exception)
+        {
+            cout << "Ошибка выполнения операции: " << exception.what() << endl;
+        }
+
     }
 }
 
