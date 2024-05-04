@@ -9,7 +9,7 @@
 int run_test() {
 #if TEST_EDGE_REMOVAL
     std::vector<example_vertex *> test_vertices;
-    example_graph pretty_graph = *(new example_graph(0, TEST_EDGE_TYPE, TEST_EDGE_FORM));
+    example_graph pretty_graph = example_graph(0, TEST_EDGE_TYPE, TEST_EDGE_FORM);
 
     for (int i = 0; i < 10; i++)
     {
@@ -25,7 +25,7 @@ int run_test() {
     std::cout << "Исходный граф:" << std::endl;
     std::cout << pretty_graph << std::endl;
 
-    std::cout << "Удаление вершин:" << std::endl;
+    std::cout << "Удаление рёбер:" << std::endl;
     for (int i = 0; i < 9; i += 2)
     {
         pretty_graph.remove_edge(test_vertices[i], test_vertices[i + 1]);
@@ -42,7 +42,7 @@ int run_test() {
     std::cout << "Исходный граф:" << std::endl;
     std::cout << pretty_graph << std::endl;
 
-    std::cout << "Удаление вершин:" << std::endl;
+    std::cout << "Удаление рёбер:" << std::endl;
     for (int i = 0; i < 9; i++)
     {
         pretty_graph.remove_edge(test_vertices[i], test_vertices[i + 1]);
