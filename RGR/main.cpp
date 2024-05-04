@@ -156,10 +156,14 @@ int main(int argc, char *argv[]) {
                 menu_control_vertex_iterator(pretty_graph, use_weights);
                 break;
             case 17:
+                // Управление итератором исходящих рёбер вершины
+                menu_control_edge_iterator_for_v(pretty_graph, use_weights);
+                break;
+            case 18:
                 // Управление итератором рёбер
                 menu_control_edge_iterator(pretty_graph, use_weights);
                 break;
-            case 18:
+            case 19:
                 // Меню с заданиями, согласно варианту
                 menu_tasks(pretty_graph, use_weights);
                 break;

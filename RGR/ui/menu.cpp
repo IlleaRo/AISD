@@ -5,6 +5,8 @@
 using namespace std;
 
 static example_vertex_iterator menu_vertex_iterator;
+static example_vertex *ev_vertex = nullptr;
+static example_ev_iterator menu_ev_iterator;
 static example_edge_iterator menu_edge_iterator;
 
 
@@ -282,6 +284,84 @@ void menu_control_vertex_iterator(example_graph &pretty_graph, bool use_weights)
 }
 
 // 17.
+void menu_control_edge_iterator_for_v(example_graph &pretty_graph, bool use_weights)
+{
+    int option = 1;
+
+    if (pretty_graph.get_num_of_vertex() == 0) {
+        cout << "В графе нет вершин" << endl;
+        return;
+    }
+    if (pretty_graph.get_num_of_edges() == 0) {
+        cout << "В графе нет граней" << endl;
+        return;
+    }
+
+    while (true) {
+        if (ev_vertex == nullptr) {
+            int vertex_index = get_user_input<int>("Введите индекс вершины: ");
+            ev_vertex = pretty_graph.get_vertex(vertex_index);
+            if (ev_vertex == nullptr)
+            {
+                cout << "Такой вершины нет" << endl;
+                return;
+            }
+            menu_ev_iterator = pretty_graph.edge_v_begin(ev_vertex);
+        }
+
+        try
+        {
+            *menu_ev_iterator;
+            cout << "Имя первой вершины: " << (*menu_ev_iterator)->get_v1()->get_name() << endl;
+            cout << "Имя второй вершины: " << (*menu_ev_iterator)->get_v2()->get_name() << endl;
+            cout << "Значение итератора: " << (*menu_ev_iterator)->get_data() << endl;
+        }
+        catch (std::exception &exception)
+        {
+            cout << "Ошибка получения данных итератора: " << exception.what() << endl;
+        }
+
+        option = get_user_input<int>(prompt_ev_iter_menu);
+
+        try
+        {
+            switch (option)
+            {
+                case 1:
+                    // Изменить значение
+                    (*menu_ev_iterator)->set_data(get_user_input<int>("Введите новое значение: "));
+                break;
+                case 2:
+                    // Инкрементировать
+                    ++menu_ev_iterator;
+                break;
+                case 3:
+                    // Установить в начало
+                    menu_ev_iterator = pretty_graph.edge_v_begin(ev_vertex);
+                break;
+                case 4:
+                    // Установить в конец
+                    menu_ev_iterator = pretty_graph.edge_v_end(ev_vertex);
+                break;
+                case 5:
+                    // Изменить вершину
+                    ev_vertex = nullptr;
+                    continue;
+                case 0:
+                    return;
+                default:
+                    continue;
+            }
+            anykey();
+        }
+        catch (std::exception &exception)
+        {
+            cout << "Ошибка выполнения операции: " << exception.what() << endl;
+        }
+    }
+}
+
+// 18.
 void menu_control_edge_iterator(example_graph &pretty_graph, bool use_weights) {
     int option = 1;
 
@@ -352,7 +432,7 @@ static void menu_nonweighted_task(example_graph &pretty_graph) {
     // сюда вторая задача
 }
 
-// 18.
+// 19.
 void menu_tasks(example_graph &pretty_graph, bool use_weights) {
     if (use_weights)
     {

@@ -317,14 +317,12 @@ public:
 
     edge_iterator_for_v<VERTEX_T, EDGE_T> edge_v_begin(VERTEX_T *vertex) {
         edge_iterator_for_v<VERTEX_T, EDGE_T> iter(this, vertex);
-        iter.set_cur_edge(get_first_edge(vertex));
         return iter;
     }
 
     edge_iterator_for_v<VERTEX_T, EDGE_T> edge_v_end(VERTEX_T *vertex) {
         edge_iterator_for_v<VERTEX_T, EDGE_T> iter(this, vertex);
         iter.set_cur_edge(nullptr);
-
         return iter;
     }
 

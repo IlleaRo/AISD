@@ -6,6 +6,7 @@ typedef vertex<std::string, int> example_vertex;
 typedef edge<vertex<std::string, int>, int, int> example_edge;
 typedef graph<example_vertex, example_edge> example_graph;
 typedef vertex_iterator<example_vertex> example_vertex_iterator;
+typedef edge_iterator_for_v<example_vertex, example_edge> example_ev_iterator;
 typedef edge_iterator<example_vertex, example_edge> example_edge_iterator;
 
 // 1.
@@ -57,9 +58,12 @@ void menu_reform_graph(example_graph &pretty_graph, bool use_weights);
 void menu_control_vertex_iterator(example_graph &pretty_graph, bool use_weights);
 
 // 17.
-void menu_control_edge_iterator(example_graph &pretty_graph, bool use_weights);
+void menu_control_edge_iterator_for_v(example_graph &pretty_graph, bool use_weights);
 
 // 18.
+void menu_control_edge_iterator(example_graph &pretty_graph, bool use_weights);
+
+// 19.
 void menu_tasks(example_graph &pretty_graph, bool use_weights);
 
 #endif //RGR_MENU_H

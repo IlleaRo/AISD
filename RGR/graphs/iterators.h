@@ -49,18 +49,26 @@ class edge_iterator_for_v {
     VERTEX_T *vertex;
     graph<VERTEX_T, EDGE_T> *graph_ptr;
     EDGE_T *cur_edge;
+    bool undefined;
 public:
-    edge_iterator_for_v(graph<VERTEX_T, EDGE_T> *graph, VERTEX_T *vertex)
-    : vertex(vertex), graph_ptr(graph) {}
+    edge_iterator_for_v() : vertex(nullptr), graph_ptr(nullptr), cur_edge(nullptr), undefined(true) {}
+
+    edge_iterator_for_v(graph<VERTEX_T, EDGE_T> *graph, VERTEX_T *vertex) {
+        this->vertex = vertex;
+        this->cur_edge = graph->get_first_edge(vertex);
+        this->graph_ptr = graph;
+        undefined = false;
+    }
 
     edge_iterator_for_v(edge_iterator_for_v const &other) {
         vertex = other.vertex;
         graph_ptr = other.graph_ptr;
         cur_edge = other.cur_edge;
+        undefined = false;
     }
 
     EDGE_T *operator*() {
-        if (*this == graph_ptr->edge_v_end(vertex)) {
+        if (undefined || *this == graph_ptr->edge_v_end(vertex)) {
             throw std::out_of_range("Out of range");
         }
 
@@ -68,7 +76,7 @@ public:
     }
 
     edge_iterator_for_v &operator++() {
-        if (*this == graph_ptr->edge_v_end(vertex)) {
+        if (undefined || *this == graph_ptr->edge_v_end(vertex)) {
             throw std::out_of_range("Out of range");
         }
 
@@ -102,6 +110,10 @@ public:
 
     void set_cur_edge(EDGE_T *new_cur_edge) {
         cur_edge = new_cur_edge;
+    }
+
+    bool is_undefined() {
+        return undefined;
     }
 };
 
