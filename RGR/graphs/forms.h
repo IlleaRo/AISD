@@ -648,6 +648,7 @@ public:
                 delete e;
             }
         }
+        vertex_vector.clear();
     }
 
     EDGE_T *insert_edge(unsigned long v_index_1, unsigned long v_index_2, EDGE_T *edge) override {
