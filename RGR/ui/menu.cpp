@@ -2,6 +2,7 @@
 #include "menu.h"
 #include "prompts.h"
 #include "../tasks/task_2/PFS.h"
+#include "../tasks/task_3/allSP.h"
 
 using namespace std;
 
@@ -425,8 +426,27 @@ void menu_control_edge_iterator(example_graph *pretty_graph, bool use_weights) {
     }
 }
 
-static void menu_weighted_task(example_graph *pretty_graph) {
-    // сюда вторая задача
+static void menu_weighted_task(example_graph &pretty_graph) {
+    allSP<example_vertex, example_edge> spt(&pretty_graph);
+
+    int decision;
+
+    while (true) {
+        decision = get_user_input<int>(task_3_menu);
+        switch (decision)
+        {
+            case 1:
+                spt.restart();
+                break;
+            case 2:
+                spt.result();
+                break;
+            case 0:
+                return;
+            default:
+                continue;
+        }
+    }
 }
 
 static void menu_nonweighted_task(example_graph &pretty_graph) {
@@ -444,9 +464,6 @@ static void menu_nonweighted_task(example_graph &pretty_graph) {
             case 2:
                 pfs.result();
                 break;
-            case 3:
-                pfs.result();
-                break;
             case 0:
                 return;
             default:
@@ -456,13 +473,20 @@ static void menu_nonweighted_task(example_graph &pretty_graph) {
 }
 
 // 19.
-void menu_tasks(example_graph *pretty_graph, bool use_weights) {
-    if (use_weights)
-    {
-        menu_weighted_task(pretty_graph);
-    }
-    else
-    {
-        menu_nonweighted_task(pretty_graph);
+void menu_tasks(example_graph &pretty_graph, bool use_weights) {
+    start:
+    int option = get_user_input<int>(task_select);
+
+    switch (option) {
+        case 1:
+            menu_nonweighted_task(pretty_graph);
+            break;
+        case 2:
+            menu_weighted_task(pretty_graph);
+            break;
+        case 0:
+            return;
+        default:
+            goto start;
     }
 }

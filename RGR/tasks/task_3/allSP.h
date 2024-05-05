@@ -20,7 +20,7 @@ public:
         return A[s]->dist(t);
     }
 
-    [[nodiscard]] double diameter() const {
+    [[nodiscard]] double radius() const {
         int vmax = 0, wmax = 0;
         double max_dist = -1;
 
@@ -28,7 +28,7 @@ public:
             for (int w = 0; w < G->get_num_of_vertex(); w++) {
                 if (v != w) {
                     double dist = A[v]->dist(w);
-                    if (dist > max_dist) {
+                    if (dist != INT_MAX && dist > max_dist) {
                         vmax = v;
                         wmax = w;
                         max_dist = dist;
@@ -37,15 +37,36 @@ public:
             }
         }
 
-        cout << "Longest path: ";
+        cout << "Longest path: " << vmax << " -> " << wmax << " : " << max_dist / 2 << endl;
+        /*
         EDGE_T* edge = A[vmax]->pathR(wmax);
         while (edge != nullptr) {
-            cout << edge->get_v1()->get_index() << " -> ";
-            edge = A[edge->get_v2()->get_index()]->pathR(wmax);
+            cout << edge->get_v2()->get_index() << " -> ";
+            edge = A[edge->get_v2()->get_index()]->pathR(vmax);
         }
-        cout << wmax << endl;
+        cout << wmax << endl; */
 
-        return max_dist;
+        return max_dist / 2;
+    }
+
+    void restart() {
+        for (int s = 0; s < G->get_num_of_vertex(); s++) {
+            A[s] = new SPT<VERTEX_T, EDGE_T>(G, s);
+        }
+
+        result();
+    }
+
+    void result() {
+        radius();
+    }
+
+    void set_graph(graph<VERTEX_T, EDGE_T> *new_graph) {
+        if (!new_graph) {
+            throw std::runtime_error("Uninitialized graph_ptr!");
+        }
+
+        G = new_graph;
     }
 };
 
