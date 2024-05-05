@@ -28,7 +28,7 @@ public:
         while (!pQ.empty()) {
             int v = pQ.getmin(); // wt[v] = 0.0; Don't use for Dijkstra's algorithm
 
-            if (v != s && spt[v] == 0) {
+            if (v != s && spt[v] == nullptr) {
                 return;
             }
 

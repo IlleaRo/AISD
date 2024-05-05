@@ -151,10 +151,15 @@ int run_test() {
     shortest_way_2.restart();
     shortest_way_2.result();
 
+    /*
     //TODO: протестировать диаметр!
-    allSP all(&graph_M_2);
+    graph<vertex<std::string, int>, edge<vertex<std::string, int>, double, int>> graph_M_3(10, 15, NON_DIRECTED, L);
 
-    std::cout<<"\n---\n"<<all.dist(0, 5);
+    allSP all(&graph_M_3);
+    std::cout<<graph_M_3;
+    std::cout<<"\n---\n"<<all.dist(2, 8);
+
+    std::cout<<"\n\n---> "<<all.diameter(); */
 
 #endif
     return 0;

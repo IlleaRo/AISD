@@ -19,6 +19,34 @@ public:
     [[nodiscard]] double dist(int s, int t) const {
         return A[s]->dist(t);
     }
+
+    [[nodiscard]] double diameter() const {
+        int vmax = 0, wmax = 0;
+        double max_dist = -1;
+
+        for (int v = 0; v < G->get_num_of_vertex(); v++) {
+            for (int w = 0; w < G->get_num_of_vertex(); w++) {
+                if (v != w) {
+                    double dist = A[v]->dist(w);
+                    if (dist > max_dist) {
+                        vmax = v;
+                        wmax = w;
+                        max_dist = dist;
+                    }
+                }
+            }
+        }
+
+        cout << "Longest path: ";
+        EDGE_T* edge = A[vmax]->pathR(wmax);
+        while (edge != nullptr) {
+            cout << edge->get_v1()->get_index() << " -> ";
+            edge = A[edge->get_v2()->get_index()]->pathR(wmax);
+        }
+        cout << wmax << endl;
+
+        return max_dist;
+    }
 };
 
 #endif //ALLSP_H
