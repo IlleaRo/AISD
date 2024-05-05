@@ -2,8 +2,9 @@
 #include "menu.h"
 #include "../graphs/graph.h"
 #include "../tasks/task_2/PFS.h"
+#include "../tasks/task_3/allSP.h"
 
-#define TEST_EDGE_REMOVAL (1)
+#define TEST_EDGE_REMOVAL (0)
 #define TEST_EDGE_TYPE NON_DIRECTED
 #define TEST_EDGE_FORM L
 
@@ -150,6 +151,10 @@ int run_test() {
     shortest_way_2.restart();
     shortest_way_2.result();
 
+    //TODO: протестировать диаметр!
+    allSP all(&graph_M_2);
+
+    std::cout<<"\n---\n"<<all.dist(0, 5);
 
 #endif
     return 0;

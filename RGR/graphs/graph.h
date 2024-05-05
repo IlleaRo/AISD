@@ -138,7 +138,7 @@ public:
             }
 
             if (get_edge(vertexes[v1], vertexes[v2]) == nullptr) {
-                insert_edge(vertexes[v1], vertexes[v2]);
+                insert_edge(vertexes[v1], vertexes[v2], (double) i);
 
                 if (type == NON_DIRECTED) {
                     i+=2;
