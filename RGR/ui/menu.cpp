@@ -455,14 +455,20 @@ static void menu_nonweighted_task(example_graph *pretty_graph) {
     int decision;
 
     while (true) {
+        cout<<'\n';
         decision = get_user_input<int>(task_2_menu);
         switch (decision)
         {
             case 1:
                 pfs.restart();
                 break;
-            case 2:
-                pfs.result();
+            case 2: {
+                vector<vector<vector<unsigned long>>> tmp = pfs.result();
+                cout<<"Получен трехмерный вектор"<<endl;
+                break;
+            }
+            case 3:
+                pfs.print_result();
                 break;
             case 0:
                 return;

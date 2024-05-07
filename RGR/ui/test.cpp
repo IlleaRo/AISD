@@ -139,17 +139,7 @@ int run_test() {
 
     PFS shortest_way(&graph_M_2);
 
-    shortest_way.result();
-
-    PFS shortest_way_2(shortest_way);
-
-    shortest_way.result();
-
-    std::cout<<directed_graph;
-    shortest_way_2.set_graph(&directed_graph);
-
-    shortest_way_2.restart();
-    shortest_way_2.result();
+    shortest_way.print_result();
 
 
     //TODO: протестировать диаметр!

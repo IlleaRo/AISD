@@ -4,18 +4,20 @@
 #include "SEARCH.h"
 #include "randomized_queue.h"
 
-#include <vector>
-#include <algorithm>
+#include <vector> // Основа многомерных массивов
+#include <algorithm> // Используется для reverse
 
+using namespace std;
 
 template <class VERTEX_T, class EDGE_T>
-class PFS : public SEARCH<VERTEX_T, EDGE_T>{
+class PFS final : public SEARCH<VERTEX_T, EDGE_T>{
     using SEARCH<VERTEX_T, EDGE_T>::ord;
     using SEARCH<VERTEX_T, EDGE_T>::graph_ptr;
     using SEARCH<VERTEX_T, EDGE_T>::cnt;
     using SEARCH<VERTEX_T, EDGE_T>::search;
 
-    std::vector<std::vector<unsigned long>> previous_vertexes;
+    vector<vector<unsigned long>> previous_vertexes; // Двумерный массив предшественников
+    vector<vector<vector<unsigned long>>> shortests; // Трехмерный массив путей
 
     void searchC(EDGE_T edge) override {
         randomized_queue<EDGE_T> queue(graph_ptr->get_num_of_vertex());
@@ -39,8 +41,8 @@ class PFS : public SEARCH<VERTEX_T, EDGE_T>{
         }
     }
 
-    void shortest(unsigned long from, unsigned long to) {
-        std::vector<unsigned long> path;
+    [[nodiscard]] vector<unsigned long> shortest(const unsigned long from, const unsigned long to) const {
+        vector<unsigned long> path;
 
         unsigned long cur = to;         //текущая вершина пути
         path.push_back(cur);
@@ -51,85 +53,108 @@ class PFS : public SEARCH<VERTEX_T, EDGE_T>{
         }
 
         if (previous_vertexes[from][cur] != from) {
-            return;
+            return vector<unsigned long>(1, -1);
         }
 
-        std::reverse(path.begin(), path.end());
+        reverse(path.begin(), path.end());
 
-        std::cout<<to<<" : ";
-
-        for (unsigned long v: path) {
-            std::cout << v << " ";
-        }
-
-        std::cout<<std::endl;
+        return path;
     }
 
     void get_all_shortest_paths() {
-        for (vertex_iterator<VERTEX_T> iter = graph_ptr->vertex_begin(); iter != graph_ptr->vertex_end(); ++iter) {
-            ord = std::vector<unsigned long>(graph_ptr->get_num_of_vertex(), -1);
-            //cnt = 0;
-
-            search(*iter);
-        }
-    }
-public:
-    explicit PFS(graph<VERTEX_T, EDGE_T> *graph) :
-            SEARCH<VERTEX_T, EDGE_T>(graph) {
-        previous_vertexes = std::vector<std::vector<unsigned long>>(graph->get_num_of_vertex(), std::vector<unsigned long>(graph->get_num_of_vertex()));
-
-        for (unsigned long i = 0; i < graph->get_num_of_vertex(); ++i) {
-            for (unsigned long j = 0; j < graph->get_num_of_vertex(); ++j) {
-                previous_vertexes[i][j] = j;
-            }
-        }
-
-        if (!graph) {
-            throw std::runtime_error("Uninitialized graph_ptr!");
-        }
-
-        if (graph->get_type() == NON_DIRECTED) {
-            throw std::runtime_error("Yor are using non directed graph!");
-        }
-
-        get_all_shortest_paths();
-    }
-    PFS(const PFS<VERTEX_T, EDGE_T> &old_pfs) :
-            SEARCH<VERTEX_T, EDGE_T>(old_pfs.graph_ptr), previous_vertexes(old_pfs.previous_vertexes) {}
-
-    void result() {
-        for (vertex_iterator<VERTEX_T> iter = graph_ptr->vertex_begin(); iter != graph_ptr->vertex_end(); ++iter) {
-            std::cout<<"Shortest ways from "<<(*iter)->get_index()<<std::endl;
-            for (unsigned long i = 0; i < graph_ptr->get_num_of_vertex(); i++) {
-                if (i == (*iter)->get_index()) {
-                    continue;
-                }
-
-                shortest((*iter)->get_index(), i);
-            }
-        }
-    }
-
-    void set_graph(graph<VERTEX_T, EDGE_T> *new_graph) {
-        if (!new_graph) {
-            throw std::runtime_error("Uninitialized graph_ptr!");
-        }
-
-        if (new_graph->get_type() != DIRECTED) {
-            throw std::runtime_error("Yor are using non directed graph!");
-        }
-
-        if (graph_ptr != new_graph) {
-            graph_ptr = new_graph;
-        }
-    }
-
-    void restart() {
         for (unsigned long i = 0; i < graph_ptr->get_num_of_vertex(); ++i) {
             for (unsigned long j = 0; j < graph_ptr->get_num_of_vertex(); ++j) {
                 previous_vertexes[i][j] = j;
             }
         }
+
+        // Получение предшественников
+        for (vertex_iterator<VERTEX_T> iter = graph_ptr->vertex_begin(); iter != graph_ptr->vertex_end(); ++iter) {
+            ord = vector<unsigned long>(graph_ptr->get_num_of_vertex(), -1);
+            //cnt = 0;
+
+            search(*iter);
+        }
+
+        for (unsigned long start_vertex = 0; start_vertex < shortests.size(); ++start_vertex) {
+            for (unsigned long finish_vertex = 0; finish_vertex < shortests.size(); ++finish_vertex) {
+                if (vector<unsigned long> path = shortest(start_vertex, finish_vertex); path[0] != -1) {
+                    shortests[start_vertex].push_back(path);
+                }
+            }
+        }
+    }
+
+    void reinizilize() {
+        previous_vertexes =
+                vector<vector<unsigned long>>
+                    (graph_ptr->get_num_of_vertex(), vector<unsigned long>(graph_ptr->get_num_of_vertex()));
+        shortests = vector<vector<vector<unsigned long>>>(graph_ptr->get_num_of_vertex());
+    }
+public:
+    explicit PFS(graph<VERTEX_T, EDGE_T> *graph) :
+            SEARCH<VERTEX_T, EDGE_T>(graph){
+        if (!graph) {
+            throw runtime_error("Uninitialized graph_ptr!");
+        }
+
+        if (graph->get_type() == NON_DIRECTED) {
+            throw runtime_error("Yor are using non directed graph!");
+        }
+
+        reinizilize();
+
+        get_all_shortest_paths();
+    }
+
+    PFS(const PFS<VERTEX_T, EDGE_T> &old_pfs) :
+            SEARCH<VERTEX_T, EDGE_T>(old_pfs.graph_ptr), previous_vertexes(old_pfs.previous_vertexes),
+            shortests(old_pfs.shortests){}
+
+    ~PFS() override = default;
+
+    [[nodiscard]] vector<vector<vector<unsigned long>>> result() const {
+        return shortests;
+    }
+
+
+    void print_result() {
+        for (const vector<vector<unsigned long>> &start_vertex : shortests) {
+            if (!start_vertex.empty()) {
+                cout<<"From "<<start_vertex[0][0]<<'\n';
+                for (const vector<unsigned long> &finish_vertex : start_vertex) {
+                    cout<<finish_vertex.back()<<" : ";
+                    for (const unsigned long &id : finish_vertex) {
+                        cout<<id<<" ";
+                    }
+                    cout<<'\n';
+                }
+            }
+        }
+    }
+
+    bool set_graph(graph<VERTEX_T, EDGE_T> *new_graph) {
+        if (!new_graph) {
+            return false;
+        }
+
+        if (new_graph->get_type() != DIRECTED) {
+            return false;
+        }
+
+        if (graph_ptr != new_graph) {
+            graph_ptr = new_graph;
+
+            reinizilize();
+        }
+
+        get_all_shortest_paths();
+
+        return true;
+    }
+
+    void restart() {
+        reinizilize();
 
         get_all_shortest_paths();
     }
