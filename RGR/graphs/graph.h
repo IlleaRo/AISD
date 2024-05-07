@@ -252,8 +252,8 @@ public:
         return form->get_edge(v1->get_index(), v2->get_index());
     }
 
-    VERTEX_T *get_vertex(size_t idx) {
-        if (idx > this->vertexes.size()) {
+    VERTEX_T *get_vertex(size_t idx) const {
+        if (idx > this->vertexes.size() - 1) {
             return nullptr;
         }
 

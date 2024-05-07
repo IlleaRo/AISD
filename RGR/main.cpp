@@ -15,7 +15,7 @@
 
 int main(int argc, char *argv[]) {
     int input;
-    bool use_weights;
+    bool use_weights = true;
     bool correct_input = false;
     example_graph pretty_graph;
 
