@@ -199,7 +199,7 @@ void menu_delete_edge(example_graph *pretty_graph, bool use_weights) {
 
 // 12.
 void menu_print_graph(example_graph *pretty_graph, bool use_weights) {
-    cout << pretty_graph << endl;
+    cout << *pretty_graph << endl;
 }
 
 // 13.
