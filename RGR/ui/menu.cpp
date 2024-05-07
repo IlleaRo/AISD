@@ -431,7 +431,7 @@ void menu_control_edge_iterator(example_graph *pretty_graph, bool use_weights) {
 
 static void menu_weighted_task(example_graph *pretty_graph) {
     int option;
-    std::vector<double> result;
+    std::vector<std::vector<double>> result;
     if (!wtask) wtask = new weightedTask<example_vertex, example_edge>(pretty_graph);
     while (true)
     {
@@ -443,9 +443,13 @@ static void menu_weighted_task(example_graph *pretty_graph) {
         {
             case 1:
                 result = wtask->result();
-                for (double dist : result)
+                for (std::vector<double> &distRow : result)
                 {
-                    cout << dist << " ";
+                    for (double &dist : distRow)
+                    {
+                        cout << dist << " ";
+                    }
+                    cout << endl;
                 }
             break;
             case 2:

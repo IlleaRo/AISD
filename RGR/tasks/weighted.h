@@ -9,22 +9,77 @@ class weightedTask
 {
     private:
     graph<VERTEX_T, EDGE_T> *g;
-    std::vector<double> dist;
+    std::vector<std::vector<double>> distMatrix;
 
     void allocateDist()
     {
-        dist.clear();
+        distMatrix.clear();
+        distMatrix.resize(g->get_num_of_vertex());
+        for (std::vector<double> &dists : distMatrix)
+        {
+            dists.resize(g->get_num_of_vertex());
+        }
     }
 
-    void BellmanFord()
+    void initDist(std::vector<double> &dists, size_t source)
     {
+        for (double &dist : dists)
+        {
+            dist = DBL_MAX;
+        }
+        dists[source] = 0;
+    }
 
+    void relaxEdges(std::vector<double> &dists, int source)
+    {
+        for (example_vertex_iterator vertexIter = g->vertex_begin(); vertexIter != g->vertex_end(); ++vertexIter)
+        {
+            for (example_edge_iterator edgeIter = g->edge_begin(); edgeIter != g->edge_end(); ++edgeIter)
+            {
+                size_t v1 = (*edgeIter)->get_v1()->get_index();
+                size_t v2 = (*edgeIter)->get_v1()->get_index();
+                double weight = (*edgeIter)->get_weight();
+
+                if (dists[v1] != DBL_MAX && dists[v1] + weight < dists[v2])
+                {
+                    dists[v2] = dists[v1] + weight;
+                }
+            }
+        }
+    }
+
+    void checkCycles(std::vector<double> &dists, int source)
+    {
+        for (example_vertex_iterator vertexIter = g->vertex_begin(); vertexIter != g->vertex_end(); ++vertexIter)
+        {
+            for (example_edge_iterator edgeIter = g->edge_begin(); edgeIter != g->edge_end(); ++edgeIter)
+            {
+                size_t v1 = (*edgeIter)->get_v1()->get_index();
+                size_t v2 = (*edgeIter)->get_v1()->get_index();
+                double weight = (*edgeIter)->get_weight();
+
+                if (dists[v1] != DBL_MAX && dists[v1] + weight < dists[v2])
+                {
+                    throw std::runtime_error("negative weight cycle detected");
+                }
+            }
+        }
+    }
+
+    void BellmanFord(std::vector<double> &dists, int source)
+    {
+        initDist(dists, source);
+        relaxEdges(dists, source);
+        checkCycles(dists, source);
     }
 
     void solve()
     {
         allocateDist();
-        BellmanFord();
+        for (int i = 0; i < g->get_num_of_vertex(); i++)
+        {
+            BellmanFord(distMatrix[i], i);
+        }
     }
 
     public:
@@ -52,9 +107,9 @@ class weightedTask
         solve();
     }
 
-    std::vector<double> &result()
+    std::vector<std::vector<double>> &result()
     {
-        return this->dist;
+        return this->distMatrix;
     }
 };
 #endif //WEIGHTED_H
