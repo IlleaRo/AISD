@@ -17,7 +17,7 @@ int main(int argc, char *argv[]) {
     int input;
     bool use_weights = true;
     bool correct_input = false;
-    example_graph pretty_graph;
+    example_graph *pretty_graph;
 
 #ifdef _WIN32
     SetConsoleOutputCP( WIN_UTF_ID);
@@ -42,7 +42,7 @@ int main(int argc, char *argv[]) {
             form = get_user_input<int>("Введите форму графа (0 - L-граф, 1 - M-граф) ");
         } while (form != 0 && form != 1);
 
-        pretty_graph = *new example_graph(num_of_vertexes, num_of_edges,
+        pretty_graph = new example_graph(num_of_vertexes, num_of_edges,
                                           type ? DIRECTED : NON_DIRECTED, form ? M : L);
     } else {
         while (!correct_input) {
@@ -50,22 +50,22 @@ int main(int argc, char *argv[]) {
             switch (input) {
                 case 1:
                     // Неориентированный, невзвешенный
-                    pretty_graph = *new example_graph(0, NON_DIRECTED, GRAPH_TYPE);
+                    pretty_graph = new example_graph(0, NON_DIRECTED, GRAPH_TYPE);
                     use_weights = false;
                     break;
                 case 2:
                     // Ориентированный, невзвешенный
-                    pretty_graph = *new example_graph(0, DIRECTED, GRAPH_TYPE);
+                    pretty_graph = new example_graph(0, DIRECTED, GRAPH_TYPE);
                     use_weights = false;
                     break;
                 case 3:
                     // Неориентированный, взвешенный
-                    pretty_graph = *new example_graph(0, NON_DIRECTED, GRAPH_TYPE);
+                    pretty_graph = new example_graph(0, NON_DIRECTED, GRAPH_TYPE);
                     use_weights = true;
                     break;
                 case 4:
                     // Ориентированный, взвешенный
-                    pretty_graph = *new example_graph(0, DIRECTED, GRAPH_TYPE);
+                    pretty_graph = new example_graph(0, DIRECTED, GRAPH_TYPE);
                     use_weights = true;
                     break;
 
@@ -75,15 +75,15 @@ int main(int argc, char *argv[]) {
             correct_input = true;
         }
 
-        pretty_graph.insert_edge(
-                pretty_graph.insert_vertex("A1"),
-                pretty_graph.insert_vertex("A2"),
+        pretty_graph->insert_edge(
+                pretty_graph->insert_vertex("A1"),
+                pretty_graph->insert_vertex("A2"),
                 use_weights ? 10 : 0
         );
 
-        pretty_graph.insert_edge(
-                pretty_graph.insert_vertex("B1"),
-                pretty_graph.insert_vertex("B2"),
+        pretty_graph->insert_edge(
+                pretty_graph->insert_vertex("B1"),
+                pretty_graph->insert_vertex("B2"),
                 use_weights ? 20 : 0
         );
     }
@@ -168,6 +168,7 @@ int main(int argc, char *argv[]) {
                 menu_tasks(pretty_graph, use_weights);
                 break;
             case 0:
+                delete pretty_graph;
                 return 0;
             default:
                 continue;
