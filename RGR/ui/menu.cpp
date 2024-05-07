@@ -426,8 +426,8 @@ void menu_control_edge_iterator(example_graph *pretty_graph, bool use_weights) {
     }
 }
 
-static void menu_weighted_task(example_graph &pretty_graph) {
-    allSP<example_vertex, example_edge> spt(&pretty_graph);
+static void menu_weighted_task(example_graph *pretty_graph) {
+    allSP<example_vertex, example_edge> spt(pretty_graph);
 
     int decision;
 
@@ -449,8 +449,8 @@ static void menu_weighted_task(example_graph &pretty_graph) {
     }
 }
 
-static void menu_nonweighted_task(example_graph &pretty_graph) {
-    PFS<example_vertex, example_edge> pfs(&pretty_graph);
+static void menu_nonweighted_task(example_graph *pretty_graph) {
+    PFS<example_vertex, example_edge> pfs(pretty_graph);
 
     int decision;
 
@@ -473,7 +473,7 @@ static void menu_nonweighted_task(example_graph &pretty_graph) {
 }
 
 // 19.
-void menu_tasks(example_graph &pretty_graph, bool use_weights) {
+void menu_tasks(example_graph *pretty_graph, bool use_weights) {
     start:
     int option = get_user_input<int>(task_select);
 

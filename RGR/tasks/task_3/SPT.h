@@ -1,6 +1,8 @@
 #ifndef SPT_H
 #define SPT_H
 
+#include <climits>
+
 #include "../../graphs/graph.h"
 #include <vector>
 
