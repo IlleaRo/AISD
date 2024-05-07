@@ -9,4 +9,6 @@ add_executable(RGR main.cpp
         graphs/iterators.h
         ui/test.cpp
         ui/prompts.cpp
-        ui/menu.cpp)
+        ui/menu.cpp
+        tasks/non-weighted.h
+        tasks/weighted.h)

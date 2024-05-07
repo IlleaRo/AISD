@@ -1,6 +1,8 @@
 #include <iostream>
 #include "menu.h"
 #include "prompts.h"
+#include "../tasks/non-weighted.h"
+#include "../tasks/weighted.h"
 
 using namespace std;
 
@@ -8,6 +10,9 @@ static example_vertex_iterator menu_vertex_iterator;
 static example_vertex *ev_vertex = nullptr;
 static example_ev_iterator menu_ev_iterator;
 static example_edge_iterator menu_edge_iterator;
+
+static weightedTask<example_vertex, example_edge> *wtask = nullptr;
+static nonWeightedTask<example_vertex, example_edge> *nwtask = nullptr;
 
 
 // 1.
@@ -425,11 +430,62 @@ void menu_control_edge_iterator(example_graph &pretty_graph, bool use_weights) {
 }
 
 static void menu_weighted_task(example_graph &pretty_graph) {
-    // сюда вторая задача
+    int option;
+    std::vector<double> result;
+    if (!wtask) wtask = new weightedTask<example_vertex, example_edge>(&pretty_graph);
+    while (true)
+    {
+        option = get_user_input<int>("1. Вывести результат\n"
+                                     "2. Повторно выполнить задачу\n"
+                                     "0. Выйти\n"
+                                     "Ввод: ");
+        switch (option)
+        {
+            case 1:
+                result = wtask->result();
+                for (double dist : result)
+                {
+                    cout << dist << " ";
+                }
+            break;
+            case 2:
+                wtask->restart();
+            break;
+            case 0:
+                return;
+            default:
+                continue;
+        }
+        anykey();
+    }
 }
 
 static void menu_nonweighted_task(example_graph &pretty_graph) {
-    // сюда вторая задача
+    int option;
+    example_graph *result;
+    if (!nwtask) nwtask = new nonWeightedTask<example_vertex, example_edge>(&pretty_graph);
+    while (true)
+    {
+        option = get_user_input<int>("1. Вывести результат\n"
+                                     "2. Повторно выполнить задачу\n"
+                                     "0. Выйти\n"
+                                     "Ввод: ");
+        switch (option)
+        {
+            case 1:
+                result = nwtask->result();
+                cout << *result;
+            break;
+            case 2:
+                nwtask->restart();
+            break;
+            case 0:
+                return;
+            default:
+                continue;
+        }
+        anykey();
+    }
 }
 
 // 19.
