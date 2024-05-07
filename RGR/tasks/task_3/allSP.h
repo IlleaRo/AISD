@@ -2,6 +2,7 @@
 #define ALLSP_H
 
 #include "SPT.h"
+#include "stack"
 template <class VERTEX_T, class EDGE_T> class allSP {
     graph<VERTEX_T, EDGE_T> *G;
     vector<SPT<VERTEX_T, EDGE_T>*> A;
@@ -38,13 +39,28 @@ public:
         }
 
         cout << "Longest path: " << vmax << " -> " << wmax << " : " << max_dist / 2 << endl;
-        /*
+
         EDGE_T* edge = A[vmax]->pathR(wmax);
+        //cout << vmax<< " ->(" << edge->get_weight()<<") ";
+
+        stack<unsigned long> path;
+
         while (edge != nullptr) {
-            cout << edge->get_v2()->get_index() << " -> ";
-            edge = A[edge->get_v2()->get_index()]->pathR(vmax);
+            //cout << edge->get_v1()->get_index() << " -(" << edge->get_weight()<<")-> "<<edge->get_v2()->get_index()<<'\n';
+            path.push(edge->get_v2()->get_index());
+            if (edge->get_v2()->get_index() == vmax) {
+                break;
+            }
+
+            edge = A[vmax]->pathR(edge->get_v1()->get_index());
         }
-        cout << wmax << endl; */
+        path.push(vmax);
+
+        while (!path.empty()) {
+            cout<<path.top()<<(path.empty()? "\n" : " -> ");
+            path.pop();
+        }
+        //cout << wmax << endl;
 
         return max_dist / 2;
     }
