@@ -447,7 +447,14 @@ static void menu_weighted_task(example_graph *pretty_graph) {
                 {
                     for (double &dist : distRow)
                     {
-                        cout << dist << " ";
+                        if (dist == DBL_MAX)
+                        {
+                            cout << "inf" << " ";
+                        }
+                        else
+                        {
+                            cout << dist << " ";
+                        }
                     }
                     cout << endl;
                 }

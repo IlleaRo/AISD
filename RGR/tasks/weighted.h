@@ -32,12 +32,12 @@ class weightedTask
 
     void relaxEdges(std::vector<double> &dists, int source)
     {
-        for (example_vertex_iterator vertexIter = g->vertex_begin(); vertexIter != g->vertex_end(); ++vertexIter)
+        for (size_t i = 0; i < g->get_num_of_vertex() - 1; i++)
         {
             for (example_edge_iterator edgeIter = g->edge_begin(); edgeIter != g->edge_end(); ++edgeIter)
             {
                 size_t v1 = (*edgeIter)->get_v1()->get_index();
-                size_t v2 = (*edgeIter)->get_v1()->get_index();
+                size_t v2 = (*edgeIter)->get_v2()->get_index();
                 double weight = (*edgeIter)->get_weight();
 
                 if (dists[v1] != DBL_MAX && dists[v1] + weight < dists[v2])
@@ -50,20 +50,17 @@ class weightedTask
 
     void checkCycles(std::vector<double> &dists, int source)
     {
-        for (example_vertex_iterator vertexIter = g->vertex_begin(); vertexIter != g->vertex_end(); ++vertexIter)
-        {
-            for (example_edge_iterator edgeIter = g->edge_begin(); edgeIter != g->edge_end(); ++edgeIter)
-            {
-                size_t v1 = (*edgeIter)->get_v1()->get_index();
-                size_t v2 = (*edgeIter)->get_v1()->get_index();
-                double weight = (*edgeIter)->get_weight();
+           for (example_edge_iterator edgeIter = g->edge_begin(); edgeIter != g->edge_end(); ++edgeIter)
+           {
+               size_t v1 = (*edgeIter)->get_v1()->get_index();
+               size_t v2 = (*edgeIter)->get_v1()->get_index();
+               double weight = (*edgeIter)->get_weight();
 
-                if (dists[v1] != DBL_MAX && dists[v1] + weight < dists[v2])
-                {
-                    throw std::runtime_error("negative weight cycle detected");
-                }
-            }
-        }
+               if (dists[v1] != DBL_MAX && dists[v1] + weight < dists[v2])
+               {
+                   throw std::runtime_error("negative weight cycle detected");
+               }
+           }
     }
 
     void BellmanFord(std::vector<double> &dists, int source)
