@@ -26,7 +26,7 @@ int run_test() {
     {
         for (double &dist : distRow)
         {
-            if (dist == DBL_MAX)
+            if (dist == INFINITY)
             {
                 cout << "inf" << " ";
             }

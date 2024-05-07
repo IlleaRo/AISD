@@ -25,7 +25,7 @@ class weightedTask
     {
         for (double &dist : dists)
         {
-            dist = DBL_MAX;
+            dist = INFINITY;
         }
         dists[source] = 0;
     }
@@ -40,7 +40,7 @@ class weightedTask
                 size_t v2 = (*edgeIter)->get_v2()->get_index();
                 double weight = (*edgeIter)->get_weight();
 
-                if (dists[v1] != DBL_MAX && dists[v1] + weight < dists[v2])
+                if (dists[v1] != INFINITY && dists[v1] + weight < dists[v2])
                 {
                     dists[v2] = dists[v1] + weight;
                 }
@@ -56,7 +56,7 @@ class weightedTask
                size_t v2 = (*edgeIter)->get_v1()->get_index();
                double weight = (*edgeIter)->get_weight();
 
-               if (dists[v1] != DBL_MAX && dists[v1] + weight < dists[v2])
+               if (dists[v1] != INFINITY && dists[v1] + weight < dists[v2])
                {
                    throw std::runtime_error("negative weight cycle detected");
                }
