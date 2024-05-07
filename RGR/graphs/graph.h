@@ -221,13 +221,12 @@ public:
 
         EDGE_T *edge = new EDGE_T(v1, v2);
 
-        EDGE_T *inserted_edge = form->insert_edge(v1->get_index(), v2->get_index(), edge);
-
-        if (edge != inserted_edge) {
-            delete edge;
+        if (form->insert_edge(v1->get_index(), v2->get_index(), edge)) {
+            return edge;
         }
 
-        return inserted_edge;
+        delete edge;
+        return nullptr;
     }
 
     // Добавляет ребро между вершинами графа, заданными адресами
@@ -239,9 +238,12 @@ public:
 
         EDGE_T *edge = new EDGE_T(v1, v2, weight);
 
-        form->insert_edge(v1->get_index(), v2->get_index(), edge);
+        if (form->insert_edge(v1->get_index(), v2->get_index(), edge)) {
+            return edge;
+        }
 
-        return edge;
+        delete edge;
+        return nullptr;
     }
 
     EDGE_T *get_edge(VERTEX_T *v1, VERTEX_T *v2) {
