@@ -371,6 +371,8 @@ public:
         new_node->next = nullptr;
         tmp->next = new_node;
 
+        num_of_edges++;
+
         return true;
     }
 
