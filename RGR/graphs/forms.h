@@ -59,7 +59,7 @@ public:
 
     virtual bool remove_vertex(unsigned long vertex_index) = 0;
 
-    virtual EDGE_T *insert_edge(unsigned long v_index_1, unsigned long v_index_2, EDGE_T *edge) = 0;
+    virtual bool insert_edge(unsigned long v_index_1, unsigned long v_index_2, EDGE_T *edge) = 0;
 
     virtual EDGE_T *get_first_edge(unsigned long vertex_index) = 0;
 
@@ -119,7 +119,7 @@ public:
         return vertex_vector.size() - 1;
     }
 
-    EDGE_T *insert_edge(unsigned long v_index_1, unsigned long v_index_2, EDGE_T *edge) override {
+    bool insert_edge(unsigned long v_index_1, unsigned long v_index_2, EDGE_T *edge) override {
         if (v_index_1 >= vertex_vector.size() || v_index_2 >= vertex_vector.size()) {
             throw std::runtime_error("Vertex index out of range");
         }
@@ -128,7 +128,7 @@ public:
 
         while (tmp) {
             if (tmp->v2 == v_index_2) {
-                return tmp->edge;
+                return false;
             }
             tmp = tmp->next;
         }
@@ -147,7 +147,7 @@ public:
 
         num_of_edges++;
 
-        return edge;
+        return true;
     }
 
     bool remove_vertex(unsigned long vertex_index) override {
@@ -344,7 +344,7 @@ public:
         vertex_vector.clear();
     }
 
-    EDGE_T *insert_edge(unsigned long v_index_1, unsigned long v_index_2, EDGE_T *edge) override {
+    bool insert_edge(unsigned long v_index_1, unsigned long v_index_2, EDGE_T *edge) override {
         node *tmp = vertex_vector[v_index_1];
         if (tmp == nullptr) {
             node *new_node = new node;
@@ -355,12 +355,12 @@ public:
 
             num_of_edges++;
 
-            return edge;
+            return true;
         }
 
         while (tmp->next) {
             if (tmp->v2 == v_index_2) {
-                return tmp->edge;
+                return false;
             }
             tmp = tmp->next;
         }
@@ -371,7 +371,9 @@ public:
         new_node->next = nullptr;
         tmp->next = new_node;
 
-        return edge;
+        num_of_edges++;
+
+        return true;
     }
 
     bool remove_edge(unsigned long v1_index, unsigned long v2_index) override {
@@ -513,13 +515,13 @@ public:
         return vertex_vector.size() - 1;
     }
 
-    EDGE_T *insert_edge(unsigned long v_index_1, unsigned long v_index_2, EDGE_T *edge) override {
+    bool insert_edge(unsigned long v_index_1, unsigned long v_index_2, EDGE_T *edge) override {
         if (v_index_1 >= vertex_vector.size() || v_index_2 >= vertex_vector.size()) {
             throw std::runtime_error("Vertex index out of range");
         }
 
         if (vertex_vector[v_index_1][v_index_2] != nullptr) {
-            return vertex_vector[v_index_1][v_index_2];
+            return false;
         }
 
         vertex_vector[v_index_1][v_index_2] = edge;
@@ -527,7 +529,7 @@ public:
 
         num_of_edges++;
 
-        return edge;
+        return true;
     }
 
     bool remove_vertex(unsigned long vertex_index) override {
@@ -651,20 +653,20 @@ public:
         vertex_vector.clear();
     }
 
-    EDGE_T *insert_edge(unsigned long v_index_1, unsigned long v_index_2, EDGE_T *edge) override {
+    bool insert_edge(unsigned long v_index_1, unsigned long v_index_2, EDGE_T *edge) override {
         if (v_index_1 >= vertex_vector.size() || v_index_2 >= vertex_vector.size()) {
             throw std::runtime_error("Vertex index out of range");
         }
 
         if (vertex_vector[v_index_1][v_index_2] != nullptr) {
-            return vertex_vector[v_index_1][v_index_2];
+            return false;
         }
 
         vertex_vector[v_index_1][v_index_2] = edge;
 
         num_of_edges++;
 
-        return edge;
+        return true;
     }
 
     bool remove_edge(unsigned long v1_index, unsigned long v2_index) override {
