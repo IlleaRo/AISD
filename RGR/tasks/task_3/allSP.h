@@ -2,14 +2,38 @@
 #define ALLSP_H
 
 #include "SPT.h"
-#include "stack"
+
 template <class VERTEX_T, class EDGE_T> class allSP {
     graph<VERTEX_T, EDGE_T> *G;
     vector<SPT<VERTEX_T, EDGE_T>*> A;
+
+    vector<int> radius_path;
+    double radius;
+
+    vector<int> get_path(int from, int to) {
+        EDGE_T* edge = A[from]->pathR(to);
+
+        vector<int> path;
+
+        while (edge != nullptr) {
+            path.push_back(edge->get_v2()->get_index());
+            if (edge->get_v2()->get_index() == from) {
+                break;
+            }
+
+            edge = A[from]->pathR(edge->get_v1()->get_index());
+        }
+        path.push_back(from);
+
+        reverse(path.begin(), path.end());
+
+        return path;
+    }
+
 public:
     explicit allSP(graph<VERTEX_T, EDGE_T> *G) : G(G), A(G->get_num_of_vertex()) {
         for (int s = 0; s < G->get_num_of_vertex(); s++) {
-            A[s] = new SPT<VERTEX_T, EDGE_T>(G, s);
+            restart();
         }
     }
 
@@ -21,48 +45,30 @@ public:
         return A[s]->dist(t);
     }
 
-    [[nodiscard]] double radius() const {
-        int vmax = 0, wmax = 0;
-        double max_dist = -1;
+    void set_radius() {
+        double max_dist;
+
+        radius_path.clear(); // Очищаем текущий радиус-путь
+        vector<int> longest_path(G->get_num_of_vertex()); // Текущий эксцентриситет
 
         for (int v = 0; v < G->get_num_of_vertex(); v++) {
+            max_dist = -1;
+            longest_path.clear();
             for (int w = 0; w < G->get_num_of_vertex(); w++) {
+                /*Здесь каждая получаем путь из v->w*/
+
                 if (v != w) {
-                    double dist = A[v]->dist(w);
-                    if (dist != INT_MAX && dist > max_dist) {
-                        vmax = v;
-                        wmax = w;
+                    if (const double dist = A[v]->dist(w); dist != INT_MAX && dist > max_dist) {
+                        longest_path = get_path(v, w);
                         max_dist = dist;
                     }
                 }
             }
-        }
-
-        cout << "Longest path: " << vmax << " -> " << wmax << " : " << max_dist / 2 << endl;
-
-        EDGE_T* edge = A[vmax]->pathR(wmax);
-        //cout << vmax<< " ->(" << edge->get_weight()<<") ";
-
-        stack<unsigned long> path;
-
-        while (edge != nullptr) {
-            //cout << edge->get_v1()->get_index() << " -(" << edge->get_weight()<<")-> "<<edge->get_v2()->get_index()<<'\n';
-            path.push(edge->get_v2()->get_index());
-            if (edge->get_v2()->get_index() == vmax) {
-                break;
+            if (radius_path.empty() || radius_path.size() > longest_path.size()) {
+                radius_path = longest_path;
+                radius = max_dist;
             }
-
-            edge = A[vmax]->pathR(edge->get_v1()->get_index());
         }
-        path.push(vmax);
-
-        while (!path.empty()) {
-            cout<<path.top()<<(path.empty()? "\n" : " -> ");
-            path.pop();
-        }
-        //cout << wmax << endl;
-
-        return max_dist / 2;
     }
 
     void restart() {
@@ -70,11 +76,15 @@ public:
             A[s] = new SPT<VERTEX_T, EDGE_T>(G, s);
         }
 
-        result();
+        set_radius();
     }
 
-    void result() {
-        radius();
+    [[nodiscard]] double get_radius() const {
+        return radius;
+    }
+
+    [[nodiscard]] vector<int> get_radius_path() const {
+        return radius_path;
     }
 
     void set_graph(graph<VERTEX_T, EDGE_T> *new_graph) {
@@ -83,6 +93,12 @@ public:
         }
 
         G = new_graph;
+    }
+
+    void print_path() {
+        for (const int vertex : radius_path) {
+            cout<<vertex<<(vertex != radius_path.back()? " -> " : "");
+        }
     }
 };
 

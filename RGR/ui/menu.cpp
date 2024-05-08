@@ -439,7 +439,12 @@ static void menu_weighted_task(example_graph *pretty_graph) {
                 spt.restart();
                 break;
             case 2:
-                spt.result();
+                cout<<"Radius: "<<spt.get_radius()<<'\n';
+                break;
+            case 3:
+                cout<<"Radius path: ";
+                spt.print_path();
+                cout<<'\n';
                 break;
             case 0:
                 return;

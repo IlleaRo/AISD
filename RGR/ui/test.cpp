@@ -149,8 +149,6 @@ int run_test() {
     std::cout<<graph_M_3;
     std::cout<<"\n---\n"<<all.dist(2, 8);
 
-    std::cout<<"\n\n---> "<<all.radius();
-
 #endif
     return 0;
 }
