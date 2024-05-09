@@ -271,6 +271,10 @@ public:
         return form->remove_edge(v1->get_index(), v2->get_index());
     }
 
+    bool remove_edge(size_t v1_index, size_t v2_index) {
+        return form->remove_edge(v1_index, v2_index);
+    }
+
 
     // Удаляет вершину из графа, заданную адресом дескриптора
     bool remove_vertex(VERTEX_T *vertex_ptr) {

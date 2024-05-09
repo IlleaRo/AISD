@@ -1,6 +1,8 @@
 #ifndef NON_WEIGHTED_H
 #define NON_WEIGHTED_H
 
+#include <stack>
+
 template <class VERTEX_T, class EDGE_T>
 class nonWeightedTask
 {
@@ -12,18 +14,86 @@ class nonWeightedTask
     {
         delete gResult;
 
-        gResult = new graph<VERTEX_T, EDGE_T>();
+        gResult = new graph<VERTEX_T, EDGE_T>(*g);
     }
 
-    void reduce()
+    std::vector<std::vector<size_t>> Tarjan()
     {
+        size_t vertexCount = gResult->get_num_of_vertex();
+        size_t visits = 0;
 
+        std::vector<size_t> disc(vertexCount, 0);
+        std::vector<size_t> low(vertexCount, 0);
+        std::vector<bool> visited(vertexCount, false);
+        std::stack<size_t> vertexStack;
+        std::vector<std::vector<size_t>> SCCs(vertexCount);
+
+        for (size_t i = 0; i < vertexCount; i++)
+            if (disc[i] == 0)
+            {
+                SCCs[i] = TarjanVisit(i, visits, disc, low, vertexStack, visited);
+            }
+        return SCCs;
+    }
+
+    std::vector<size_t> TarjanVisit(size_t index, size_t &visits, std::vector<size_t> &disc, std::vector<size_t> &low, std::stack<size_t> &vertexStack, std::vector<bool> &visited) {
+        // A static variable is used for simplicity, we can
+        // avoid use of static variable by passing a pointer.
+        std::vector<size_t> SCCsPart;
+
+        disc[index] = low[index] = ++visits;
+        vertexStack.push(index);
+        visited[index] = true;
+
+        for (auto iter = gResult->edge_v_begin(gResult->get_vertex(index));
+            iter != gResult->edge_v_end(gResult->get_vertex(index));
+            ++iter) {
+            VERTEX_T *adj = (*iter)->get_v2();
+
+            if (!visited[adj->get_index()]) {
+                TarjanVisit(adj->get_index(), visits, disc, low, vertexStack, visited);
+
+                low[index] = std::min(low[index], low[adj->get_index()]);
+            }
+            else
+            {
+                low[index] = std::min(low[index], disc[adj->get_index()]);
+            }
+        }
+
+        if (low[index] == disc[index]) {
+            size_t curIndex = 0;
+            while (vertexStack.top() != index) {
+                curIndex = vertexStack.top();
+                SCCsPart.push_back(curIndex);
+                visited[curIndex] = false;
+                vertexStack.pop();
+            }
+            curIndex = vertexStack.top();
+            SCCsPart.push_back(curIndex);
+            visited[curIndex] = false;
+            vertexStack.pop();
+        }
+        return SCCsPart;
+    }
+
+    void reduce(std::vector<std::vector<size_t>> SCCs)
+    {
+        for (auto& component : SCCs) {
+            for (size_t i = 0; i < component.size(); ++i) {
+                for (size_t j = i + 1; j < component.size(); ++j) {
+                    gResult->remove_edge(component[i], component[j]);
+                }
+            }
+        }
     }
 
     void solve()
     {
+        std::vector<std::vector<size_t>> SCCs;
         allocateGraph();
-        reduce();
+        SCCs = Tarjan();
+        reduce(SCCs);
     }
 
     public:
@@ -56,7 +126,7 @@ class nonWeightedTask
 
     graph<VERTEX_T, EDGE_T> *result()
     {
-        return this->g;
+        return this->gResult;
     }
 };
 
