@@ -4,36 +4,35 @@
 template <class NAME_T, class DATA_T>
 class vertex {
 protected:
-    unsigned long index; // Индекс вершины в структуре графа или -1 (скрытое поле)
-
-    NAME_T name; // Имя вершины
-    DATA_T data; // Хранимые данные
+    unsigned long index;
+    NAME_T name;
+    DATA_T data;
 public:
-    explicit vertex(unsigned long index) : index(index){};
-    explicit vertex(unsigned long index, NAME_T name) : index(index), name(name){};
+    explicit vertex(size_t index) : index(index){};
+    explicit vertex(size_t index, NAME_T name) : index(index), name(name){};
 
-    [[nodiscard]] unsigned long get_index() const {
+    [[nodiscard]] size_t getIndex() const {
         return index;
     }
 
-    void set_name(NAME_T new_name) {
-        name = new_name;
+    void setName(NAME_T name) {
+        this->name = name;
     }
 
-    NAME_T &get_name() {
+    NAME_T getName() {
         return name;
     }
 
-    void set_data(DATA_T new_data) {
-        data = new_data;
+    void setData(DATA_T data) {
+        this->data = data;
     }
 
-    DATA_T &get_data() {
+    DATA_T get_data() {
         return data;
     }
 
-    void set_index(unsigned long new_index) {
-        index = new_index;
+    void forceIndex(size_t index) {
+        this->index = index;
     }
 };
 

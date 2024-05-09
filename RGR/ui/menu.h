@@ -5,9 +5,9 @@
 typedef vertex<std::string, int> example_vertex;
 typedef edge<vertex<std::string, int>, int, int> example_edge;
 typedef graph<example_vertex, example_edge> example_graph;
-typedef vertex_iterator<example_vertex> example_vertex_iterator;
-typedef edge_iterator_for_v<example_vertex, example_edge> example_ev_iterator;
-typedef edge_iterator<example_vertex, example_edge> example_edge_iterator;
+typedef vertexIterator<example_vertex> example_vertex_iterator;
+typedef vertexEdgeIter<example_vertex, example_edge> example_ev_iterator;
+typedef edgeIterator<example_vertex, example_edge> example_edge_iterator;
 
 // 1.
 void menu_get_type(example_graph *pretty_graph, bool use_weights);

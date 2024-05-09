@@ -23,9 +23,9 @@ void menu_get_type(example_graph *pretty_graph, bool use_weights) {
         "UNKNOWN"
     };
 
-    cout << pretty_graph->get_type() << " ";
+    cout << pretty_graph->getType() << " ";
 
-    switch (pretty_graph->get_type())
+    switch (pretty_graph->getType())
     {
         case DIRECTED:
             cout << "(" << type_strings[0] << ")" << endl;
@@ -65,23 +65,23 @@ void menu_get_form(example_graph *pretty_graph, bool use_weights) {
 
 // 3.
 void menu_get_vertices_count(example_graph *pretty_graph, bool use_weights) {
-    cout << pretty_graph->get_num_of_vertex() << endl;
+    cout << pretty_graph->getVertexCount() << endl;
 }
 
 // 4.
 void menu_get_edges_count(example_graph *pretty_graph, bool use_weights) {
-    cout << pretty_graph->get_num_of_edges() << endl;
+    cout << pretty_graph->getEdgeCount() << endl;
 }
 
 // 5.
 void menu_get_graph_saturation_factor(example_graph *pretty_graph, bool use_weights) {
-    cout << pretty_graph->get_koeff() << endl;
+    cout << pretty_graph->getCoefficient() << endl;
 }
 
 // 6.
 void menu_insert_vertex(example_graph *pretty_graph, bool use_weights) {
     string name = getInput<string>("Введите имя новой вершины: ");
-    example_vertex *vertex = pretty_graph->insert_vertex(name);
+    example_vertex *vertex = pretty_graph->pushVertex(name);
     cout << vertex << endl;
 }
 
@@ -93,7 +93,7 @@ void menu_insert_edge(example_graph *pretty_graph, bool use_weights) {
     size_t v1_index, v2_index;
 
     v1_index = getInput<size_t>("Введите индекс первой вершины: ");
-    vertex1 = pretty_graph->get_vertex(v1_index);
+    vertex1 = pretty_graph->getVertex(v1_index);
 
     if (!vertex1) {
         cout << "Такой вершины нет" << endl;
@@ -101,7 +101,7 @@ void menu_insert_edge(example_graph *pretty_graph, bool use_weights) {
     }
 
     v2_index = getInput<size_t>("Введите индекс второй вершины: ");
-    vertex2 = pretty_graph->get_vertex(v2_index);
+    vertex2 = pretty_graph->getVertex(v2_index);
 
     if (!vertex2) {
         cout << "Такой вершины нет" << endl;
@@ -110,10 +110,10 @@ void menu_insert_edge(example_graph *pretty_graph, bool use_weights) {
 
     if (use_weights) {
         weight = getInput<int>("Введите вес ребра: ");
-        edge = pretty_graph->insert_edge(vertex1, vertex2, weight);
+        edge = pretty_graph->pushEdge(vertex1, vertex2, weight);
     }
     else {
-        edge = pretty_graph->insert_edge(vertex1, vertex2);
+        edge = pretty_graph->pushEdge(vertex1, vertex2);
     }
 
     cout << edge << endl;
@@ -124,13 +124,13 @@ void menu_get_vertex(example_graph *pretty_graph, bool use_weights) {
     example_vertex *vertex;
     size_t index = getInput<size_t>("Введите индекс вершины: ");
 
-    vertex = pretty_graph->get_vertex(index);
+    vertex = pretty_graph->getVertex(index);
 
     cout << "Адрес: " << vertex << endl;
     if (vertex)
     {
         cout << "Данные: " << vertex->get_data() << endl;
-        cout << "Имя: " << vertex->get_name() << endl;
+        cout << "Имя: " << vertex->getName() << endl;
     }
 }
 
@@ -141,7 +141,7 @@ void menu_get_edge(example_graph *pretty_graph, bool use_weights) {
     size_t v1_index, v2_index;
 
     v1_index = getInput<size_t>("Введите индекс первой вершины: ");
-    vertex1 = pretty_graph->get_vertex(v1_index);
+    vertex1 = pretty_graph->getVertex(v1_index);
 
     if (!vertex1) {
         cout << "Такой вершины нет" << endl;
@@ -149,22 +149,22 @@ void menu_get_edge(example_graph *pretty_graph, bool use_weights) {
     }
 
     v2_index = getInput<size_t>("Введите индекс второй вершины: ");
-    vertex2 = pretty_graph->get_vertex(v2_index);
+    vertex2 = pretty_graph->getVertex(v2_index);
 
     if (!vertex2) {
         cout << "Такой вершины нет" << endl;
         return;
     }
 
-    edge = pretty_graph->get_edge(vertex1, vertex2);
+    edge = pretty_graph->getEdge(vertex1, vertex2);
 
     cout << "Адрес: " << edge << endl;
     if (edge)
     {
-        cout << "Данные: " << edge->get_data() << endl;
+        cout << "Данные: " << edge->getData() << endl;
         if (use_weights)
         {
-            cout << "Вес: " << edge->get_weight() << endl;
+            cout << "Вес: " << edge->getWeight() << endl;
         }
     }
 }
@@ -174,7 +174,7 @@ void menu_delete_vertex(example_graph *pretty_graph, bool use_weights) {
     example_vertex *vertex;
     size_t index = getInput<size_t>("Введите индекс вершины: ");
 
-    cout << "Результат: " << pretty_graph->remove_vertex(index) << endl;
+    cout << "Результат: " << pretty_graph->popVertex(index) << endl;
 }
 
 // 11.
@@ -184,7 +184,7 @@ void menu_delete_edge(example_graph *pretty_graph, bool use_weights) {
     size_t v1_index, v2_index;
 
     v1_index = getInput<size_t>("Введите индекс первой вершины: ");
-    vertex1 = pretty_graph->get_vertex(v1_index);
+    vertex1 = pretty_graph->getVertex(v1_index);
 
     if (!vertex1) {
         cout << "Такой вершины нет" << endl;
@@ -192,14 +192,14 @@ void menu_delete_edge(example_graph *pretty_graph, bool use_weights) {
     }
 
     v2_index = getInput<size_t>("Введите индекс второй вершины: ");
-    vertex2 = pretty_graph->get_vertex(v2_index);
+    vertex2 = pretty_graph->getVertex(v2_index);
 
     if (!vertex2) {
         cout << "Такой вершины нет" << endl;
         return;
     }
 
-    cout << "Результат: " << pretty_graph->remove_edge(vertex1, vertex2) << endl;
+    cout << "Результат: " << pretty_graph->popEdge(vertex1, vertex2) << endl;
 }
 
 // 12.
@@ -213,7 +213,7 @@ void menu_print_vertex(example_graph *pretty_graph, bool use_weights) {
 
     while (iter != pretty_graph->vertex_end())
     {
-        cout << (*iter)->get_index() << ". Данные: " << (*iter)->get_data() << " Имя: " << (*iter)->get_name() << endl;
+        cout << (*iter)->getIndex() << ". Данные: " << (*iter)->get_data() << " Имя: " << (*iter)->getName() << endl;
         ++iter;
     }
 }
@@ -225,27 +225,27 @@ void menu_clear_graph(example_graph *pretty_graph, bool use_weights) {
 
 // 15.
 void menu_reform_graph(example_graph *pretty_graph, bool use_weights) {
-    pretty_graph->get_form() == L ? pretty_graph->to_matrix_graph() : pretty_graph->to_list_graph();
+    pretty_graph->get_form() == L ? pretty_graph->convertToM() : pretty_graph->convertToL();
 }
 
 // 16.
 void menu_control_vertex_iterator(example_graph *pretty_graph, bool use_weights) {
     int option = 1;
 
-    if (pretty_graph->get_num_of_vertex() == 0) {
+    if (pretty_graph->getVertexCount() == 0) {
         cout << "В графе нет вершин" << endl;
         return;
     }
 
     while (true) {
-        if (menu_vertex_iterator.is_undefined()) {
+        if (menu_vertex_iterator.isUndefined()) {
             menu_vertex_iterator = pretty_graph->vertex_begin(); // это происходит только при первом заходе в меню, всё нормально
         }
 
         try
         {
             *menu_vertex_iterator; // проверка, чтобы при ошибке в консоль не начало "Имя итератора: " выводиться
-            cout << "Имя итератора: " << (*menu_vertex_iterator)->get_name() << endl;
+            cout << "Имя итератора: " << (*menu_vertex_iterator)->getName() << endl;
             cout << "Значение итератора: " << (*menu_vertex_iterator)->get_data() << endl;
         }
         catch (std::exception &exception)
@@ -260,7 +260,7 @@ void menu_control_vertex_iterator(example_graph *pretty_graph, bool use_weights)
             {
                 case 1:
                     // Изменить значение
-                    (*menu_vertex_iterator)->set_data(getInput<int>("Введите новое значение: "));
+                    (*menu_vertex_iterator)->setData(getInput<int>("Введите новое значение: "));
                     break;
                 case 2:
                     // Инкрементировать
@@ -293,11 +293,11 @@ void menu_control_edge_iterator_for_v(example_graph *pretty_graph, bool use_weig
 {
     int option = 1;
 
-    if (pretty_graph->get_num_of_vertex() == 0) {
+    if (pretty_graph->getVertexCount() == 0) {
         cout << "В графе нет вершин" << endl;
         return;
     }
-    if (pretty_graph->get_num_of_edges() == 0) {
+    if (pretty_graph->getEdgeCount() == 0) {
         cout << "В графе нет граней" << endl;
         return;
     }
@@ -305,7 +305,7 @@ void menu_control_edge_iterator_for_v(example_graph *pretty_graph, bool use_weig
     while (true) {
         if (ev_vertex == nullptr) {
             int vertex_index = getInput<int>("Введите индекс вершины: ");
-            ev_vertex = pretty_graph->get_vertex(vertex_index);
+            ev_vertex = pretty_graph->getVertex(vertex_index);
             if (ev_vertex == nullptr)
             {
                 cout << "Такой вершины нет" << endl;
@@ -317,9 +317,9 @@ void menu_control_edge_iterator_for_v(example_graph *pretty_graph, bool use_weig
         try
         {
             *menu_ev_iterator;
-            cout << "Имя первой вершины: " << (*menu_ev_iterator)->get_v1()->get_name() << endl;
-            cout << "Имя второй вершины: " << (*menu_ev_iterator)->get_v2()->get_name() << endl;
-            cout << "Значение итератора: " << (*menu_ev_iterator)->get_data() << endl;
+            cout << "Имя первой вершины: " << (*menu_ev_iterator)->getSrc()->getName() << endl;
+            cout << "Имя второй вершины: " << (*menu_ev_iterator)->getDest()->getName() << endl;
+            cout << "Значение итератора: " << (*menu_ev_iterator)->getData() << endl;
         }
         catch (std::exception &exception)
         {
@@ -334,7 +334,7 @@ void menu_control_edge_iterator_for_v(example_graph *pretty_graph, bool use_weig
             {
                 case 1:
                     // Изменить значение
-                    (*menu_ev_iterator)->set_data(getInput<int>("Введите новое значение: "));
+                    (*menu_ev_iterator)->setData(getInput<int>("Введите новое значение: "));
                 break;
                 case 2:
                     // Инкрементировать
@@ -370,22 +370,22 @@ void menu_control_edge_iterator_for_v(example_graph *pretty_graph, bool use_weig
 void menu_control_edge_iterator(example_graph *pretty_graph, bool use_weights) {
     int option = 1;
 
-    if (pretty_graph->get_num_of_edges() == 0) {
+    if (pretty_graph->getEdgeCount() == 0) {
         cout << "В графе нет рёбер" << endl;
         return;
     }
 
     while (true) {
-        if (menu_edge_iterator.is_undefined()) {
+        if (menu_edge_iterator.isUndefined()) {
             menu_edge_iterator = pretty_graph->edge_begin(); // это происходит только при первом заходе в меню, всё нормально
         }
 
         try
         {
             *menu_edge_iterator; // проверка, чтобы при ошибке в консоль не начало "Имя первой вершины: " выводиться
-            cout << "Имя первой вершины: " << (*menu_edge_iterator)->get_v1()->get_name() << endl;
-            cout << "Имя второй вершины: " << (*menu_edge_iterator)->get_v2()->get_name() << endl;
-            cout << "Значение итератора: " << (*menu_edge_iterator)->get_data() << endl;
+            cout << "Имя первой вершины: " << (*menu_edge_iterator)->getSrc()->getName() << endl;
+            cout << "Имя второй вершины: " << (*menu_edge_iterator)->getDest()->getName() << endl;
+            cout << "Значение итератора: " << (*menu_edge_iterator)->getData() << endl;
         }
         catch (std::exception &exception)
         {
@@ -400,7 +400,7 @@ void menu_control_edge_iterator(example_graph *pretty_graph, bool use_weights) {
             {
                 case 1:
                     // Изменить значение
-                    (*menu_edge_iterator)->set_data(getInput<int>("Введите новое значение: "));
+                    (*menu_edge_iterator)->setData(getInput<int>("Введите новое значение: "));
                     break;
                 case 2:
                     // Инкрементировать

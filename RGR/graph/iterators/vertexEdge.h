@@ -5,75 +5,75 @@ template <class VERTEX_T, class EDGE_T>
 class graph;
 
 template <class VERTEX_T, class EDGE_T>
-class edge_iterator_for_v {
-    VERTEX_T *vertex;
-    graph<VERTEX_T, EDGE_T> *graph_ptr;
-    EDGE_T *cur_edge;
-    bool undefined;
+class vertexEdgeIter {
+    VERTEX_T *curVertex;
+    graph<VERTEX_T, EDGE_T> *curGraph;
+    EDGE_T *curEdge;
+    bool graphUndefined;
     public:
-    edge_iterator_for_v() : vertex(nullptr), graph_ptr(nullptr), cur_edge(nullptr), undefined(true) {}
+    vertexEdgeIter() : curVertex(nullptr), curGraph(nullptr), curEdge(nullptr), graphUndefined(true) {}
 
-    edge_iterator_for_v(graph<VERTEX_T, EDGE_T> *graph, VERTEX_T *vertex) {
-        this->vertex = vertex;
-        this->cur_edge = graph->get_first_edge(vertex);
-        this->graph_ptr = graph;
-        undefined = false;
+    vertexEdgeIter(graph<VERTEX_T, EDGE_T> *graph, VERTEX_T *vertex) {
+        this->curVertex = vertex;
+        this->curEdge = graph->firstEdge(vertex);
+        this->curGraph = graph;
+        graphUndefined = false;
     }
 
-    edge_iterator_for_v(edge_iterator_for_v const &other) {
-        vertex = other.vertex;
-        graph_ptr = other.graph_ptr;
-        cur_edge = other.cur_edge;
-        undefined = false;
+    vertexEdgeIter(vertexEdgeIter const &other) {
+        curVertex = other.curVertex;
+        curGraph = other.curGraph;
+        curEdge = other.curEdge;
+        graphUndefined = false;
     }
 
     EDGE_T *operator*() {
-        if (undefined || *this == graph_ptr->edge_v_end(vertex)) {
-            throw std::out_of_range("Out of range");
+        if (graphUndefined || *this == curGraph->edge_v_end(curVertex)) {
+            throw std::out_of_range("out of range exception");
         }
 
-        return cur_edge;
+        return curEdge;
     }
 
-    edge_iterator_for_v &operator++() {
-        if (undefined || *this == graph_ptr->edge_v_end(vertex)) {
-            throw std::out_of_range("Out of range");
+    vertexEdgeIter &operator++() {
+        if (graphUndefined || *this == curGraph->edge_v_end(curVertex)) {
+            throw std::out_of_range("out of range exception");
         }
 
-        cur_edge = graph_ptr->get_next_edge(vertex, cur_edge);
+        curEdge = curGraph->nextEdge(curVertex, curEdge);
         return *this;
     }
 
-    bool operator!=(const edge_iterator_for_v& other) const {
-        if (vertex != other.vertex) {
+    bool operator!=(const vertexEdgeIter& other) const {
+        if (curVertex != other.curVertex) {
             return true;
         }
 
-        if (cur_edge != other.cur_edge) {
+        if (curEdge != other.curEdge) {
             return true;
         }
 
         return false;
     }
 
-    bool operator==(const edge_iterator_for_v& other) const {
-        if (vertex != other.vertex) {
+    bool operator==(const vertexEdgeIter& other) const {
+        if (curVertex != other.curVertex) {
             return false;
         }
 
-        if (cur_edge != other.cur_edge) {
+        if (curEdge != other.curEdge) {
             return false;
         }
 
         return true;
     }
 
-    void set_cur_edge(EDGE_T *new_cur_edge) {
-        cur_edge = new_cur_edge;
+    void setEdge(EDGE_T *new_cur_edge) {
+        curEdge = new_cur_edge;
     }
 
-    bool is_undefined() {
-        return undefined;
+    bool isUndefined() {
+        return graphUndefined;
     }
 };
 

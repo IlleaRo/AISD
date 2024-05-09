@@ -14,100 +14,95 @@ class graph;
 
 template <class VERTEX_T, class EDGE_T>
 std::ostream& operator<< (std::ostream &os, graph<VERTEX_T, EDGE_T> &graph_ptr) {
-    os<<*graph_ptr.form;
+    os<<*graph_ptr.curForm;
     return os;
 }
 
 template <class VERTEX_T, class EDGE_T>
 class graph {
 protected:
-    form_of_graphs <EDGE_T> *form;
-    std::vector<VERTEX_T *> vertexes;
+    form <EDGE_T> *curForm;
+    std::vector<VERTEX_T *> vertices;
 
-    friend class edge_iterator_for_v<VERTEX_T, EDGE_T>;
-    friend class edge_iterator<VERTEX_T, EDGE_T>;
+    friend class vertexEdgeIter<VERTEX_T, EDGE_T>;
+    friend class edgeIterator<VERTEX_T, EDGE_T>;
 
-    EDGE_T *get_first_edge(VERTEX_T *vertex) {
-        return form->get_first_edge(vertex->get_index());
+    EDGE_T *firstEdge(VERTEX_T *vertex) {
+        return curForm->firstEdge(vertex->getIndex());
     }
 
-    EDGE_T *get_next_edge(VERTEX_T *vertex, EDGE_T *cur_edge) {
-        return form->get_next_edge(vertex->get_index(), cur_edge);
+    EDGE_T *nextEdge(VERTEX_T *vertex, EDGE_T *cur_edge) {
+        return curForm->nextEdge(vertex->getIndex(), cur_edge);
     }
 
-    void set_form(unsigned long num_of_vertex, graph_type_e type, graph_form_e form) {
+public:
+    graph() {
+        curForm = new nonDirectedL<EDGE_T>;
+    };
+
+    graph(unsigned long num_of_vertex, graphTypeE type, graphFormE form) {
         if (form == L) {
             if (type == DIRECTED) {
-                this->form = new L_graph_directed<EDGE_T>;
+                this->curForm = new directedL<EDGE_T>;
             } else {
-                this->form = new L_graph_non_directed<EDGE_T>;
+                this->curForm = new nonDirectedL<EDGE_T>;
             }
         } else {
             if (type == DIRECTED) {
-                this->form = new M_graph_directed<EDGE_T>;
+                this->curForm = new directedM<EDGE_T>;
             } else {
-                this->form = new M_graph_non_directed<EDGE_T>;
+                this->curForm = new nonDirectedM<EDGE_T>;
             }
         }
 
         for (int i = 0; i < num_of_vertex; ++i) {
-            insert_vertex();
+            pushVertex();
         }
-    }
-
-public:
-    // Создает пустой L - граф с нулевым числом вершин и ребер
-    graph() {
-        form = new L_graph_non_directed<EDGE_T>;
-    };
-
-    graph(unsigned long num_of_vertex, graph_type_e type, graph_form_e form) {
-        set_form(num_of_vertex, type, form);
     }
 
     graph(graph<VERTEX_T, EDGE_T> &old_graph) {
         if (old_graph.get_form() == L) {
-            if (old_graph.get_type() == DIRECTED) {
-                this->form = new L_graph_directed<EDGE_T>;
+            if (old_graph.getType() == DIRECTED) {
+                this->curForm = new directedL<EDGE_T>;
             } else {
-                this->form = new L_graph_non_directed<EDGE_T>;
+                this->curForm = new nonDirectedL<EDGE_T>;
             }
         } else {
-            if (old_graph.get_type() == DIRECTED) {
-                this->form = new M_graph_directed<EDGE_T>;
+            if (old_graph.getType() == DIRECTED) {
+                this->curForm = new directedM<EDGE_T>;
             } else {
-                this->form = new M_graph_non_directed<EDGE_T>;
+                this->curForm = new nonDirectedM<EDGE_T>;
             }
         }
 
 
-        for (VERTEX_T *vertex : old_graph.vertexes) {
-            insert_vertex(vertex->get_name());
+        for (VERTEX_T *vertex : old_graph.vertices) {
+            pushVertex(vertex->getName());
         }
 
-        for (edge_iterator<VERTEX_T, EDGE_T> iter = old_graph.edge_begin(); iter != old_graph.edge_end(); ++iter) {
-            insert_edge(get_vertex((*iter)->get_v1()->get_index()),
-                        get_vertex((*iter)->get_v2()->get_index()), (*iter)->get_weight());
+        for (edgeIterator<VERTEX_T, EDGE_T> iter = old_graph.edge_begin(); iter != old_graph.edge_end(); ++iter) {
+            pushEdge(getVertex((*iter)->getSrc()->getIndex()),
+                        getVertex((*iter)->getDest()->getIndex()), (*iter)->getWeight());
         }
     }
 
-    graph(unsigned long num_of_vertex, unsigned long num_of_edges, graph_type_e type, graph_form_e form) {
+    graph(unsigned long num_of_vertex, unsigned long num_of_edges, graphTypeE type, graphFormE form) {
         if (form == L) {
             if (type == DIRECTED) {
-                this->form = new L_graph_directed<EDGE_T>;
+                this->curForm = new directedL<EDGE_T>;
             } else {
-                this->form = new L_graph_non_directed<EDGE_T>;
+                this->curForm = new nonDirectedL<EDGE_T>;
             }
         } else {
             if (type == DIRECTED) {
-                this->form = new M_graph_directed<EDGE_T>;
+                this->curForm = new directedM<EDGE_T>;
             } else {
-                this->form = new M_graph_non_directed<EDGE_T>;
+                this->curForm = new nonDirectedM<EDGE_T>;
             }
         }
 
         for (int i = 0; i < num_of_vertex; ++i) {
-            insert_vertex();
+            pushVertex();
         }
 
         if (type == DIRECTED) {
@@ -136,8 +131,8 @@ public:
                 continue;
             }
 
-            if (get_edge(vertexes[v1], vertexes[v2]) == nullptr) {
-                insert_edge(vertexes[v1], vertexes[v2]);
+            if (getEdge(vertices[v1], vertices[v2]) == nullptr) {
+                pushEdge(vertices[v1], vertices[v2]);
 
                 if (type == NON_DIRECTED) {
                     i+=2;
@@ -150,77 +145,67 @@ public:
 
     ~graph() {
 
-        delete form;
+        delete curForm;
 
-        for (VERTEX_T *vertex : vertexes) {
+        for (VERTEX_T *vertex : vertices) {
             delete vertex;
         }
 
-        vertexes.clear();
+        vertices.clear();
     }
 
-    // Возвращает тип графа (ориентированный / неориентированный)
-    [[nodiscard]] graph_type_e get_type() const {
-        return form->get_type();
+    [[nodiscard]] graphTypeE getType() const {
+        return curForm->getType();
     }
 
-    // Возвращает форму представления графа (L - матрица смежности / M - матрица инцидентности)
-    [[nodiscard]] graph_form_e get_form() const {
-        return form->get_form();
+    [[nodiscard]] graphFormE get_form() const {
+        return curForm->getForm();
     }
 
     void clear() {
-        form_of_graphs <EDGE_T> *temp = form;
-        set_form(0, form->get_type(), form->get_form());
-        delete temp;
+        delete curForm;
 
-        for (VERTEX_T *vertex : vertexes) {
+        for (VERTEX_T *vertex : vertices) {
             delete vertex;
         }
 
-        vertexes.clear();
+        vertices.clear();
     }
 
-    // Возвращает число вершин в графе
-    [[nodiscard]] unsigned long get_num_of_vertex() const {
-        return vertexes.size();
+    [[nodiscard]] unsigned long getVertexCount() const {
+        return vertices.size();
     }
 
-    // Возвращает число ребер в графе
-    [[nodiscard]] unsigned long get_num_of_edges() const {
-        return form->get_num_of_edges();
+    [[nodiscard]] unsigned long getEdgeCount() const {
+        return curForm->getEdgeCount();
     }
 
-    // Добавляет вершину к графу и возвращает адрес дескриптора вновь созданной вершины
-    VERTEX_T *insert_vertex() {
+    VERTEX_T *pushVertex() {
         unsigned long index;
-        if ((index = form->insert_vertex())== -1) {
+        if ((index = curForm->pushVertex())== -1) {
             return nullptr;
         }
 
         VERTEX_T *vertex = new VERTEX_T(index);
-        vertexes.push_back(vertex);
+        vertices.push_back(vertex);
 
         return vertex;
     }
 
-    // Добавляет вершину c именем name к графу и возвращает адрес дескриптора вновь созданной вершины
-    VERTEX_T *insert_vertex(std::string name) {
-        VERTEX_T *vertex = insert_vertex();
-        vertex->set_name(name);
+    VERTEX_T *pushVertex(std::string name) {
+        VERTEX_T *vertex = pushVertex();
+        vertex->setName(name);
         return vertex;
     }
 
-    // Добавляет ребро между вершинами графа, заданными адресами дескрипторов v1 и v2 и возвращает
-    // адрес дескриптора вновь созданного ребра (или уже существующего).
-    EDGE_T *insert_edge(VERTEX_T *v1, VERTEX_T *v2) {
+    EDGE_T *pushEdge(VERTEX_T *v1, VERTEX_T *v2) {
         if (v1 == nullptr || v2 == nullptr) {
             return nullptr;
         }
 
         EDGE_T *edge = new EDGE_T(v1, v2);
 
-        if (form->insert_edge(v1->get_index(), v2->get_index(), edge)) {
+        if (curForm->pushEdge(v1->getIndex(), v2->getIndex(), edge)) {
             return edge;
         }
 
@@ -230,14 +215,14 @@ public:
 
     // Добавляет ребро между вершинами графа, заданными адресами
     // дескрипторов v1 и v2, с весом w и возвращает адрес дескриптора вновь созданного ребра (или уже существующего).
-    EDGE_T *insert_edge(VERTEX_T *v1, VERTEX_T *v2, double weight) {
+    EDGE_T *pushEdge(VERTEX_T *v1, VERTEX_T *v2, double weight) {
         if (v1 == nullptr || v2 == nullptr) {
             return nullptr;
         }
 
         EDGE_T *edge = new EDGE_T(v1, v2, weight);
 
-        if (form->insert_edge(v1->get_index(), v2->get_index(), edge)) {
+        if (curForm->pushEdge(v1->getIndex(), v2->getIndex(), edge)) {
             return edge;
         }
 
@@ -245,115 +230,115 @@ public:
         return nullptr;
     }
 
-    EDGE_T *get_edge(VERTEX_T *v1, VERTEX_T *v2) {
+    EDGE_T *getEdge(VERTEX_T *v1, VERTEX_T *v2) {
         if (v1 == nullptr || v2 == nullptr) {
             return nullptr;
         }
 
-        return form->get_edge(v1->get_index(), v2->get_index());
+        return curForm->getEdge(v1->getIndex(), v2->getIndex());
     }
 
-    VERTEX_T *get_vertex(size_t idx) const {
-        if (idx > this->vertexes.size() - 1) {
+    VERTEX_T *getVertex(size_t idx) const {
+        if (idx > this->vertices.size() - 1) {
             return nullptr;
         }
 
-        return this->vertexes[idx];
+        return this->vertices[idx];
     }
 
     // Удаляет ребро, соединяющее вершины, заданные адресами дескрипторов v1 и v2
-    bool remove_edge(VERTEX_T *v1, VERTEX_T *v2) {
+    bool popEdge(VERTEX_T *v1, VERTEX_T *v2) {
         if (v1 == nullptr || v2 == nullptr) {
             return false;
         }
 
-        return form->remove_edge(v1->get_index(), v2->get_index());
+        return curForm->popEdge(v1->getIndex(), v2->getIndex());
     }
 
-    bool remove_edge(size_t v1_index, size_t v2_index) {
-        return form->remove_edge(v1_index, v2_index);
+    bool popEdge(size_t v1_index, size_t v2_index) {
+        return curForm->popEdge(v1_index, v2_index);
     }
 
 
     // Удаляет вершину из графа, заданную адресом дескриптора
-    bool remove_vertex(VERTEX_T *vertex_ptr) {
+    bool popVertex(VERTEX_T *vertex_ptr) {
         if (vertex_ptr == nullptr) {
             return false;
         }
 
-        size_t index = vertex_ptr->get_index();
+        size_t index = vertex_ptr->getIndex();
 
 
-        return remove_vertex(index);
+        return popVertex(index);
     }
 
     // Удаляет вершину из графа по её индексу
-    bool remove_vertex(size_t index) {
+    bool popVertex(size_t index) {
         VERTEX_T *vertex_ptr;
-        if (index >= vertexes.size()) {
+        if (index >= vertices.size()) {
             return false;
         }
 
-        vertex_ptr = vertexes[index];
+        vertex_ptr = vertices[index];
 
         bool is_removed;
 
-        if ((is_removed = form->remove_vertex(index))) {
-            vertexes.erase(vertexes.begin() + index);
+        if ((is_removed = curForm->popVertex(index))) {
+            vertices.erase(vertices.begin() + index);
             delete vertex_ptr;
         }
 
         if (is_removed) {
-            for (unsigned long i = index; i < vertexes.size(); ++i) {
-                vertexes[i]->set_index(i);
+            for (unsigned long i = index; i < vertices.size(); ++i) {
+                vertices[i]->forceIndex(i);
             }
         }
 
         return is_removed;
     }
 
-    vertex_iterator<VERTEX_T> vertex_begin() {
-        return vertex_iterator<VERTEX_T>(vertexes.begin());
+    vertexIterator<VERTEX_T> vertex_begin() {
+        return vertexIterator<VERTEX_T>(vertices.begin());
     }
 
-    vertex_iterator<VERTEX_T> vertex_end() {
-        return vertex_iterator<VERTEX_T>(vertexes.end());
+    vertexIterator<VERTEX_T> vertex_end() {
+        return vertexIterator<VERTEX_T>(vertices.end());
     }
 
-    edge_iterator_for_v<VERTEX_T, EDGE_T> edge_v_begin(VERTEX_T *vertex) {
-        edge_iterator_for_v<VERTEX_T, EDGE_T> iter(this, vertex);
+    vertexEdgeIter<VERTEX_T, EDGE_T> edge_v_begin(VERTEX_T *vertex) {
+        vertexEdgeIter<VERTEX_T, EDGE_T> iter(this, vertex);
         return iter;
     }
 
-    edge_iterator_for_v<VERTEX_T, EDGE_T> edge_v_end(VERTEX_T *vertex) {
-        edge_iterator_for_v<VERTEX_T, EDGE_T> iter(this, vertex);
-        iter.set_cur_edge(nullptr);
+    vertexEdgeIter<VERTEX_T, EDGE_T> edge_v_end(VERTEX_T *vertex) {
+        vertexEdgeIter<VERTEX_T, EDGE_T> iter(this, vertex);
+        iter.setEdge(nullptr);
         return iter;
     }
 
-    edge_iterator<VERTEX_T, EDGE_T> edge_begin() {
-        edge_iterator<VERTEX_T, EDGE_T> iter(this);
+    edgeIterator<VERTEX_T, EDGE_T> edge_begin() {
+        edgeIterator<VERTEX_T, EDGE_T> iter(this);
 
         EDGE_T *tmp;
 
-        for (VERTEX_T *vertex : vertexes) {
-            if ((tmp = get_first_edge(vertex)) != nullptr) {
-                if (get_type() == NON_DIRECTED) {
+        for (VERTEX_T *vertex : vertices) {
+            if ((tmp = firstEdge(vertex)) != nullptr) {
+                if (getType() == NON_DIRECTED) {
                     do {
-                        if (vertex == tmp->get_v2()) {
+                        if (vertex == tmp->getDest()) {
                             continue;
                         }
 
                         break;
-                    } while ((tmp = get_next_edge(vertex, tmp)));
+                    } while ((tmp = nextEdge(vertex, tmp)));
 
                     if (tmp == nullptr) {
                         continue;
                     }
                 }
 
-                iter.set_cur_vertex(vertex);
-                iter.set_cur_edge(tmp);
+                iter.setVertex(vertex);
+                iter.setEdge(tmp);
 
                 return iter;
             }
@@ -363,76 +348,76 @@ public:
         return iter;
     }
 
-    edge_iterator<VERTEX_T, EDGE_T> edge_end() {
-        edge_iterator<VERTEX_T, EDGE_T> iter(this);
-        iter.set_cur_edge(nullptr);
-        iter.set_cur_vertex(*vertexes.rbegin());
+    edgeIterator<VERTEX_T, EDGE_T> edge_end() {
+        edgeIterator<VERTEX_T, EDGE_T> iter(this);
+        iter.setEdge(nullptr);
+        iter.setVertex(*vertices.rbegin());
 
         return iter;
     }
 
-    [[nodiscard]] float get_koeff() const {
-        if (get_type() == DIRECTED) {
-            return (float) get_num_of_edges() / (get_num_of_vertex() * (get_num_of_vertex() - 1));
-        } else {
-            return (float) get_num_of_edges() / (get_num_of_vertex() * (get_num_of_vertex() - 1) / 2);
+    [[nodiscard]] double getCoefficient() const {
+        if (getType() == DIRECTED) {
+            return static_cast<double>(getEdgeCount()) / (getVertexCount() * (getVertexCount() - 1));
         }
+
+        return static_cast<double>(getEdgeCount()) / (getVertexCount() * (getVertexCount() - 1) / 2);
     }
 
-    void to_list_graph() {
+    void convertToL() {
         if (get_form() == L) {
             return;
         }
 
-        form_of_graphs<EDGE_T> *new_form;
+        form<EDGE_T> *newForm;
 
-        if (get_type() == DIRECTED) {
-            new_form = new L_graph_directed<EDGE_T>;
+        if (getType() == DIRECTED) {
+            newForm = new directedL<EDGE_T>;
         } else {
-            new_form = new L_graph_non_directed<EDGE_T>;
+            newForm = new nonDirectedL<EDGE_T>;
         }
 
-        for (VERTEX_T *vertex : vertexes) {
-            new_form->insert_vertex();
+        for (VERTEX_T *vertex : vertices) {
+            newForm->pushVertex();
         }
 
-        edge_iterator<VERTEX_T, EDGE_T> iter(this);
+        edgeIterator<VERTEX_T, EDGE_T> iter(this);
 
         for (iter = edge_begin(); iter != edge_end(); ++iter) {
-            new_form->insert_edge((*iter)->get_v1()->get_index(),
-                                  (*iter)->get_v2()->get_index(), new EDGE_T(**iter));
+            newForm->pushEdge((*iter)->getSrc()->getIndex(),
+                                  (*iter)->getDest()->getIndex(), new EDGE_T(**iter));
         }
 
-        delete form;
-        form = new_form;
+        delete curForm;
+        curForm = newForm;
     }
 
-    void to_matrix_graph() {
+    void convertToM() {
         if (get_form() == M) {
             return;
         }
 
-        form_of_graphs<EDGE_T> *new_form;
+        form<EDGE_T> *newForm;
 
-        if (get_type() == DIRECTED) {
-            new_form = new M_graph_directed<EDGE_T>;
+        if (getType() == DIRECTED) {
+            newForm = new directedM<EDGE_T>;
         } else {
-            new_form = new M_graph_non_directed<EDGE_T>;
+            newForm = new nonDirectedM<EDGE_T>;
         }
 
-        for (VERTEX_T *vertex : vertexes) {
-            new_form->insert_vertex();
+        for (VERTEX_T *vertex : vertices) {
+            newForm->pushVertex();
         }
 
-        edge_iterator<VERTEX_T, EDGE_T> iter(this);
+        edgeIterator<VERTEX_T, EDGE_T> iter(this);
 
         for (iter = edge_begin(); iter != edge_end(); ++iter) {
-            new_form->insert_edge((*iter)->get_v1()->get_index(),
-                                  (*iter)->get_v2()->get_index(), new EDGE_T(**iter));
+            newForm->pushEdge((*iter)->getSrc()->getIndex(),
+                                  (*iter)->getDest()->getIndex(), new EDGE_T(**iter));
         }
 
-        delete form;
-        form = new_form;
+        delete curForm;
+        curForm = newForm;
     }
 
     friend std::ostream& operator<< <>(std::ostream &os, graph<VERTEX_T, EDGE_T> &graph_ptr);

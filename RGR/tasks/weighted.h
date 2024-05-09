@@ -14,10 +14,10 @@ class weightedTask
     void allocateDist()
     {
         distMatrix.clear();
-        distMatrix.resize(g->get_num_of_vertex());
+        distMatrix.resize(g->getVertexCount());
         for (std::vector<double> &dists : distMatrix)
         {
-            dists.resize(g->get_num_of_vertex());
+            dists.resize(g->getVertexCount());
         }
     }
 
@@ -32,13 +32,13 @@ class weightedTask
 
     void relaxEdges(std::vector<double> &dists, int source)
     {
-        for (size_t i = 0; i < g->get_num_of_vertex() - 1; i++)
+        for (size_t i = 0; i < g->getVertexCount() - 1; i++)
         {
             for (example_edge_iterator edgeIter = g->edge_begin(); edgeIter != g->edge_end(); ++edgeIter)
             {
-                size_t v1 = (*edgeIter)->get_v1()->get_index();
-                size_t v2 = (*edgeIter)->get_v2()->get_index();
-                double weight = (*edgeIter)->get_weight();
+                size_t v1 = (*edgeIter)->getSrc()->getIndex();
+                size_t v2 = (*edgeIter)->getDest()->getIndex();
+                double weight = (*edgeIter)->getWeight();
 
                 if (dists[v1] != INFINITY && dists[v1] + weight < dists[v2])
                 {
@@ -52,13 +52,13 @@ class weightedTask
     {
            for (example_edge_iterator edgeIter = g->edge_begin(); edgeIter != g->edge_end(); ++edgeIter)
            {
-               size_t v1 = (*edgeIter)->get_v1()->get_index();
-               size_t v2 = (*edgeIter)->get_v1()->get_index();
-               double weight = (*edgeIter)->get_weight();
+               size_t v1 = (*edgeIter)->getSrc()->getIndex();
+               size_t v2 = (*edgeIter)->getSrc()->getIndex();
+               double weight = (*edgeIter)->getWeight();
 
                if (dists[v1] != INFINITY && dists[v1] + weight < dists[v2])
                {
-                   throw std::runtime_error("negative weight cycle detected");
+                   throw std::out_of_range("negative weight cycle detected");
                }
            }
     }
@@ -73,7 +73,7 @@ class weightedTask
     void solve()
     {
         allocateDist();
-        for (int i = 0; i < g->get_num_of_vertex(); i++)
+        for (int i = 0; i < g->getVertexCount(); i++)
         {
             BellmanFord(distMatrix[i], i);
         }

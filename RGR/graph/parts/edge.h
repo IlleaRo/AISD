@@ -6,37 +6,37 @@
 template <class VERTEX_T, class E_WEIGHT_T, class E_DATA_T>
 class edge {
 protected:
-    VERTEX_T *v1; // Дескриптор вершины, из которой исходит ребро.
-    VERTEX_T *v2; // Дескриптор вершины, в которую входит ребро.
+    VERTEX_T *src;
+    VERTEX_T *dest;
 
-    E_WEIGHT_T weight; // Вес ребра
-    E_DATA_T data; // Данные, связанные с ребром
+    E_WEIGHT_T weight;
+    E_DATA_T data;
 
 public:
-    edge(VERTEX_T *v1, VERTEX_T *v2) : v1(v1), v2(v2), weight(0) {};
-    edge(VERTEX_T *v1, VERTEX_T *v2, E_WEIGHT_T weight) : v1(v1), v2(v2), weight(weight) {};
+    edge(VERTEX_T *src, VERTEX_T *dest) : src(src), dest(dest), weight(0) {};
+    edge(VERTEX_T *src, VERTEX_T *dest, E_WEIGHT_T weight) : src(src), dest(dest), weight(weight) {};
 
-    [[nodiscard]] VERTEX_T *get_v1() const {
-        return v1;
+    [[nodiscard]] VERTEX_T *getSrc() const {
+        return src;
     }
 
-    [[nodiscard]] VERTEX_T *get_v2() const {
-        return v2;
+    [[nodiscard]] VERTEX_T *getDest() const {
+        return dest;
     }
 
-    [[nodiscard]] E_WEIGHT_T get_weight() const {
+    [[nodiscard]] E_WEIGHT_T getWeight() const {
         return weight;
     }
 
-    void set_weight(E_WEIGHT_T new_weight) {
-        weight = new_weight;
+    void setWeight(E_WEIGHT_T weight) {
+        this->weight = weight;
     }
 
-    [[nodiscard]] E_DATA_T get_data() const {
+    [[nodiscard]] E_DATA_T getData() const {
         return data;
     }
 
-    void set_data(E_DATA_T new_data) {
+    void setData(E_DATA_T new_data) {
         data = new_data;
     }
 };

@@ -4,39 +4,39 @@
 #include <vector>
 
 template <class VERTEX_T>
-class vertex_iterator {
-    typename std::vector<VERTEX_T *>::iterator it;
-    bool undefined;
+class vertexIterator {
+    typename std::vector<VERTEX_T *>::iterator vectorIterator;
+    bool graphUndefined;
 
     public:
-    explicit vertex_iterator() : it(), undefined(true) {}
-    explicit vertex_iterator(typename std::vector<VERTEX_T *>::iterator it) : it(it), undefined(false) {}
+    explicit vertexIterator() : vectorIterator(), graphUndefined(true) {}
+    explicit vertexIterator(typename std::vector<VERTEX_T *>::iterator vectorIterator) : vectorIterator(vectorIterator), graphUndefined(false) {}
 
     VERTEX_T *operator*() {
-        if (undefined || *it == nullptr) {
-            throw std::out_of_range("Out of range");
+        if (graphUndefined || *vectorIterator == nullptr) {
+            throw std::out_of_range("out of range exception");
         }
-        return *it;
+        return *vectorIterator;
     }
 
-    vertex_iterator &operator++() {
-        if (undefined || *it == nullptr) return *this;
-        ++it;
+    vertexIterator &operator++() {
+        if (graphUndefined || *vectorIterator == nullptr) return *this;
+        ++vectorIterator;
         return *this;
     }
 
-    bool operator!=(const vertex_iterator& other) const {
-        if (undefined || *it == nullptr) return false;
-        return it != other.it;
+    bool operator!=(const vertexIterator& other) const {
+        if (graphUndefined || *vectorIterator == nullptr) return false;
+        return vectorIterator != other.vectorIterator;
     }
 
-    bool operator==(const vertex_iterator& other) const {
-        if (undefined || *it == nullptr) return false;
-        return it == other.it;
+    bool operator==(const vertexIterator& other) const {
+        if (graphUndefined || *vectorIterator == nullptr) return false;
+        return vectorIterator == other.vectorIterator;
     }
 
-    bool is_undefined() {
-        return undefined;
+    bool isUndefined() {
+        return graphUndefined;
     }
 };
 

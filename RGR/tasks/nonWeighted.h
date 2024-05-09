@@ -19,7 +19,7 @@ class nonWeightedTask
 
     std::vector<std::vector<size_t>> Tarjan()
     {
-        size_t vertexCount = gResult->get_num_of_vertex();
+        size_t vertexCount = gResult->getVertexCount();
         size_t visits = 0;
 
         std::vector<size_t> disc(vertexCount, 0);
@@ -45,19 +45,19 @@ class nonWeightedTask
         vertexStack.push(index);
         visited[index] = true;
 
-        for (auto iter = gResult->edge_v_begin(gResult->get_vertex(index));
-            iter != gResult->edge_v_end(gResult->get_vertex(index));
+        for (auto iter = gResult->edge_v_begin(gResult->getVertex(index));
+            iter != gResult->edge_v_end(gResult->getVertex(index));
             ++iter) {
-            VERTEX_T *adj = (*iter)->get_v2();
+            VERTEX_T *adj = (*iter)->getDest();
 
-            if (!visited[adj->get_index()]) {
-                TarjanVisit(adj->get_index(), visits, disc, low, vertexStack, visited);
+            if (!visited[adj->getIndex()]) {
+                TarjanVisit(adj->getIndex(), visits, disc, low, vertexStack, visited);
 
-                low[index] = std::min(low[index], low[adj->get_index()]);
+                low[index] = std::min(low[index], low[adj->getIndex()]);
             }
             else
             {
-                low[index] = std::min(low[index], disc[adj->get_index()]);
+                low[index] = std::min(low[index], disc[adj->getIndex()]);
             }
         }
 
@@ -82,7 +82,7 @@ class nonWeightedTask
         for (auto& component : SCCs) {
             for (size_t i = 0; i < component.size(); ++i) {
                 for (size_t j = i + 1; j < component.size(); ++j) {
-                    gResult->remove_edge(component[i], component[j]);
+                    gResult->popEdge(component[i], component[j]);
                 }
             }
         }

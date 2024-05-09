@@ -6,25 +6,25 @@
 #include "common.h"
 
 template <class EDGE_T>
-class L_graph_non_directed : public form_of_graphs<EDGE_T> {
+class nonDirectedL : public form<EDGE_T> {
 protected:
-    using form_of_graphs<EDGE_T>::num_of_edges;
+    using form<EDGE_T>::edgeCount;
 
     class node {
     public:
         EDGE_T *edge;
-        unsigned long v2;
+        unsigned long dest;
         node *next;
     };
 
-    std::vector<node *> vertex_vector;
+    std::vector<node *> vertices;
 
-    void print_graph(std::ostream &os) override {
-        for (int i = 0; i < vertex_vector.size(); ++i) {
+    void print(std::ostream &os) override {
+        for (int i = 0; i < vertices.size(); ++i) {
             os << i << " : ";
-            node *current = vertex_vector[i];
+            node *current = vertices[i];
             while (current != nullptr) {
-                os << current->v2 << " ";
+                os << current->dest << " ";
                 current = current->next;
             }
             os << std::endl;
@@ -32,39 +32,39 @@ protected:
     }
 
 public:
-    L_graph_non_directed() : form_of_graphs<EDGE_T>(NON_DIRECTED, L, 0) {};
+    nonDirectedL() : form<EDGE_T>(NON_DIRECTED, L, 0) {};
 
-    ~L_graph_non_directed() {
-        for (int i = 0; i < vertex_vector.size(); ++i) {
-            node *current = vertex_vector[i];
+    ~nonDirectedL() {
+        for (int i = 0; i < vertices.size(); ++i) {
+            node *current = vertices[i];
             while (current != nullptr) {
                 node *temp = current;
                 current = current->next;
 
-                if (temp->v2 < i) { // Очищаем память каждого ребра только единожды
+                if (temp->dest < i) { // Очищаем память каждого ребра только единожды
                     delete temp->edge;
                 }
                 delete temp;
             }
         }
 
-        vertex_vector.clear();
+        vertices.clear();
     }
 
-    unsigned long insert_vertex() override {
-        vertex_vector.push_back(nullptr);
-        return vertex_vector.size() - 1;
+    unsigned long pushVertex() override {
+        vertices.push_back(nullptr);
+        return vertices.size() - 1;
     }
 
-    bool insert_edge(unsigned long v_index_1, unsigned long v_index_2, EDGE_T *edge) override {
-        if (v_index_1 >= vertex_vector.size() || v_index_2 >= vertex_vector.size()) {
-            throw std::runtime_error("Vertex index out of range");
+    bool pushEdge(unsigned long v_index_1, unsigned long v_index_2, EDGE_T *edge) override {
+        if (v_index_1 >= vertices.size() || v_index_2 >= vertices.size()) {
+            throw std::out_of_range("out of range exception");
         }
 
-        node *tmp = vertex_vector[v_index_1];
+        node *tmp = vertices[v_index_1];
 
         while (tmp) {
-            if (tmp->v2 == v_index_2) {
+            if (tmp->dest == v_index_2) {
                 return false;
             }
             tmp = tmp->next;
@@ -72,52 +72,52 @@ public:
 
         node *new_node = new node;
         new_node->edge = edge;
-        new_node->v2 = v_index_2;
-        new_node->next = vertex_vector[v_index_1];
-        vertex_vector[v_index_1] = new_node;
+        new_node->dest = v_index_2;
+        new_node->next = vertices[v_index_1];
+        vertices[v_index_1] = new_node;
 
         new_node = new node;
         new_node->edge = edge;
-        new_node->v2 = v_index_1;
-        new_node->next = vertex_vector[v_index_2];
-        vertex_vector[v_index_2] = new_node;
+        new_node->dest = v_index_1;
+        new_node->next = vertices[v_index_2];
+        vertices[v_index_2] = new_node;
 
-        num_of_edges++;
+        edgeCount++;
 
         return true;
     }
 
-    bool remove_vertex(unsigned long vertex_index) override {
-        if (vertex_index >= vertex_vector.size()) {
+    bool popVertex(unsigned long vertex_index) override {
+        if (vertex_index >= vertices.size()) {
             return false;
         }
 
-        for (unsigned int i = 0; i < vertex_vector.size(); ++i) {
+        for (unsigned int i = 0; i < vertices.size(); ++i) {
             if (i == vertex_index) {
-                node *current = vertex_vector[i];
+                node *current = vertices[i];
                 while (current != nullptr) {
                     node *temp = current;
                     current = current->next;
-                    delete temp; // Удаляем ребро один раз (при втором проходе по графу)
+                    delete temp;
                 }
                 continue;
             }
 
-            if (vertex_vector[i] != nullptr) {
+            if (vertices[i] != nullptr) {
 
-                node *current = vertex_vector[i];
+                node *current = vertices[i];
                 node *prev = nullptr;
 
                 while (current != nullptr) {
-                    if (current->v2 == vertex_index) {
-                        if (current == vertex_vector[i]) {
-                            vertex_vector[i] = current->next;
-                            if (form_of_graphs<EDGE_T>::type == DIRECTED) {
+                    if (current->dest == vertex_index) {
+                        if (current == vertices[i]) {
+                            vertices[i] = current->next;
+                            if (form<EDGE_T>::type == DIRECTED) {
                                 delete current->edge;
-                                num_of_edges--;
+                                edgeCount--;
                             }
                             delete current;
-                            current = vertex_vector[i];
+                            current = vertices[i];
                             continue;
                         }
 
@@ -126,12 +126,12 @@ public:
                         current = current->next;
 
                         delete temp->edge;
-                        num_of_edges--;
+                        edgeCount--;
 
                         delete temp;
                         continue;
-                    } else if (current->v2 > vertex_index) {
-                        current->v2--;
+                    } else if (current->dest > vertex_index) {
+                        current->dest--;
                     }
 
                     prev = current;
@@ -140,19 +140,19 @@ public:
             }
         }
 
-        vertex_vector.erase(vertex_vector.begin() + vertex_index);
+        vertices.erase(vertices.begin() + vertex_index);
 
         return true;
     }
 
-    EDGE_T *get_edge(unsigned long v1_index, unsigned long v2_index) override {
-        if (v1_index >= vertex_vector.size() || v2_index >= vertex_vector.size()) {
+    EDGE_T *getEdge(unsigned long v1_index, unsigned long v2_index) override {
+        if (v1_index >= vertices.size() || v2_index >= vertices.size()) {
             return nullptr;
         }
 
-        node *current = vertex_vector[v1_index];
+        node *current = vertices[v1_index];
         while (current != nullptr) {
-            if (current->v2 == v2_index) {
+            if (current->dest == v2_index) {
                 return current->edge;
             }
             current = current->next;
@@ -161,21 +161,21 @@ public:
         return nullptr;
     }
 
-    bool remove_edge(unsigned long v1_index, unsigned long v2_index) override {
-        if (v1_index >= vertex_vector.size() || v2_index >= vertex_vector.size()) {
+    bool popEdge(unsigned long v1_index, unsigned long v2_index) override {
+        if (v1_index >= vertices.size() || v2_index >= vertices.size()) {
             return false;
         }
 
-        node *current = vertex_vector[v1_index];
+        node *current = vertices[v1_index];
         node *prev = nullptr;
         bool v1_v2_removed = false;
 
         while (current != nullptr) {
-            if (current->v2 == v2_index) {
-                if (current == vertex_vector[v1_index]) {
-                    vertex_vector[v1_index] = current->next;
+            if (current->dest == v2_index) {
+                if (current == vertices[v1_index]) {
+                    vertices[v1_index] = current->next;
 
-                    delete current; // We will delete the edge at the node of the second vertex
+                    delete current;
 
                     v1_v2_removed = true;
                     break;
@@ -184,7 +184,7 @@ public:
                 node *temp = current;
                 prev->next = current->next;
 
-                delete temp; // We will delete the edge at the node of the second vertex
+                delete temp;
 
                 v1_v2_removed = true;
                 break;
@@ -198,28 +198,28 @@ public:
             return false;
         }
 
-        current = vertex_vector[v2_index];
+        current = vertices[v2_index];
         prev = nullptr;
 
         while (current != nullptr) {
-            if (current->v2 == v1_index) {
-                if (current == vertex_vector[v2_index]) {
-                    vertex_vector[v2_index] = current->next;
+            if (current->dest == v1_index) {
+                if (current == vertices[v2_index]) {
+                    vertices[v2_index] = current->next;
 
-                    delete current->edge; // We use same pointer for both vertices
+                    delete current->edge;
                     delete current;
 
-                    num_of_edges--;
+                    edgeCount--;
                     return true;
                 }
 
                 node *temp = current;
                 prev->next = current->next;
 
-                delete temp->edge; // We use same pointer for both vertices
+                delete temp->edge;
                 delete temp;
 
-                num_of_edges--;
+                edgeCount--;
                 return true;
             }
 
@@ -227,23 +227,23 @@ public:
             current = current->next;
         }
 
-        throw std::runtime_error("Edge not found for second vertex!");
+        throw std::out_of_range("out of range exception");
     }
 
-    EDGE_T *get_first_edge(unsigned long vertex_index) override {
-        if (vertex_index >= vertex_vector.size()) {
-            throw std::runtime_error("Vertex index out of range");
+    EDGE_T *firstEdge(unsigned long vertex_index) override {
+        if (vertex_index >= vertices.size()) {
+            throw std::out_of_range("out of range exception");
         }
 
-        return vertex_vector[vertex_index] ? vertex_vector[vertex_index]->edge : nullptr;
+        return vertices[vertex_index] ? vertices[vertex_index]->edge : nullptr;
     }
 
-    EDGE_T *get_next_edge(unsigned long vertex_index, EDGE_T *edge) override {
-        if (vertex_index >= vertex_vector.size()) {
-            throw std::runtime_error("Vertex index out of range");
+    EDGE_T *nextEdge(unsigned long vertex_index, EDGE_T *edge) override {
+        if (vertex_index >= vertices.size()) {
+            throw std::out_of_range("out of range exception");
         }
 
-        node *current = vertex_vector[vertex_index];
+        node *current = vertices[vertex_index];
         while (current != nullptr) {
             if (current->edge == edge) {
                 return current->next ? current->next->edge : nullptr;
@@ -256,19 +256,19 @@ public:
 };
 
 template <class EDGE_T>
-class L_graph_directed : public L_graph_non_directed<EDGE_T> {
-    using typename L_graph_non_directed<EDGE_T>::node;
-    using L_graph_non_directed<EDGE_T>::vertex_vector;
-    using form_of_graphs<EDGE_T>::type;
-    using form_of_graphs<EDGE_T>::num_of_edges;
+class directedL : public nonDirectedL<EDGE_T> {
+    using typename nonDirectedL<EDGE_T>::node;
+    using nonDirectedL<EDGE_T>::vertices;
+    using form<EDGE_T>::type;
+    using form<EDGE_T>::edgeCount;
 
 public:
-    L_graph_directed() : L_graph_non_directed<EDGE_T>() {
+    directedL() : nonDirectedL<EDGE_T>() {
         type = DIRECTED;
     }
 
-    ~L_graph_directed() { // Деструктор неориентированного графа не удаляет петли
-        for (typename std::vector<node *>::iterator it = vertex_vector.begin(); it != vertex_vector.end(); ++it) {
+    ~directedL() {
+        for (typename std::vector<node *>::iterator it = vertices.begin(); it != vertices.end(); ++it) {
             node *current = *it;
             while (current != nullptr) {
                 node *temp = current;
@@ -278,25 +278,25 @@ public:
             }
         }
 
-        vertex_vector.clear();
+        vertices.clear();
     }
 
-    bool insert_edge(unsigned long v_index_1, unsigned long v_index_2, EDGE_T *edge) override {
-        node *tmp = vertex_vector[v_index_1];
+    bool pushEdge(unsigned long v_index_1, unsigned long v_index_2, EDGE_T *edge) override {
+        node *tmp = vertices[v_index_1];
         if (tmp == nullptr) {
             node *new_node = new node;
             new_node->edge = edge;
-            new_node->v2 = v_index_2;
+            new_node->dest = v_index_2;
             new_node->next = nullptr;
-            vertex_vector[v_index_1] = new_node;
+            vertices[v_index_1] = new_node;
 
-            num_of_edges++;
+            edgeCount++;
 
             return true;
         }
 
         while (tmp->next) {
-            if (tmp->v2 == v_index_2) {
+            if (tmp->dest == v_index_2) {
                 return false;
             }
             tmp = tmp->next;
@@ -304,32 +304,32 @@ public:
 
         node *new_node = new node;
         new_node->edge = edge;
-        new_node->v2 = v_index_2;
+        new_node->dest = v_index_2;
         new_node->next = nullptr;
         tmp->next = new_node;
 
-        num_of_edges++;
+        edgeCount++;
 
         return true;
     }
 
-    bool remove_edge(unsigned long v1_index, unsigned long v2_index) override {
-        if (v1_index >= vertex_vector.size() || v2_index >= vertex_vector.size()) {
+    bool popEdge(unsigned long v1_index, unsigned long v2_index) override {
+        if (v1_index >= vertices.size() || v2_index >= vertices.size()) {
             return false;
         }
 
-        node *current = vertex_vector[v1_index];
+        node *current = vertices[v1_index];
         node *prev = nullptr;
 
         while (current != nullptr) {
-            if (current->v2 == v2_index) {
-                if (current == vertex_vector[v1_index]) {
-                    vertex_vector[v1_index] = current->next;
+            if (current->dest == v2_index) {
+                if (current == vertices[v1_index]) {
+                    vertices[v1_index] = current->next;
 
                     delete current->edge;
                     delete current;
 
-                    num_of_edges--;
+                    edgeCount--;
                     return true;
                 }
 
@@ -339,7 +339,7 @@ public:
                 delete current->edge;
                 delete temp;
 
-                num_of_edges--;
+                edgeCount--;
                 return true;
             }
 
@@ -350,14 +350,14 @@ public:
         return false;
     }
 
-    bool remove_vertex(unsigned long vertex_index) override {
-        if (vertex_index >= vertex_vector.size()) {
+    bool popVertex(unsigned long vertex_index) override {
+        if (vertex_index >= vertices.size()) {
             return false;
         }
 
-        for (unsigned int i = 0; i < vertex_vector.size(); ++i) {
+        for (unsigned int i = 0; i < vertices.size(); ++i) {
             if (i == vertex_index) {
-                node *current = vertex_vector[i];
+                node *current = vertices[i];
                 while (current != nullptr) {
                     node *temp = current;
                     current = current->next;
@@ -366,20 +366,20 @@ public:
                 continue;
             }
 
-            if (vertex_vector[i] != nullptr) {
+            if (vertices[i] != nullptr) {
 
-                node *current = vertex_vector[i];
+                node *current = vertices[i];
                 node *prev = nullptr;
 
                 while (current != nullptr) {
-                    if (current->v2 == vertex_index) {
-                        if (current == vertex_vector[i]) {
-                            vertex_vector[i] = current->next;
+                    if (current->dest == vertex_index) {
+                        if (current == vertices[i]) {
+                            vertices[i] = current->next;
                             delete current->edge;
-                            num_of_edges--;
+                            edgeCount--;
 
                             delete current;
-                            current = vertex_vector[i];
+                            current = vertices[i];
                             continue;
                         }
 
@@ -388,12 +388,12 @@ public:
                         current = current->next;
 
                         delete temp->edge;
-                        num_of_edges--;
+                        edgeCount--;
 
                         delete temp;
                         continue;
-                    } else if (current->v2 > vertex_index) {
-                        current->v2--;
+                    } else if (current->dest > vertex_index) {
+                        current->dest--;
                     }
 
                     prev = current;
@@ -402,7 +402,7 @@ public:
             }
         }
 
-        vertex_vector.erase(vertex_vector.begin() + vertex_index);
+        vertices.erase(vertices.begin() + vertex_index);
 
         return true;
     }
