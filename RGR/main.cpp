@@ -1,5 +1,8 @@
+#include <cstring>
+
 #include "ui/prompts.h"
 #include "ui/menu.h"
+#include "ui/test.h"
 #include "graph/graph.h"
 
 #define TYPE L
@@ -10,6 +13,10 @@ int main(int argc, char *argv[])
     bool use_weights = true;
     bool correct_input = false;
     Graph *pretty_graph;
+
+    if (argc > 1 && (strcmp(argv[1], "test") == 0)) {
+        return run_test();
+    }
 
     while (!correct_input)
     {

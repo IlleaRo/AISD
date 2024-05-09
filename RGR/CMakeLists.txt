@@ -15,4 +15,6 @@ add_executable(RGR main.cpp
         graph/forms/M.h
         graph/iterators/vertex.h
         graph/iterators/edge.h
-        graph/iterators/vertexEdge.h)
+        graph/iterators/vertexEdge.h
+        ui/test.cpp
+        ui/test.h)
