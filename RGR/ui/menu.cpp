@@ -239,12 +239,12 @@ void menu_control_vertex_iterator(Graph *pretty_graph, bool use_weights) {
 
     while (true) {
         if (menu_vertex_iterator.isUndefined()) {
-            menu_vertex_iterator = pretty_graph->vertex_begin(); // это происходит только при первом заходе в меню, всё нормально
+            menu_vertex_iterator = pretty_graph->vertex_begin();
         }
 
         try
         {
-            *menu_vertex_iterator; // проверка, чтобы при ошибке в консоль не начало "Имя итератора: " выводиться
+            *menu_vertex_iterator;
             cout << "Имя итератора: " << (*menu_vertex_iterator)->getName() << endl;
             cout << "Значение итератора: " << (*menu_vertex_iterator)->get_data() << endl;
         }
