@@ -168,7 +168,7 @@ public:
 
         node *current = vertices[v1_index];
         node *prev = nullptr;
-        bool v1_v2_removed = false;
+        bool verticesRemoved = false;
 
         while (current != nullptr) {
             if (current->dest == v2_index) {
@@ -177,7 +177,7 @@ public:
 
                     delete current;
 
-                    v1_v2_removed = true;
+                    verticesRemoved = true;
                     break;
                 }
 
@@ -186,7 +186,7 @@ public:
 
                 delete temp;
 
-                v1_v2_removed = true;
+                verticesRemoved = true;
                 break;
             }
 
@@ -194,7 +194,7 @@ public:
             current = current->next;
         }
 
-        if (!v1_v2_removed) {
+        if (!verticesRemoved) {
             return false;
         }
 
@@ -284,11 +284,11 @@ public:
     bool pushEdge(unsigned long v_index_1, unsigned long v_index_2, EDGE_T *edge) override {
         node *tmp = vertices[v_index_1];
         if (tmp == nullptr) {
-            node *new_node = new node;
-            new_node->edge = edge;
-            new_node->dest = v_index_2;
-            new_node->next = nullptr;
-            vertices[v_index_1] = new_node;
+            node *newNode = new node;
+            newNode->edge = edge;
+            newNode->dest = v_index_2;
+            newNode->next = nullptr;
+            vertices[v_index_1] = newNode;
 
             edgeCount++;
 

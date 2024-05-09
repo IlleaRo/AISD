@@ -34,7 +34,7 @@ class weightedTask
     {
         for (size_t i = 0; i < g->getVertexCount() - 1; i++)
         {
-            for (example_edge_iterator edgeIter = g->edge_begin(); edgeIter != g->edge_end(); ++edgeIter)
+            for (EdgeIterator edgeIter = g->edge_begin(); edgeIter != g->edge_end(); ++edgeIter)
             {
                 size_t v1 = (*edgeIter)->getSrc()->getIndex();
                 size_t v2 = (*edgeIter)->getDest()->getIndex();
@@ -50,7 +50,7 @@ class weightedTask
 
     void checkCycles(std::vector<double> &dists, int source)
     {
-           for (example_edge_iterator edgeIter = g->edge_begin(); edgeIter != g->edge_end(); ++edgeIter)
+           for (EdgeIterator edgeIter = g->edge_begin(); edgeIter != g->edge_end(); ++edgeIter)
            {
                size_t v1 = (*edgeIter)->getSrc()->getIndex();
                size_t v2 = (*edgeIter)->getSrc()->getIndex();

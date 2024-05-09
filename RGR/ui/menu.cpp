@@ -6,17 +6,17 @@
 
 using namespace std;
 
-static example_vertex_iterator menu_vertex_iterator;
-static example_vertex *ev_vertex = nullptr;
-static example_ev_iterator menu_ev_iterator;
-static example_edge_iterator menu_edge_iterator;
+static VertexIterator menu_vertex_iterator;
+static Vertex *ev_vertex = nullptr;
+static VertexEdgeIterator menu_ev_iterator;
+static EdgeIterator menu_edge_iterator;
 
-static weightedTask<example_vertex, example_edge> *wtask = nullptr;
-static nonWeightedTask<example_vertex, example_edge> *nwtask = nullptr;
+static weightedTask<Vertex, Edge> *wtask = nullptr;
+static nonWeightedTask<Vertex, Edge> *nwtask = nullptr;
 
 
 // 1.
-void menu_get_type(example_graph *pretty_graph, bool use_weights) {
+void menu_get_type(Graph *pretty_graph, bool use_weights) {
     string type_strings[] = {
         "DIRECTED",
         "NON_DIRECTED",
@@ -40,7 +40,7 @@ void menu_get_type(example_graph *pretty_graph, bool use_weights) {
 }
 
 // 2.
-void menu_get_form(example_graph *pretty_graph, bool use_weights) {
+void menu_get_form(Graph *pretty_graph, bool use_weights) {
     string form_strings[] = {
         "L",
         "M",
@@ -64,32 +64,32 @@ void menu_get_form(example_graph *pretty_graph, bool use_weights) {
 }
 
 // 3.
-void menu_get_vertices_count(example_graph *pretty_graph, bool use_weights) {
+void menu_get_vertices_count(Graph *pretty_graph, bool use_weights) {
     cout << pretty_graph->getVertexCount() << endl;
 }
 
 // 4.
-void menu_get_edges_count(example_graph *pretty_graph, bool use_weights) {
+void menu_get_edges_count(Graph *pretty_graph, bool use_weights) {
     cout << pretty_graph->getEdgeCount() << endl;
 }
 
 // 5.
-void menu_get_graph_saturation_factor(example_graph *pretty_graph, bool use_weights) {
+void menu_get_graph_saturation_factor(Graph *pretty_graph, bool use_weights) {
     cout << pretty_graph->getCoefficient() << endl;
 }
 
 // 6.
-void menu_insert_vertex(example_graph *pretty_graph, bool use_weights) {
+void menu_insert_vertex(Graph *pretty_graph, bool use_weights) {
     string name = getInput<string>("Введите имя новой вершины: ");
-    example_vertex *vertex = pretty_graph->pushVertex(name);
+    Vertex *vertex = pretty_graph->pushVertex(name);
     cout << vertex << endl;
 }
 
 // 7.
-void menu_insert_edge(example_graph *pretty_graph, bool use_weights) {
+void menu_insert_edge(Graph *pretty_graph, bool use_weights) {
     int weight;
-    example_vertex *vertex1, *vertex2;
-    example_edge *edge;
+    Vertex *vertex1, *vertex2;
+    Edge *edge;
     size_t v1_index, v2_index;
 
     v1_index = getInput<size_t>("Введите индекс первой вершины: ");
@@ -120,8 +120,8 @@ void menu_insert_edge(example_graph *pretty_graph, bool use_weights) {
 }
 
 // 8.
-void menu_get_vertex(example_graph *pretty_graph, bool use_weights) {
-    example_vertex *vertex;
+void menu_get_vertex(Graph *pretty_graph, bool use_weights) {
+    Vertex *vertex;
     size_t index = getInput<size_t>("Введите индекс вершины: ");
 
     vertex = pretty_graph->getVertex(index);
@@ -135,9 +135,9 @@ void menu_get_vertex(example_graph *pretty_graph, bool use_weights) {
 }
 
 // 9.
-void menu_get_edge(example_graph *pretty_graph, bool use_weights) {
-    example_vertex *vertex1, *vertex2;
-    example_edge *edge;
+void menu_get_edge(Graph *pretty_graph, bool use_weights) {
+    Vertex *vertex1, *vertex2;
+    Edge *edge;
     size_t v1_index, v2_index;
 
     v1_index = getInput<size_t>("Введите индекс первой вершины: ");
@@ -170,17 +170,17 @@ void menu_get_edge(example_graph *pretty_graph, bool use_weights) {
 }
 
 // 10.
-void menu_delete_vertex(example_graph *pretty_graph, bool use_weights) {
-    example_vertex *vertex;
+void menu_delete_vertex(Graph *pretty_graph, bool use_weights) {
+    Vertex *vertex;
     size_t index = getInput<size_t>("Введите индекс вершины: ");
 
     cout << "Результат: " << pretty_graph->popVertex(index) << endl;
 }
 
 // 11.
-void menu_delete_edge(example_graph *pretty_graph, bool use_weights) {
-    example_vertex *vertex1, *vertex2;
-    example_edge *edge;
+void menu_delete_edge(Graph *pretty_graph, bool use_weights) {
+    Vertex *vertex1, *vertex2;
+    Edge *edge;
     size_t v1_index, v2_index;
 
     v1_index = getInput<size_t>("Введите индекс первой вершины: ");
@@ -203,13 +203,13 @@ void menu_delete_edge(example_graph *pretty_graph, bool use_weights) {
 }
 
 // 12.
-void menu_print_graph(example_graph *pretty_graph, bool use_weights) {
+void menu_print_graph(Graph *pretty_graph, bool use_weights) {
     cout << *pretty_graph << endl;
 }
 
 // 13.
-void menu_print_vertex(example_graph *pretty_graph, bool use_weights) {
-    example_vertex_iterator iter = pretty_graph->vertex_begin();
+void menu_print_vertex(Graph *pretty_graph, bool use_weights) {
+    VertexIterator iter = pretty_graph->vertex_begin();
 
     while (iter != pretty_graph->vertex_end())
     {
@@ -219,17 +219,17 @@ void menu_print_vertex(example_graph *pretty_graph, bool use_weights) {
 }
 
 // 14.
-void menu_clear_graph(example_graph *pretty_graph, bool use_weights) {
+void menu_clear_graph(Graph *pretty_graph, bool use_weights) {
     pretty_graph->clear();
 }
 
 // 15.
-void menu_reform_graph(example_graph *pretty_graph, bool use_weights) {
+void menu_reform_graph(Graph *pretty_graph, bool use_weights) {
     pretty_graph->get_form() == L ? pretty_graph->convertToM() : pretty_graph->convertToL();
 }
 
 // 16.
-void menu_control_vertex_iterator(example_graph *pretty_graph, bool use_weights) {
+void menu_control_vertex_iterator(Graph *pretty_graph, bool use_weights) {
     int option = 1;
 
     if (pretty_graph->getVertexCount() == 0) {
@@ -289,7 +289,7 @@ void menu_control_vertex_iterator(example_graph *pretty_graph, bool use_weights)
 }
 
 // 17.
-void menu_control_edge_iterator_for_v(example_graph *pretty_graph, bool use_weights)
+void menu_control_edge_iterator_for_v(Graph *pretty_graph, bool use_weights)
 {
     int option = 1;
 
@@ -367,7 +367,7 @@ void menu_control_edge_iterator_for_v(example_graph *pretty_graph, bool use_weig
 }
 
 // 18.
-void menu_control_edge_iterator(example_graph *pretty_graph, bool use_weights) {
+void menu_control_edge_iterator(Graph *pretty_graph, bool use_weights) {
     int option = 1;
 
     if (pretty_graph->getEdgeCount() == 0) {
@@ -429,10 +429,10 @@ void menu_control_edge_iterator(example_graph *pretty_graph, bool use_weights) {
     }
 }
 
-static void menu_weighted_task(example_graph *pretty_graph) {
+static void menu_weighted_task(Graph *pretty_graph) {
     int option;
     std::vector<std::vector<double>> result;
-    if (!wtask) wtask = new weightedTask<example_vertex, example_edge>(pretty_graph);
+    if (!wtask) wtask = new weightedTask<Vertex, Edge>(pretty_graph);
     while (true)
     {
         option = getInput<int>("1. Вывести результат\n"
@@ -471,10 +471,10 @@ static void menu_weighted_task(example_graph *pretty_graph) {
     }
 }
 
-static void menu_nonweighted_task(example_graph *pretty_graph) {
+static void menu_nonweighted_task(Graph *pretty_graph) {
     int option;
-    example_graph *result;
-    if (!nwtask) nwtask = new nonWeightedTask<example_vertex, example_edge>(pretty_graph);
+    Graph *result;
+    if (!nwtask) nwtask = new nonWeightedTask<Vertex, Edge>(pretty_graph);
     while (true)
     {
         option = getInput<int>("1. Вывести результат\n"
@@ -500,7 +500,7 @@ static void menu_nonweighted_task(example_graph *pretty_graph) {
 }
 
 // 19.
-void menu_tasks(example_graph *pretty_graph, bool use_weights) {
+void menu_tasks(Graph *pretty_graph, bool use_weights) {
     if (use_weights)
     {
         menu_weighted_task(pretty_graph);

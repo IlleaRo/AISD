@@ -9,31 +9,36 @@ int main(int argc, char *argv[])
     int input;
     bool use_weights = true;
     bool correct_input = false;
-    example_graph *pretty_graph;
+    Graph *pretty_graph;
 
     while (!correct_input)
     {
-        input = getInput<int>(prompt_type);
+        input = getInput<int>("Выберите тип графа:\n"
+                              "\t1. Неориентированный, невзвешенный\n"
+                              "\t2. Ориентированный, невзвешенный\n"
+                              "\t3. Неориентированный, взвешенный\n"
+                              "\t4. Ориентированный, взвешенный\n"
+                            "Ввод: ");
         switch (input)
         {
             case 1:
                 // Неориентированный, невзвешенный
-                pretty_graph = new example_graph(0, NON_DIRECTED, TYPE);
+                pretty_graph = new Graph(0, NON_DIRECTED, TYPE);
                 use_weights = false;
                 break;
             case 2:
                 // Ориентированный, невзвешенный
-                pretty_graph = new example_graph(0, DIRECTED, TYPE);
+                pretty_graph = new Graph(0, DIRECTED, TYPE);
                 use_weights = false;
                 break;
             case 3:
                 // Неориентированный, взвешенный
-                pretty_graph = new example_graph(0, NON_DIRECTED, TYPE);
+                pretty_graph = new Graph(0, NON_DIRECTED, TYPE);
                 use_weights = true;
                 break;
             case 4:
                 // Ориентированный, взвешенный
-                pretty_graph = new example_graph(0, DIRECTED, TYPE);
+                pretty_graph = new Graph(0, DIRECTED, TYPE);
                 use_weights = true;
                 break;
 

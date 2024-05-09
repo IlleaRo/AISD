@@ -9,6 +9,13 @@
 #include <vector>
 #include <random>
 
+typedef vertex<std::string, int> Vertex;
+typedef edge<vertex<std::string, int>, int, int> Edge;
+typedef graph<Vertex, Edge> Graph;
+typedef vertexIterator<Vertex> VertexIterator;
+typedef vertexEdgeIter<Vertex, Edge> VertexEdgeIterator;
+typedef edgeIterator<Vertex, Edge> EdgeIterator;
+
 template <class VERTEX_T, class EDGE_T>
 class graph;
 
