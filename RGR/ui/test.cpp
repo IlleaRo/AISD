@@ -147,7 +147,7 @@ int run_test() {
 
     allSP all(&graph_M_3);
     std::cout<<graph_M_3;
-    std::cout<<"\n---\n"<<all.dist(2, 8);
+    //std::cout<<"\n---\n"<<all.dist(2, 8);
 
 #endif
     return 0;

@@ -30,13 +30,6 @@ template <class VERTEX_T, class EDGE_T> class allSP {
         return path;
     }
 
-public:
-    explicit allSP(graph<VERTEX_T, EDGE_T> *G) : G(G), A(G->get_num_of_vertex()) {
-        for (int s = 0; s < G->get_num_of_vertex(); s++) {
-            restart();
-        }
-    }
-
     EDGE_T *pathR(int s, int t) const {
         return A[s]->pathR(t);
     }
@@ -70,6 +63,16 @@ public:
             }
         }
     }
+
+public:
+    explicit allSP(graph<VERTEX_T, EDGE_T> *G) : G(G), A(G->get_num_of_vertex()) {
+        for (int s = 0; s < G->get_num_of_vertex(); s++) {
+            restart();
+        }
+    }
+
+    allSP(const allSP<VERTEX_T, EDGE_T> &old_allSP) : G(old_allSP.G), radius(old_allSP.radius),
+        radius_path(old_allSP.radius_path) {};
 
     void restart() {
         for (int s = 0; s < G->get_num_of_vertex(); s++) {

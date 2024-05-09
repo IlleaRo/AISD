@@ -16,7 +16,7 @@ template <class VERTEX_T, class EDGE_T> class SPT {
     std::vector<double> wt;
 
 public:
-    SPT(graph<VERTEX_T, EDGE_T> *graph, int s /*что это?*/) :
+    SPT(graph<VERTEX_T, EDGE_T> *graph, int s) :
         G(graph), spt(graph->get_num_of_vertex()), wt(graph->get_num_of_vertex(), INT_MAX) {
         PQi<double> pQ(graph->get_num_of_vertex(), wt);
 
