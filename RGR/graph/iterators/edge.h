@@ -61,7 +61,6 @@ class edgeIterator
                 curVertex = curGraph->vertices[i];
                 if ((curEdge = curGraph->firstEdge(curVertex)))
                 {
-                    // Пропускаем повторные рёбра
                     if (curGraph->getType() == NON_DIRECTED && curVertex == curEdge->getDest())
                     {
                         goto next;

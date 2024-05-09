@@ -30,7 +30,7 @@ class form
         graphTypeE type;
         graphFormE curForm;
 
-        unsigned long edgeCount; // Число ребер
+        unsigned long edgeCount;
 
         virtual void print(std::ostream &os) = 0;
 
@@ -41,7 +41,6 @@ class form
     public:
         virtual ~form() = default;
 
-        // Число ребер в графе
         [[nodiscard]] unsigned long getEdgeCount() const
         {
             return edgeCount;

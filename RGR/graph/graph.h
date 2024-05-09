@@ -165,11 +165,10 @@ class graph
                 }
             }
 
-            // Seed with a real random value, if available
             std::random_device r;
 
             std::default_random_engine e(r());
-            std::uniform_int_distribution<int> uniform_dist(0, (int) num_of_vertex - 1); // Равномерное распределение
+            std::uniform_int_distribution<int> uniform_dist(0, (int) num_of_vertex - 1);
 
             unsigned long i = 0;
 
@@ -282,8 +281,6 @@ class graph
             return nullptr;
         }
 
-        // Добавляет ребро между вершинами графа, заданными адресами
-        // дескрипторов v1 и v2, с весом w и возвращает адрес дескриптора вновь созданного ребра (или уже существующего).
         EDGE_T *pushEdge(VERTEX_T *v1, VERTEX_T *v2, double weight)
         {
             if (v1 == nullptr || v2 == nullptr)
@@ -322,7 +319,6 @@ class graph
             return this->vertices[idx];
         }
 
-        // Удаляет ребро, соединяющее вершины, заданные адресами дескрипторов v1 и v2
         bool popEdge(VERTEX_T *v1, VERTEX_T *v2)
         {
             if (v1 == nullptr || v2 == nullptr)
@@ -338,7 +334,6 @@ class graph
             return curForm->popEdge(v1_index, v2_index);
         }
 
-        // Удаляет вершину из графа, заданную адресом дескриптора
         bool popVertex(VERTEX_T *vertex_ptr)
         {
             if (vertex_ptr == nullptr)
@@ -351,7 +346,6 @@ class graph
             return popVertex(index);
         }
 
-        // Удаляет вершину из графа по её индексу
         bool popVertex(size_t index)
         {
             VERTEX_T *vertex_ptr;

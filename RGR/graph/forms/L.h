@@ -53,7 +53,6 @@ class nonDirectedL : public form<EDGE_T>
 
                     if (temp->dest < i)
                     {
-                        // Очищаем память каждого ребра только единожды
                         delete temp->edge;
                     }
                     delete temp;
