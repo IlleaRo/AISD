@@ -8,5 +8,11 @@ add_executable(RGR main.cpp
         graph/forms/forms.h
         graph/iterators/iterators.h
         ui/menu.cpp
-        tasks/non-weighted.h
-        tasks/weighted.h)
+        tasks/nonWeighted.h
+        tasks/weighted.h
+        graph/forms/L.h
+        graph/forms/common.h
+        graph/forms/M.h
+        graph/iterators/vertex.h
+        graph/iterators/edge.h
+        graph/iterators/vertexEdge.h)

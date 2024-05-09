@@ -1,5 +1,5 @@
-#ifndef RGR_GRAPH_H
-#define RGR_GRAPH_H
+#ifndef GRAPH_H
+#define GRAPH_H
 
 #include "forms/forms.h"
 #include "iterators/iterators.h"
@@ -438,5 +438,5 @@ public:
     friend std::ostream& operator<< <>(std::ostream &os, graph<VERTEX_T, EDGE_T> &graph_ptr);
 };
 
-#endif //RGR_GRAPH_H
+#endif //GRAPH_H
 

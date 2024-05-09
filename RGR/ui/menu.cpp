@@ -1,7 +1,7 @@
 #include <iostream>
 #include "menu.h"
 #include "prompts.h"
-#include "../tasks/non-weighted.h"
+#include "../tasks/nonWeighted.h"
 #include "../tasks/weighted.h"
 
 using namespace std;

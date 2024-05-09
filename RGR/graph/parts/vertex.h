@@ -1,5 +1,5 @@
-#ifndef RGR_VERTEX_H
-#define RGR_VERTEX_H
+#ifndef VERTEX_H
+#define VERTEX_H
 
 template <class NAME_T, class DATA_T>
 class vertex {
@@ -37,4 +37,4 @@ public:
     }
 };
 
-#endif //RGR_VERTEX_H
+#endif //VERTEX_H

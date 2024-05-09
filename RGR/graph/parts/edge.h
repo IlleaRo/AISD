@@ -1,5 +1,5 @@
-#ifndef RGR_EDGE_H
-#define RGR_EDGE_H
+#ifndef EDGE_H
+#define EDGE_H
 
 #include "vertex.h"
 
@@ -41,4 +41,4 @@ public:
     }
 };
 
-#endif //RGR_EDGE_H
+#endif //EDGE_H
