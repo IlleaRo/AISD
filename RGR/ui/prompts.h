@@ -1,6 +1,9 @@
 #ifndef RGR_PROMPTS_H
 #define RGR_PROMPTS_H
 
+#include <string>
+#include <iostream>
+
 const std::string prompt_type = "Выберите тип графа:\n"
                               "\t1. Неориентированный, невзвешенный\n"
                               "\t2. Ориентированный, невзвешенный\n"
@@ -50,10 +53,15 @@ const std::string prompt_ev_iter_menu = "Выберите операцию:\n"
                                                "\t0. Выйти в главное меню\n"
                                             "Ввод: ";
 
-void anykey();
+inline void anykey()
+{
+    std::cout << "Нажмите ENTER, чтобы продолжить";
+    std::cout.flush();
+    system("bash -c read");
+}
 
 template <class Type>
-Type get_user_input(const std::string &prompt) {
+Type getInput(const std::string &prompt) {
     Type input;
 
     std::cout << prompt;

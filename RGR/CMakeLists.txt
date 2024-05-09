@@ -4,11 +4,9 @@ project(RGR)
 set(CMAKE_CXX_STANDARD 17)
 
 add_executable(RGR main.cpp
-        graphs/graph.h graphs/vertex.h graphs/edge.h
-        graphs/forms.h
-        graphs/iterators.h
-        ui/test.cpp
-        ui/prompts.cpp
+        graph/graph.h graph/parts/vertex.h graph/parts/edge.h
+        graph/forms/forms.h
+        graph/iterators/iterators.h
         ui/menu.cpp
         tasks/non-weighted.h
         tasks/weighted.h)

@@ -1,6 +1,6 @@
 #ifndef RGR_MENU_H
 #define RGR_MENU_H
-#include "../graphs/graph.h"
+#include "../graph/graph.h"
 
 typedef vertex<std::string, int> example_vertex;
 typedef edge<vertex<std::string, int>, int, int> example_edge;

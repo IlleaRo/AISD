@@ -2,7 +2,7 @@
 #define RGR_ITERATORS_H
 
 #include <vector>
-#include "graph.h"
+#include "../graph.h"
 
 template <class VERTEX_T>
 class vertex_iterator {

@@ -1,12 +1,11 @@
 #ifndef RGR_GRAPH_H
 #define RGR_GRAPH_H
 
-#include "vertex.h"
-#include "edge.h"
-#include "forms.h"
-#include "iterators.h"
+#include "forms/forms.h"
+#include "iterators/iterators.h"
+#include "parts/edge.h"
+#include "parts/vertex.h"
 
-#include <ostream>
 #include <vector>
 #include <random>
 

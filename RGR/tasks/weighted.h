@@ -2,7 +2,7 @@
 #define WEIGHTED_H
 #include <cfloat>
 
-#include "../graphs/graph.h"
+#include "../graph/graph.h"
 
 template <class VERTEX_T, class EDGE_T>
 class weightedTask

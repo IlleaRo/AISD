@@ -1,96 +1,65 @@
-#ifdef _WIN32
-#include <windows.h>
-#endif
-
-#include <iostream>
-#include <cstring>
-#include "ui/test.h"
 #include "ui/prompts.h"
 #include "ui/menu.h"
-#include "graphs/graph.h"
+#include "graph/graph.h"
 
-#pragma execution_character_set( "utf-8" )
-#define WIN_UTF_ID 65001
-#define GRAPH_TYPE L // TODO: надо бы в рантайме разрешить указывать тип
+#define TYPE L
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
     int input;
     bool use_weights = true;
     bool correct_input = false;
     example_graph *pretty_graph;
 
-#ifdef _WIN32
-    SetConsoleOutputCP( WIN_UTF_ID);
-#endif
+    while (!correct_input)
+    {
+        input = getInput<int>(prompt_type);
+        switch (input)
+        {
+            case 1:
+                // Неориентированный, невзвешенный
+                pretty_graph = new example_graph(0, NON_DIRECTED, TYPE);
+                use_weights = false;
+                break;
+            case 2:
+                // Ориентированный, невзвешенный
+                pretty_graph = new example_graph(0, DIRECTED, TYPE);
+                use_weights = false;
+                break;
+            case 3:
+                // Неориентированный, взвешенный
+                pretty_graph = new example_graph(0, NON_DIRECTED, TYPE);
+                use_weights = true;
+                break;
+            case 4:
+                // Ориентированный, взвешенный
+                pretty_graph = new example_graph(0, DIRECTED, TYPE);
+                use_weights = true;
+                break;
 
-    if (argc > 1 && (strcmp(argv[1], "test") == 0)) {
-        return run_test();
-    }
-
-    if (argc > 1 && strcmp(argv[1], "rand") == 0) {
-        // Случайный граф
-        unsigned long num_of_vertexes = get_user_input<unsigned long>("Введите количество вершин: ");
-        unsigned long num_of_edges = get_user_input<unsigned long>("Введите количество рёбер: ");
-
-        int type;
-        do {
-            type = get_user_input<int>("Введите тип графа (0 - неориентированный, 1 - ориентированный): ");
-        } while (type != 0 && type != 1);
-
-        int form;
-        do {
-            form = get_user_input<int>("Введите форму графа (0 - L-граф, 1 - M-граф) ");
-        } while (form != 0 && form != 1);
-
-        pretty_graph = new example_graph(num_of_vertexes, num_of_edges,
-                                          type ? DIRECTED : NON_DIRECTED, form ? M : L);
-    } else {
-        while (!correct_input) {
-            input = get_user_input<int>(prompt_type);
-            switch (input) {
-                case 1:
-                    // Неориентированный, невзвешенный
-                    pretty_graph = new example_graph(0, NON_DIRECTED, GRAPH_TYPE);
-                    use_weights = false;
-                    break;
-                case 2:
-                    // Ориентированный, невзвешенный
-                    pretty_graph = new example_graph(0, DIRECTED, GRAPH_TYPE);
-                    use_weights = false;
-                    break;
-                case 3:
-                    // Неориентированный, взвешенный
-                    pretty_graph = new example_graph(0, NON_DIRECTED, GRAPH_TYPE);
-                    use_weights = true;
-                    break;
-                case 4:
-                    // Ориентированный, взвешенный
-                    pretty_graph = new example_graph(0, DIRECTED, GRAPH_TYPE);
-                    use_weights = true;
-                    break;
-
-                default:
-                    continue;
-            }
-            correct_input = true;
+            default:
+                continue;
         }
-
-        pretty_graph->insert_edge(
-                pretty_graph->insert_vertex("A1"),
-                pretty_graph->insert_vertex("A2"),
-                use_weights ? 10 : 0
-        );
-
-        pretty_graph->insert_edge(
-                pretty_graph->insert_vertex("B1"),
-                pretty_graph->insert_vertex("B2"),
-                use_weights ? 20 : 0
-        );
+        correct_input = true;
     }
 
-    while (true) {
-        input = get_user_input<int>(prompt_main_menu);
-        switch (input) {
+    pretty_graph->insert_edge(
+        pretty_graph->insert_vertex("A1"),
+        pretty_graph->insert_vertex("A2"),
+        use_weights ? 10 : 0
+    );
+
+    pretty_graph->insert_edge(
+        pretty_graph->insert_vertex("B1"),
+        pretty_graph->insert_vertex("B2"),
+        use_weights ? 20 : 0
+    );
+
+    while (true)
+    {
+        input = getInput<int>(prompt_main_menu);
+        switch (input)
+        {
             case 1:
                 // Получить тип
                 menu_get_type(pretty_graph, use_weights);
