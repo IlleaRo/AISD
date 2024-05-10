@@ -139,8 +139,8 @@ class nonDirectedL : public form<EDGE_T>
                                 if (form<EDGE_T>::type == DIRECTED)
                                 {
                                     delete current->edge;
-                                    edgeCount--;
                                 }
+                                edgeCount--;
                                 delete current;
                                 current = vertices[i];
                                 continue;
