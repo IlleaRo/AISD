@@ -427,6 +427,7 @@ class directedL : public nonDirectedL<EDGE_T>
                         node *temp = current;
                         current = current->next;
                         delete temp;
+                        edgeCount--;
                     }
                     continue;
                 }
