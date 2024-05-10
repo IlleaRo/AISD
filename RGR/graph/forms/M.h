@@ -24,7 +24,7 @@ class nonDirectedM : public form<EDGE_T>
                 os << '\n' << i << "  ";
                 for (unsigned long j = 0; j < vertices[i].size(); ++j)
                 {
-                    os << (vertices[i][j] ? "1" : " ") << " ";
+                    os << (vertices[i][j] ? "*" : " ") << " ";
                 }
             }
         }

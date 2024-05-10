@@ -25,7 +25,7 @@ class nonDirectedL : public form<EDGE_T>
         {
             for (int i = 0; i < vertices.size(); ++i)
             {
-                os << i << " : ";
+                os << i << ": ";
                 node *current = vertices[i];
                 while (current != nullptr)
                 {
