@@ -219,8 +219,9 @@ void menu_print_vertex(Graph *pretty_graph, bool use_weights) {
 }
 
 // 14.
-void menu_clear_graph(Graph *pretty_graph, bool use_weights) {
+void menu_clear_graph(Graph *&pretty_graph, bool use_weights) {
     pretty_graph->clear();
+    pretty_graph = new Graph(0, pretty_graph->getType(), pretty_graph->get_form());
 }
 
 // 15.
