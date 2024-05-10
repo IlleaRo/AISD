@@ -377,12 +377,12 @@ class graph
 
         vertexIterator<VERTEX_T> vertex_begin()
         {
-            return vertexIterator<VERTEX_T>(vertices.begin());
+            return vertexIterator<VERTEX_T>(vertices.begin(), vertices);
         }
 
         vertexIterator<VERTEX_T> vertex_end()
         {
-            return vertexIterator<VERTEX_T>(vertices.end());
+            return vertexIterator<VERTEX_T>(vertices.end(), vertices);
         }
 
         vertexEdgeIter<VERTEX_T, EDGE_T> edge_v_begin(VERTEX_T *vertex)

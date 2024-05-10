@@ -13,8 +13,9 @@ class vertexIterator
         explicit vertexIterator() : vectorIterator(), graphUndefined(true)
         {
         }
-        explicit vertexIterator(typename std::vector<VERTEX_T *>::iterator vectorIterator) : vectorIterator(vectorIterator), graphUndefined(false)
+        explicit vertexIterator(typename std::vector<VERTEX_T *>::iterator vectorIterator, std::vector<VERTEX_T *> vector) : vectorIterator(vectorIterator)
         {
+            vector.empty() ? graphUndefined = true : graphUndefined = false;
         }
 
         VERTEX_T *operator*()
