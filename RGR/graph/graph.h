@@ -442,7 +442,10 @@ class graph
         {
             edgeIterator<VERTEX_T, EDGE_T> iter(this);
             iter.setEdge(nullptr);
-            iter.setVertex(*vertices.rbegin());
+            if (vertices.size() > 0)
+            {
+                iter.setVertex(*vertices.rbegin());
+            }
 
             return iter;
         }
