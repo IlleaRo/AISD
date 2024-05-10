@@ -24,7 +24,7 @@ class edgeIterator
 
         EDGE_T *operator*()
         {
-            if (graphUndefined || *this == curGraph->edge_end())
+            if (graphUndefined || *this == curGraph->edge_end() || curEdge == nullptr || curVertex == nullptr)
             {
                 throw std::out_of_range("out of range exception");
             }

@@ -233,18 +233,12 @@ void menu_reform_graph(Graph *pretty_graph, bool use_weights) {
 void menu_control_vertex_iterator(Graph *pretty_graph, bool use_weights) {
     int option = 1;
 
-    if (pretty_graph->getVertexCount() == 0) {
-        cout << "В графе нет вершин" << endl;
-        return;
-    }
-
     while (true) {
-        if (menu_vertex_iterator.isUndefined()) {
-            menu_vertex_iterator = pretty_graph->vertex_begin();
-        }
-
         try
         {
+            if (menu_vertex_iterator.isUndefined()) {
+                menu_vertex_iterator = pretty_graph->vertex_begin();
+            }
             *menu_vertex_iterator;
             cout << "Имя итератора: " << (*menu_vertex_iterator)->getName() << endl;
             cout << "Значение итератора: " << (*menu_vertex_iterator)->get_data() << endl;
@@ -294,29 +288,20 @@ void menu_control_edge_iterator_for_v(Graph *pretty_graph, bool use_weights)
 {
     int option = 1;
 
-    if (pretty_graph->getVertexCount() == 0) {
-        cout << "В графе нет вершин" << endl;
-        return;
-    }
-    if (pretty_graph->getEdgeCount() == 0) {
-        cout << "В графе нет граней" << endl;
-        return;
-    }
-
     while (true) {
-        if (ev_vertex == nullptr) {
-            int vertexIdx = getInput<int>("Введите индекс вершины: ");
-            ev_vertex = pretty_graph->getVertex(vertexIdx);
-            if (ev_vertex == nullptr)
-            {
-                cout << "Такой вершины нет" << endl;
-                return;
-            }
-            menu_ev_iterator = pretty_graph->edge_v_begin(ev_vertex);
-        }
 
         try
         {
+            if (ev_vertex == nullptr) {
+                int vertexIdx = getInput<int>("Введите индекс вершины: ");
+                ev_vertex = pretty_graph->getVertex(vertexIdx);
+                if (ev_vertex == nullptr)
+                {
+                    cout << "Такой вершины нет" << endl;
+                    return;
+                }
+                menu_ev_iterator = pretty_graph->edge_v_begin(ev_vertex);
+            }
             *menu_ev_iterator;
             cout << "Имя первой вершины: " << (*menu_ev_iterator)->getSrc()->getName() << endl;
             cout << "Имя второй вершины: " << (*menu_ev_iterator)->getDest()->getName() << endl;
@@ -371,18 +356,12 @@ void menu_control_edge_iterator_for_v(Graph *pretty_graph, bool use_weights)
 void menu_control_edge_iterator(Graph *pretty_graph, bool use_weights) {
     int option = 1;
 
-    if (pretty_graph->getEdgeCount() == 0) {
-        cout << "В графе нет рёбер" << endl;
-        return;
-    }
-
     while (true) {
-        if (menu_edge_iterator.isUndefined()) {
-            menu_edge_iterator = pretty_graph->edge_begin(); // это происходит только при первом заходе в меню, всё нормально
-        }
-
         try
         {
+            if (menu_edge_iterator.isUndefined()) {
+                menu_edge_iterator = pretty_graph->edge_begin(); // это происходит только при первом заходе в меню, всё нормально
+            }
             *menu_edge_iterator; // проверка, чтобы при ошибке в консоль не начало "Имя первой вершины: " выводиться
             cout << "Имя первой вершины: " << (*menu_edge_iterator)->getSrc()->getName() << endl;
             cout << "Имя второй вершины: " << (*menu_edge_iterator)->getDest()->getName() << endl;

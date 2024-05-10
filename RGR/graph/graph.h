@@ -311,7 +311,7 @@ class graph
 
         VERTEX_T *getVertex(size_t idx) const
         {
-            if (idx > this->vertices.size() - 1)
+            if (this->vertices.size() == 0 || idx > this->vertices.size() - 1)
             {
                 return nullptr;
             }
