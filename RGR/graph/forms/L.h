@@ -68,18 +68,18 @@ class nonDirectedL : public form<EDGE_T>
             return vertices.size() - 1;
         }
 
-        bool pushEdge(unsigned long v_index_1, unsigned long v_index_2, EDGE_T *edge) override
+        bool pushEdge(unsigned long srcIdx, unsigned long destIdx, EDGE_T *edge) override
         {
-            if (v_index_1 >= vertices.size() || v_index_2 >= vertices.size())
+            if (srcIdx >= vertices.size() || destIdx >= vertices.size())
             {
                 throw std::out_of_range("out of range exception");
             }
 
-            node *tmp = vertices[v_index_1];
+            node *tmp = vertices[srcIdx];
 
             while (tmp)
             {
-                if (tmp->dest == v_index_2)
+                if (tmp->dest == destIdx)
                 {
                     return false;
                 }
@@ -88,31 +88,31 @@ class nonDirectedL : public form<EDGE_T>
 
             node *new_node = new node;
             new_node->edge = edge;
-            new_node->dest = v_index_2;
-            new_node->next = vertices[v_index_1];
-            vertices[v_index_1] = new_node;
+            new_node->dest = destIdx;
+            new_node->next = vertices[srcIdx];
+            vertices[srcIdx] = new_node;
 
             new_node = new node;
             new_node->edge = edge;
-            new_node->dest = v_index_1;
-            new_node->next = vertices[v_index_2];
-            vertices[v_index_2] = new_node;
+            new_node->dest = srcIdx;
+            new_node->next = vertices[destIdx];
+            vertices[destIdx] = new_node;
 
             edgeCount++;
 
             return true;
         }
 
-        bool popVertex(unsigned long vertex_index) override
+        bool popVertex(unsigned long vertexIdx) override
         {
-            if (vertex_index >= vertices.size())
+            if (vertexIdx >= vertices.size())
             {
                 return false;
             }
 
             for (unsigned int i = 0; i < vertices.size(); ++i)
             {
-                if (i == vertex_index)
+                if (i == vertexIdx)
                 {
                     node *current = vertices[i];
                     while (current != nullptr)
@@ -131,7 +131,7 @@ class nonDirectedL : public form<EDGE_T>
 
                     while (current != nullptr)
                     {
-                        if (current->dest == vertex_index)
+                        if (current->dest == vertexIdx)
                         {
                             if (current == vertices[i])
                             {
@@ -156,7 +156,7 @@ class nonDirectedL : public form<EDGE_T>
                             delete temp;
                             continue;
                         }
-                        else if (current->dest > vertex_index)
+                        else if (current->dest > vertexIdx)
                         {
                             current->dest--;
                         }
@@ -167,22 +167,22 @@ class nonDirectedL : public form<EDGE_T>
                 }
             }
 
-            vertices.erase(vertices.begin() + vertex_index);
+            vertices.erase(vertices.begin() + vertexIdx);
 
             return true;
         }
 
-        EDGE_T *getEdge(unsigned long v1_index, unsigned long v2_index) override
+        EDGE_T *getEdge(unsigned long srcIndex, unsigned long destIdx) override
         {
-            if (v1_index >= vertices.size() || v2_index >= vertices.size())
+            if (srcIndex >= vertices.size() || destIdx >= vertices.size())
             {
                 return nullptr;
             }
 
-            node *current = vertices[v1_index];
+            node *current = vertices[srcIndex];
             while (current != nullptr)
             {
-                if (current->dest == v2_index)
+                if (current->dest == destIdx)
                 {
                     return current->edge;
                 }
@@ -192,24 +192,24 @@ class nonDirectedL : public form<EDGE_T>
             return nullptr;
         }
 
-        bool popEdge(unsigned long v1_index, unsigned long v2_index) override
+        bool popEdge(unsigned long srcIndex, unsigned long destIdx) override
         {
-            if (v1_index >= vertices.size() || v2_index >= vertices.size())
+            if (srcIndex >= vertices.size() || destIdx >= vertices.size())
             {
                 return false;
             }
 
-            node *current = vertices[v1_index];
+            node *current = vertices[srcIndex];
             node *prev = nullptr;
             bool verticesRemoved = false;
 
             while (current != nullptr)
             {
-                if (current->dest == v2_index)
+                if (current->dest == destIdx)
                 {
-                    if (current == vertices[v1_index])
+                    if (current == vertices[srcIndex])
                     {
-                        vertices[v1_index] = current->next;
+                        vertices[srcIndex] = current->next;
 
                         delete current;
 
@@ -235,16 +235,16 @@ class nonDirectedL : public form<EDGE_T>
                 return false;
             }
 
-            current = vertices[v2_index];
+            current = vertices[destIdx];
             prev = nullptr;
 
             while (current != nullptr)
             {
-                if (current->dest == v1_index)
+                if (current->dest == srcIndex)
                 {
-                    if (current == vertices[v2_index])
+                    if (current == vertices[destIdx])
                     {
-                        vertices[v2_index] = current->next;
+                        vertices[destIdx] = current->next;
 
                         delete current->edge;
                         delete current;
@@ -270,24 +270,24 @@ class nonDirectedL : public form<EDGE_T>
             throw std::out_of_range("out of range exception");
         }
 
-        EDGE_T *firstEdge(unsigned long vertex_index) override
+        EDGE_T *firstEdge(unsigned long vertexIdx) override
         {
-            if (vertex_index >= vertices.size())
+            if (vertexIdx >= vertices.size())
             {
                 throw std::out_of_range("out of range exception");
             }
 
-            return vertices[vertex_index] ? vertices[vertex_index]->edge : nullptr;
+            return vertices[vertexIdx] ? vertices[vertexIdx]->edge : nullptr;
         }
 
-        EDGE_T *nextEdge(unsigned long vertex_index, EDGE_T *edge) override
+        EDGE_T *nextEdge(unsigned long vertexIdx, EDGE_T *edge) override
         {
-            if (vertex_index >= vertices.size())
+            if (vertexIdx >= vertices.size())
             {
                 throw std::out_of_range("out of range exception");
             }
 
-            node *current = vertices[vertex_index];
+            node *current = vertices[vertexIdx];
             while (current != nullptr)
             {
                 if (current->edge == edge)
@@ -332,16 +332,16 @@ class directedL : public nonDirectedL<EDGE_T>
             vertices.clear();
         }
 
-        bool pushEdge(unsigned long v_index_1, unsigned long v_index_2, EDGE_T *edge) override
+        bool pushEdge(unsigned long srcIdx, unsigned long destIdx, EDGE_T *edge) override
         {
-            node *tmp = vertices[v_index_1];
+            node *tmp = vertices[srcIdx];
             if (tmp == nullptr)
             {
                 node *newNode = new node;
                 newNode->edge = edge;
-                newNode->dest = v_index_2;
+                newNode->dest = destIdx;
                 newNode->next = nullptr;
-                vertices[v_index_1] = newNode;
+                vertices[srcIdx] = newNode;
 
                 edgeCount++;
 
@@ -350,7 +350,7 @@ class directedL : public nonDirectedL<EDGE_T>
 
             while (tmp->next)
             {
-                if (tmp->dest == v_index_2)
+                if (tmp->dest == destIdx)
                 {
                     return false;
                 }
@@ -359,7 +359,7 @@ class directedL : public nonDirectedL<EDGE_T>
 
             node *new_node = new node;
             new_node->edge = edge;
-            new_node->dest = v_index_2;
+            new_node->dest = destIdx;
             new_node->next = nullptr;
             tmp->next = new_node;
 
@@ -368,23 +368,23 @@ class directedL : public nonDirectedL<EDGE_T>
             return true;
         }
 
-        bool popEdge(unsigned long v1_index, unsigned long v2_index) override
+        bool popEdge(unsigned long srcIndex, unsigned long destIdx) override
         {
-            if (v1_index >= vertices.size() || v2_index >= vertices.size())
+            if (srcIndex >= vertices.size() || destIdx >= vertices.size())
             {
                 return false;
             }
 
-            node *current = vertices[v1_index];
+            node *current = vertices[srcIndex];
             node *prev = nullptr;
 
             while (current != nullptr)
             {
-                if (current->dest == v2_index)
+                if (current->dest == destIdx)
                 {
-                    if (current == vertices[v1_index])
+                    if (current == vertices[srcIndex])
                     {
-                        vertices[v1_index] = current->next;
+                        vertices[srcIndex] = current->next;
 
                         delete current->edge;
                         delete current;
@@ -410,16 +410,16 @@ class directedL : public nonDirectedL<EDGE_T>
             return false;
         }
 
-        bool popVertex(unsigned long vertex_index) override
+        bool popVertex(unsigned long vertexIdx) override
         {
-            if (vertex_index >= vertices.size())
+            if (vertexIdx >= vertices.size())
             {
                 return false;
             }
 
             for (unsigned int i = 0; i < vertices.size(); ++i)
             {
-                if (i == vertex_index)
+                if (i == vertexIdx)
                 {
                     node *current = vertices[i];
                     while (current != nullptr)
@@ -438,7 +438,7 @@ class directedL : public nonDirectedL<EDGE_T>
 
                     while (current != nullptr)
                     {
-                        if (current->dest == vertex_index)
+                        if (current->dest == vertexIdx)
                         {
                             if (current == vertices[i])
                             {
@@ -461,7 +461,7 @@ class directedL : public nonDirectedL<EDGE_T>
                             delete temp;
                             continue;
                         }
-                        else if (current->dest > vertex_index)
+                        else if (current->dest > vertexIdx)
                         {
                             current->dest--;
                         }
@@ -472,7 +472,7 @@ class directedL : public nonDirectedL<EDGE_T>
                 }
             }
 
-            vertices.erase(vertices.begin() + vertex_index);
+            vertices.erase(vertices.begin() + vertexIdx);
 
             return true;
         }

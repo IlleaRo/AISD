@@ -107,16 +107,16 @@ class edgeIterator
             return true;
         }
 
-        void setEdge(EDGE_T *new_cur_edge)
+        void setEdge(EDGE_T *edge)
         {
             if (graphUndefined) return;
-            curEdge = new_cur_edge;
+            curEdge = edge;
         }
 
-        void setVertex(VERTEX_T *new_cur_vertex)
+        void setVertex(VERTEX_T *vertex)
         {
             if (graphUndefined) return;
-            curVertex = new_cur_vertex;
+            curVertex = vertex;
         }
 
         bool isUndefined()

@@ -90,18 +90,18 @@ void menu_insert_edge(Graph *pretty_graph, bool use_weights) {
     int weight;
     Vertex *vertex1, *vertex2;
     Edge *edge;
-    size_t v1_index, v2_index;
+    size_t srcIndex, destIdx;
 
-    v1_index = getInput<size_t>("Введите индекс первой вершины: ");
-    vertex1 = pretty_graph->getVertex(v1_index);
+    srcIndex = getInput<size_t>("Введите индекс первой вершины: ");
+    vertex1 = pretty_graph->getVertex(srcIndex);
 
     if (!vertex1) {
         cout << "Такой вершины нет" << endl;
         return;
     }
 
-    v2_index = getInput<size_t>("Введите индекс второй вершины: ");
-    vertex2 = pretty_graph->getVertex(v2_index);
+    destIdx = getInput<size_t>("Введите индекс второй вершины: ");
+    vertex2 = pretty_graph->getVertex(destIdx);
 
     if (!vertex2) {
         cout << "Такой вершины нет" << endl;
@@ -138,18 +138,18 @@ void menu_get_vertex(Graph *pretty_graph, bool use_weights) {
 void menu_get_edge(Graph *pretty_graph, bool use_weights) {
     Vertex *vertex1, *vertex2;
     Edge *edge;
-    size_t v1_index, v2_index;
+    size_t srcIndex, destIdx;
 
-    v1_index = getInput<size_t>("Введите индекс первой вершины: ");
-    vertex1 = pretty_graph->getVertex(v1_index);
+    srcIndex = getInput<size_t>("Введите индекс первой вершины: ");
+    vertex1 = pretty_graph->getVertex(srcIndex);
 
     if (!vertex1) {
         cout << "Такой вершины нет" << endl;
         return;
     }
 
-    v2_index = getInput<size_t>("Введите индекс второй вершины: ");
-    vertex2 = pretty_graph->getVertex(v2_index);
+    destIdx = getInput<size_t>("Введите индекс второй вершины: ");
+    vertex2 = pretty_graph->getVertex(destIdx);
 
     if (!vertex2) {
         cout << "Такой вершины нет" << endl;
@@ -181,18 +181,18 @@ void menu_delete_vertex(Graph *pretty_graph, bool use_weights) {
 void menu_delete_edge(Graph *pretty_graph, bool use_weights) {
     Vertex *vertex1, *vertex2;
     Edge *edge;
-    size_t v1_index, v2_index;
+    size_t srcIndex, destIdx;
 
-    v1_index = getInput<size_t>("Введите индекс первой вершины: ");
-    vertex1 = pretty_graph->getVertex(v1_index);
+    srcIndex = getInput<size_t>("Введите индекс первой вершины: ");
+    vertex1 = pretty_graph->getVertex(srcIndex);
 
     if (!vertex1) {
         cout << "Такой вершины нет" << endl;
         return;
     }
 
-    v2_index = getInput<size_t>("Введите индекс второй вершины: ");
-    vertex2 = pretty_graph->getVertex(v2_index);
+    destIdx = getInput<size_t>("Введите индекс второй вершины: ");
+    vertex2 = pretty_graph->getVertex(destIdx);
 
     if (!vertex2) {
         cout << "Такой вершины нет" << endl;
@@ -304,8 +304,8 @@ void menu_control_edge_iterator_for_v(Graph *pretty_graph, bool use_weights)
 
     while (true) {
         if (ev_vertex == nullptr) {
-            int vertex_index = getInput<int>("Введите индекс вершины: ");
-            ev_vertex = pretty_graph->getVertex(vertex_index);
+            int vertexIdx = getInput<int>("Введите индекс вершины: ");
+            ev_vertex = pretty_graph->getVertex(vertexIdx);
             if (ev_vertex == nullptr)
             {
                 cout << "Такой вершины нет" << endl;

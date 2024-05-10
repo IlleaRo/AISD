@@ -58,34 +58,34 @@ class nonDirectedM : public form<EDGE_T>
             return edges.size() - 1;
         }
 
-        bool pushEdge(unsigned long v_index_1, unsigned long v_index_2, EDGE_T *edge) override
+        bool pushEdge(unsigned long srcIdx, unsigned long destIdx, EDGE_T *edge) override
         {
-            if (v_index_1 >= edges.size() || v_index_2 >= edges.size())
+            if (srcIdx >= edges.size() || destIdx >= edges.size())
             {
                 throw std::out_of_range("out of range exception");
             }
 
-            if (edges[v_index_1][v_index_2] != nullptr)
+            if (edges[srcIdx][destIdx] != nullptr)
             {
                 return false;
             }
 
-            edges[v_index_1][v_index_2] = edge;
-            edges[v_index_2][v_index_1] = edge;
+            edges[srcIdx][destIdx] = edge;
+            edges[destIdx][srcIdx] = edge;
 
             edgeCount++;
 
             return true;
         }
 
-        bool popVertex(unsigned long vertex_index) override
+        bool popVertex(unsigned long index) override
         {
-            if (vertex_index >= edges.size())
+            if (index >= edges.size())
             {
                 return false;
             }
 
-            std::vector<EDGE_T *> adjacentEdges = edges[vertex_index];
+            std::vector<EDGE_T *> adjacentEdges = edges[index];
 
             for (std::vector<EDGE_T *> &edges: edges)
             {
@@ -94,7 +94,7 @@ class nonDirectedM : public form<EDGE_T>
                     continue;
                 }
 
-                for (unsigned long i = vertex_index; i < edges.size() - 1; ++i)
+                for (unsigned long i = index; i < edges.size() - 1; ++i)
                 {
                     edges[i] = edges[i + 1];
                 }
@@ -107,7 +107,7 @@ class nonDirectedM : public form<EDGE_T>
                 delete edge;
             }
 
-            for (unsigned int i = vertex_index; i < edges.size() - 1; ++i)
+            for (unsigned int i = index; i < edges.size() - 1; ++i)
             {
                 edges[i] = edges[i + 1];
             }
@@ -129,72 +129,72 @@ class nonDirectedM : public form<EDGE_T>
             return true;
         }
 
-        EDGE_T *getEdge(unsigned long v1_index, unsigned long v2_index) override
+        EDGE_T *getEdge(unsigned long srcIdx, unsigned long destIdx) override
         {
-            if (v1_index >= edges.size() || v2_index >= edges.size())
+            if (srcIdx >= edges.size() || destIdx >= edges.size())
             {
                 return nullptr;
             }
 
-            return edges[v1_index][v2_index];
+            return edges[srcIdx][destIdx];
         }
 
-        bool popEdge(unsigned long v1_index, unsigned long v2_index) override
+        bool popEdge(unsigned long srcIdx, unsigned long destIdx) override
         {
-            if (v1_index >= edges.size() || v2_index >= edges.size())
+            if (srcIdx >= edges.size() || destIdx >= edges.size())
             {
                 return false;
             }
 
-            if (edges[v1_index][v2_index] == nullptr)
+            if (edges[srcIdx][destIdx] == nullptr)
             {
                 return false;
             }
 
-            delete edges[v1_index][v2_index];
-            edges[v1_index][v2_index] = nullptr;
+            delete edges[srcIdx][destIdx];
+            edges[srcIdx][destIdx] = nullptr;
 
-            edges[v2_index][v1_index] = nullptr;
+            edges[destIdx][srcIdx] = nullptr;
 
             edgeCount--;
 
             return true;
         }
 
-        EDGE_T *firstEdge(unsigned long vertex_index) override
+        EDGE_T *firstEdge(unsigned long vertexIdx) override
         {
-            if (vertex_index >= edges.size())
+            if (vertexIdx >= edges.size())
             {
                 throw std::out_of_range("out of range exception");
             }
 
             for (unsigned long i = 0; i < edges.size(); ++i)
             {
-                if (edges[vertex_index][i] != nullptr)
+                if (edges[vertexIdx][i] != nullptr)
                 {
-                    return edges[vertex_index][i];
+                    return edges[vertexIdx][i];
                 }
             }
 
             return nullptr;
         }
 
-        EDGE_T *nextEdge(unsigned long vertex_index, EDGE_T *edge) override
+        EDGE_T *nextEdge(unsigned long vertexIdx, EDGE_T *edge) override
         {
-            if (vertex_index >= edges.size())
+            if (vertexIdx >= edges.size())
             {
                 throw std::out_of_range("out of range exception");
             }
 
             for (unsigned long i = 0; i < edges.size(); ++i)
             {
-                if (edges[vertex_index][i] == edge)
+                if (edges[vertexIdx][i] == edge)
                 {
                     for (unsigned long j = i + 1; j < edges.size(); ++j)
                     {
-                        if (edges[vertex_index][j] != nullptr)
+                        if (edges[vertexIdx][j] != nullptr)
                         {
-                            return edges[vertex_index][j];
+                            return edges[vertexIdx][j];
                         }
                     }
                     return nullptr;
@@ -230,39 +230,39 @@ class directedM : public nonDirectedM<EDGE_T>
             edges.clear();
         }
 
-        bool pushEdge(unsigned long v_index_1, unsigned long v_index_2, EDGE_T *edge) override
+        bool pushEdge(unsigned long srcIdx, unsigned long destIdx, EDGE_T *edge) override
         {
-            if (v_index_1 >= edges.size() || v_index_2 >= edges.size())
+            if (srcIdx >= edges.size() || destIdx >= edges.size())
             {
                 throw std::out_of_range("out of range exception");
             }
 
-            if (edges[v_index_1][v_index_2] != nullptr)
+            if (edges[srcIdx][destIdx] != nullptr)
             {
                 return false;
             }
 
-            edges[v_index_1][v_index_2] = edge;
+            edges[srcIdx][destIdx] = edge;
 
             edgeCount++;
 
             return true;
         }
 
-        bool popEdge(unsigned long v1_index, unsigned long v2_index) override
+        bool popEdge(unsigned long srcIndex, unsigned long destIdx) override
         {
-            if (v1_index >= edges.size() || v2_index >= edges.size())
+            if (srcIndex >= edges.size() || destIdx >= edges.size())
             {
                 return false;
             }
 
-            if (edges[v1_index][v2_index] == nullptr)
+            if (edges[srcIndex][destIdx] == nullptr)
             {
                 return false;
             }
 
-            delete edges[v1_index][v2_index];
-            edges[v1_index][v2_index] = nullptr;
+            delete edges[srcIndex][destIdx];
+            edges[srcIndex][destIdx] = nullptr;
 
             edgeCount--;
 

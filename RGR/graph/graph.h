@@ -329,9 +329,9 @@ class graph
             return curForm->popEdge(v1->getIndex(), v2->getIndex());
         }
 
-        bool popEdge(size_t v1_index, size_t v2_index)
+        bool popEdge(size_t srcIndex, size_t destIdx)
         {
-            return curForm->popEdge(v1_index, v2_index);
+            return curForm->popEdge(srcIndex, destIdx);
         }
 
         bool popVertex(VERTEX_T *vertex_ptr)

@@ -56,19 +56,19 @@ class form
             return curForm;
         }
 
-        virtual EDGE_T *getEdge(unsigned long v1_index, unsigned long v2_index) = 0;
+        virtual EDGE_T *getEdge(unsigned long srcIndex, unsigned long destIdx) = 0;
 
-        virtual bool popEdge(unsigned long v1_index, unsigned long v2_index) = 0;
+        virtual bool popEdge(unsigned long srcIndex, unsigned long destIdx) = 0;
 
         virtual unsigned long pushVertex() = 0;
 
-        virtual bool popVertex(unsigned long vertex_index) = 0;
+        virtual bool popVertex(unsigned long vertexIdx) = 0;
 
-        virtual bool pushEdge(unsigned long v_index_1, unsigned long v_index_2, EDGE_T *edge) = 0;
+        virtual bool pushEdge(unsigned long srcIdx, unsigned long destIdx, EDGE_T *edge) = 0;
 
-        virtual EDGE_T *firstEdge(unsigned long vertex_index) = 0;
+        virtual EDGE_T *firstEdge(unsigned long vertexIdx) = 0;
 
-        virtual EDGE_T *nextEdge(unsigned long vertex_index, EDGE_T *edge) = 0;
+        virtual EDGE_T *nextEdge(unsigned long vertexIdx, EDGE_T *edge) = 0;
 
         friend std::ostream &operator<<<>(std::ostream &os, form<EDGE_T> &plist);
 };

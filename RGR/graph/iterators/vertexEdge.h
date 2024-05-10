@@ -84,9 +84,9 @@ class vertexEdgeIter
             return true;
         }
 
-        void setEdge(EDGE_T *new_cur_edge)
+        void setEdge(EDGE_T *edge)
         {
-            curEdge = new_cur_edge;
+            curEdge = edge;
         }
 
         bool isUndefined()
