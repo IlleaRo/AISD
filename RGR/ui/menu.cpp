@@ -216,8 +216,9 @@ void menu_print_vertex(example_graph *pretty_graph, bool use_weights) {
 }
 
 // 14.
-void menu_clear_graph(example_graph *pretty_graph, bool use_weights) {
+void menu_clear_graph(example_graph *&pretty_graph, bool use_weights) {
     pretty_graph->clear();
+    pretty_graph = new example_graph(0, pretty_graph->get_type(), pretty_graph->get_form());
 }
 
 // 15.
@@ -228,12 +229,12 @@ void menu_reform_graph(example_graph *pretty_graph, bool use_weights) {
 // 16.
 void menu_control_vertex_iterator(example_graph *pretty_graph, bool use_weights) {
     int option = 1;
-
+/*
     if (pretty_graph->get_num_of_vertex() == 0) {
         cout << "В графе нет вершин" << endl;
         return;
     }
-
+*/
     while (true) {
         if (menu_vertex_iterator.is_undefined()) {
             menu_vertex_iterator = pretty_graph->vertex_begin(); // это происходит только при первом заходе в меню, всё нормально
@@ -289,16 +290,18 @@ void menu_control_vertex_iterator(example_graph *pretty_graph, bool use_weights)
 void menu_control_edge_iterator_for_v(example_graph *pretty_graph, bool use_weights)
 {
     int option = 1;
-
+/*
     if (pretty_graph->get_num_of_vertex() == 0) {
         cout << "В графе нет вершин" << endl;
         return;
     }
+    */
+/*
     if (pretty_graph->get_num_of_edges() == 0) {
         cout << "В графе нет граней" << endl;
         return;
     }
-
+*/
     while (true) {
         if (ev_vertex == nullptr) {
             int vertex_index = get_user_input<int>("Введите индекс вершины: ");
@@ -366,12 +369,12 @@ void menu_control_edge_iterator_for_v(example_graph *pretty_graph, bool use_weig
 // 18.
 void menu_control_edge_iterator(example_graph *pretty_graph, bool use_weights) {
     int option = 1;
-
+/*
     if (pretty_graph->get_num_of_edges() == 0) {
         cout << "В графе нет рёбер" << endl;
         return;
     }
-
+*/
     while (true) {
         if (menu_edge_iterator.is_undefined()) {
             menu_edge_iterator = pretty_graph->edge_begin(); // это происходит только при первом заходе в меню, всё нормально
