@@ -39,8 +39,6 @@ class nonWeightedTask
         std::vector<size_t> TarjanVisit(size_t index, size_t &visits, std::vector<size_t> &disc, std::vector<size_t> &low, std::stack<size_t> &vertexStack,
                                         std::vector<bool> &visited)
         {
-            // A static variable is used for simplicity, we can
-            // avoid use of static variable by passing a pointer.
             std::vector<size_t> SCCsPart;
 
             disc[index] = low[index] = ++visits;
