@@ -8,23 +8,23 @@ class nonDirectedM : public form<EDGE_T>
 {
     protected:
         using form<EDGE_T>::edgeCount;
-        std::vector<std::vector<EDGE_T *> > vertices;
+        std::vector<std::vector<EDGE_T *> > edges;
 
         void print(std::ostream &os) override
         {
             os << "   ";
 
-            for (int i = 0; i < vertices.size(); ++i)
+            for (int i = 0; i < edges.size(); ++i)
             {
                 os << i << " ";
             }
 
-            for (unsigned long i = 0; i < vertices.size(); ++i)
+            for (unsigned long i = 0; i < edges.size(); ++i)
             {
                 os << '\n' << i << "  ";
-                for (unsigned long j = 0; j < vertices[i].size(); ++j)
+                for (unsigned long j = 0; j < edges[i].size(); ++j)
                 {
-                    os << (vertices[i][j] ? "*" : " ") << " ";
+                    os << (edges[i][j] ? "*" : " ") << " ";
                 }
             }
         }
@@ -36,13 +36,13 @@ class nonDirectedM : public form<EDGE_T>
 
         ~nonDirectedM()
         {
-            for (unsigned long i = 0; i < vertices.size(); ++i)
+            for (unsigned long i = 0; i < edges.size(); ++i)
             {
-                for (unsigned long j = 0; j < vertices[i].size(); ++j)
+                for (unsigned long j = 0; j < edges[i].size(); ++j)
                 {
-                    if (vertices[i][j] != nullptr && vertices[i][j]->getDest()->getIndex() < i)
+                    if (edges[i][j] != nullptr && edges[i][j]->getDest()->getIndex() < i)
                     {
-                        delete vertices[i][j];
+                        delete edges[i][j];
                     }
                 }
             }
@@ -50,28 +50,28 @@ class nonDirectedM : public form<EDGE_T>
 
         unsigned long pushVertex() override
         {
-            vertices.push_back(std::vector<EDGE_T *>(vertices.size(), nullptr));
-            for (std::vector<EDGE_T *> &edge: vertices)
+            edges.push_back(std::vector<EDGE_T *>(edges.size(), nullptr));
+            for (std::vector<EDGE_T *> &edge: edges)
             {
                 edge.push_back(nullptr);
             }
-            return vertices.size() - 1;
+            return edges.size() - 1;
         }
 
         bool pushEdge(unsigned long v_index_1, unsigned long v_index_2, EDGE_T *edge) override
         {
-            if (v_index_1 >= vertices.size() || v_index_2 >= vertices.size())
+            if (v_index_1 >= edges.size() || v_index_2 >= edges.size())
             {
                 throw std::out_of_range("out of range exception");
             }
 
-            if (vertices[v_index_1][v_index_2] != nullptr)
+            if (edges[v_index_1][v_index_2] != nullptr)
             {
                 return false;
             }
 
-            vertices[v_index_1][v_index_2] = edge;
-            vertices[v_index_2][v_index_1] = edge;
+            edges[v_index_1][v_index_2] = edge;
+            edges[v_index_2][v_index_1] = edge;
 
             edgeCount++;
 
@@ -80,14 +80,14 @@ class nonDirectedM : public form<EDGE_T>
 
         bool popVertex(unsigned long vertex_index) override
         {
-            if (vertex_index >= vertices.size())
+            if (vertex_index >= edges.size())
             {
                 return false;
             }
 
-            std::vector<EDGE_T *> adjacentEdges = vertices[vertex_index];
+            std::vector<EDGE_T *> adjacentEdges = edges[vertex_index];
 
-            for (std::vector<EDGE_T *> &edges: vertices)
+            for (std::vector<EDGE_T *> &edges: edges)
             {
                 if (edges == adjacentEdges)
                 {
@@ -102,51 +102,63 @@ class nonDirectedM : public form<EDGE_T>
                 edges.pop_back();
             }
 
-            for (EDGE_T *edge: adjacentEdges)
+            for (EDGE_T *&edge: adjacentEdges)
             {
                 delete edge;
             }
 
-            for (unsigned int i = vertex_index; i < vertices.size() - 1; ++i)
+            for (unsigned int i = vertex_index; i < edges.size() - 1; ++i)
             {
-                vertices[i] = vertices[i + 1];
+                edges[i] = edges[i + 1];
             }
 
-            for (EDGE_T *edge: vertices.back())
+            for (EDGE_T *&edge: edges.back())
             {
                 delete edge;
             }
-            vertices.pop_back();
+            edges.pop_back();
+
+            edgeCount = 0;
+            for (size_t i = 0; i < edges.size(); i++)
+            {
+                for (size_t j = 0; j < edges[i].size(); j++)
+                {
+                    if (edges[i][j] != nullptr)
+                    {
+                        edgeCount++;
+                    }
+                }
+            }
 
             return true;
         }
 
         EDGE_T *getEdge(unsigned long v1_index, unsigned long v2_index) override
         {
-            if (v1_index >= vertices.size() || v2_index >= vertices.size())
+            if (v1_index >= edges.size() || v2_index >= edges.size())
             {
                 return nullptr;
             }
 
-            return vertices[v1_index][v2_index];
+            return edges[v1_index][v2_index];
         }
 
         bool popEdge(unsigned long v1_index, unsigned long v2_index) override
         {
-            if (v1_index >= vertices.size() || v2_index >= vertices.size())
+            if (v1_index >= edges.size() || v2_index >= edges.size())
             {
                 return false;
             }
 
-            if (vertices[v1_index][v2_index] == nullptr)
+            if (edges[v1_index][v2_index] == nullptr)
             {
                 return false;
             }
 
-            delete vertices[v1_index][v2_index];
-            vertices[v1_index][v2_index] = nullptr;
+            delete edges[v1_index][v2_index];
+            edges[v1_index][v2_index] = nullptr;
 
-            vertices[v2_index][v1_index] = nullptr;
+            edges[v2_index][v1_index] = nullptr;
 
             edgeCount--;
 
@@ -155,16 +167,16 @@ class nonDirectedM : public form<EDGE_T>
 
         EDGE_T *firstEdge(unsigned long vertex_index) override
         {
-            if (vertex_index >= vertices.size())
+            if (vertex_index >= edges.size())
             {
                 throw std::out_of_range("out of range exception");
             }
 
-            for (unsigned long i = 0; i < vertices.size(); ++i)
+            for (unsigned long i = 0; i < edges.size(); ++i)
             {
-                if (vertices[vertex_index][i] != nullptr)
+                if (edges[vertex_index][i] != nullptr)
                 {
-                    return vertices[vertex_index][i];
+                    return edges[vertex_index][i];
                 }
             }
 
@@ -173,20 +185,20 @@ class nonDirectedM : public form<EDGE_T>
 
         EDGE_T *nextEdge(unsigned long vertex_index, EDGE_T *edge) override
         {
-            if (vertex_index >= vertices.size())
+            if (vertex_index >= edges.size())
             {
                 throw std::out_of_range("out of range exception");
             }
 
-            for (unsigned long i = 0; i < vertices.size(); ++i)
+            for (unsigned long i = 0; i < edges.size(); ++i)
             {
-                if (vertices[vertex_index][i] == edge)
+                if (edges[vertex_index][i] == edge)
                 {
-                    for (unsigned long j = i + 1; j < vertices.size(); ++j)
+                    for (unsigned long j = i + 1; j < edges.size(); ++j)
                     {
-                        if (vertices[vertex_index][j] != nullptr)
+                        if (edges[vertex_index][j] != nullptr)
                         {
-                            return vertices[vertex_index][j];
+                            return edges[vertex_index][j];
                         }
                     }
                     return nullptr;
@@ -200,7 +212,7 @@ class nonDirectedM : public form<EDGE_T>
 template<class EDGE_T>
 class directedM : public nonDirectedM<EDGE_T>
 {
-    using nonDirectedM<EDGE_T>::vertices;
+    using nonDirectedM<EDGE_T>::edges;
     using form<EDGE_T>::edgeCount;
     using form<EDGE_T>::type;
 
@@ -212,29 +224,29 @@ class directedM : public nonDirectedM<EDGE_T>
 
         ~directedM()
         {
-            for (std::vector<EDGE_T *> &edge: vertices)
+            for (std::vector<EDGE_T *> &edge: edges)
             {
                 for (EDGE_T *e: edge)
                 {
                     delete e;
                 }
             }
-            vertices.clear();
+            edges.clear();
         }
 
         bool pushEdge(unsigned long v_index_1, unsigned long v_index_2, EDGE_T *edge) override
         {
-            if (v_index_1 >= vertices.size() || v_index_2 >= vertices.size())
+            if (v_index_1 >= edges.size() || v_index_2 >= edges.size())
             {
                 throw std::out_of_range("out of range exception");
             }
 
-            if (vertices[v_index_1][v_index_2] != nullptr)
+            if (edges[v_index_1][v_index_2] != nullptr)
             {
                 return false;
             }
 
-            vertices[v_index_1][v_index_2] = edge;
+            edges[v_index_1][v_index_2] = edge;
 
             edgeCount++;
 
@@ -243,18 +255,18 @@ class directedM : public nonDirectedM<EDGE_T>
 
         bool popEdge(unsigned long v1_index, unsigned long v2_index) override
         {
-            if (v1_index >= vertices.size() || v2_index >= vertices.size())
+            if (v1_index >= edges.size() || v2_index >= edges.size())
             {
                 return false;
             }
 
-            if (vertices[v1_index][v2_index] == nullptr)
+            if (edges[v1_index][v2_index] == nullptr)
             {
                 return false;
             }
 
-            delete vertices[v1_index][v2_index];
-            vertices[v1_index][v2_index] = nullptr;
+            delete edges[v1_index][v2_index];
+            edges[v1_index][v2_index] = nullptr;
 
             edgeCount--;
 
