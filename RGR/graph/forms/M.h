@@ -112,10 +112,6 @@ class nonDirectedM : public form<EDGE_T>
                 edges[i] = edges[i + 1];
             }
 
-            for (EDGE_T *&edge: edges.back())
-            {
-                delete edge;
-            }
             edges.pop_back();
 
             edgeCount = 0;
