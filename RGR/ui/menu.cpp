@@ -478,6 +478,19 @@ static void menu_nonweighted_task(example_graph *pretty_graph) {
             case 3:
                 pfs.print_result();
                 break;
+            case 4: {
+                unsigned long from, to;
+                from = get_user_input<unsigned long>("Стартовая вершина: ");
+                to = get_user_input<unsigned long>("Конечная вершина: ");
+
+                vector<unsigned long> path = pfs.result(from, to);
+                cout<<"Получен вектор:\n";
+                for (unsigned long index : path) {
+                    cout<<index<<" ";
+                }
+                cout<<endl;
+                break;
+            }
             case 0:
                 return;
             default:

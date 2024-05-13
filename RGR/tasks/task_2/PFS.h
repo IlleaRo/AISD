@@ -117,6 +117,19 @@ public:
         return shortests;
     }
 
+    [[nodiscard]] vector<unsigned long> result(unsigned long from, unsigned long to) const {
+        if (from >= shortests.size() || to >= shortests.size()) {
+            return vector<unsigned long>();
+        }
+
+        for (const vector<unsigned long> &path : shortests[from]) {
+            if (path.back() == to) {
+                return path;
+            }
+        }
+
+        return vector<unsigned long>();
+    }
 
     void print_result() {
         for (const vector<vector<unsigned long>> &start_vertex : shortests) {
