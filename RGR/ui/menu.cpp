@@ -1,4 +1,5 @@
 #include <iostream>
+#include <unordered_map>
 #include "menu.h"
 #include "prompts.h"
 #include "../tasks/task_2/PFS.h"
@@ -11,6 +12,33 @@ static example_vertex *ev_vertex = nullptr;
 static example_ev_iterator menu_ev_iterator;
 static example_edge_iterator menu_edge_iterator;
 
+static unordered_map<std::string, example_vertex *> vertexes_map; // We use map for saving vertexes with their names
+
+static example_vertex *get_vertex(example_graph *pretty_graph) {
+    int decision;
+
+    do {
+        decision = get_user_input<int>("1. Получить по индексу\n2. Получить по имени\n");
+    } while(decision != 1 && decision != 2);
+
+    switch (decision) {
+        case 1: {
+            size_t index = get_user_input<size_t>("Введите индекс вершины: ");
+
+            return pretty_graph->get_vertex(index);
+        }
+        case 2: {
+            string name = get_user_input<string>("Введите имя вершины: ");
+            try {
+                return vertexes_map.at(name);
+            } catch (...) {
+                return nullptr;
+            }
+        }
+    }
+
+    return nullptr;
+}
 
 // 1.
 void menu_get_type(example_graph *pretty_graph, bool use_weights) {
@@ -77,8 +105,21 @@ void menu_get_graph_saturation_factor(example_graph *pretty_graph, bool use_weig
 
 // 6.
 void menu_insert_vertex(example_graph *pretty_graph, bool use_weights) {
-    string name = get_user_input<string>("Введите имя новой вершины: ");
-    example_vertex *vertex = pretty_graph->insert_vertex(name);
+    string name;
+    example_vertex *vertex = nullptr;
+
+    while (true) {
+        try {
+            name = get_user_input<string>("Введите имя новой вершины: ");
+            vertex = vertexes_map.at(name);
+            cout << "Вершина с именем \"" << name << "\" уже существует!\n";
+        } catch(...) {
+            vertex = pretty_graph->insert_vertex(name);
+            vertexes_map[name] = vertex;
+
+            break;
+        }
+    }
     cout << vertex << endl;
 }
 
@@ -87,18 +128,17 @@ void menu_insert_edge(example_graph *pretty_graph, bool use_weights) {
     int weight;
     example_vertex *vertex1, *vertex2;
     example_edge *edge;
-    size_t v1_index, v2_index;
 
-    v1_index = get_user_input<size_t>("Введите индекс первой вершины: ");
-    vertex1 = pretty_graph->get_vertex(v1_index);
+    cout << "Первая вершина:\n";
+    vertex1 = get_vertex(pretty_graph);
 
     if (!vertex1) {
         cout << "Такой вершины нет" << endl;
         return;
     }
 
-    v2_index = get_user_input<size_t>("Введите индекс второй вершины: ");
-    vertex2 = pretty_graph->get_vertex(v2_index);
+    cout << "Вторая вершина:\n";
+    vertex2 = get_vertex(pretty_graph);
 
     if (!vertex2) {
         cout << "Такой вершины нет" << endl;
@@ -118,35 +158,53 @@ void menu_insert_edge(example_graph *pretty_graph, bool use_weights) {
 
 // 8.
 void menu_get_vertex(example_graph *pretty_graph, bool use_weights) {
-    example_vertex *vertex;
-    size_t index = get_user_input<size_t>("Введите индекс вершины: ");
+    example_vertex *vertex = get_vertex(pretty_graph);
+    if (!vertex) {
+        cout << "вершина не найдена!\n";
 
-    vertex = pretty_graph->get_vertex(index);
-
-    cout << "Адрес: " << vertex << endl;
-    if (vertex)
-    {
-        cout << "Данные: " << vertex->get_data() << endl;
-        cout << "Имя: " << vertex->get_name() << endl;
+        return;
     }
+
+    cout << "Адрес: " << vertex <<'\n';
+    cout << "Индекс: " << vertex->get_index() <<'\n';
+    cout << "1. Данные: " << vertex->get_data() <<'\n';
+    cout << "2. Имя: " << vertex->get_name() << endl;
+
+    int decision;
+    do {
+        decision = get_user_input<int>("Выберите данные для изменения (0 - продолжить): ");
+
+        switch (decision) {
+            case 1: {
+                int new_data = get_user_input<int>("Новые данные: ");
+                vertex->set_data(new_data);
+                continue;
+            }
+            case 2: {
+                string new_name = get_user_input<string>("Новое имя: ");
+                vertexes_map.erase(vertex->get_name());
+                vertex->set_name(new_name);
+                vertexes_map[new_name] = vertex;
+                continue;
+            }
+        }
+    } while (decision != 0);
 }
 
 // 9.
 void menu_get_edge(example_graph *pretty_graph, bool use_weights) {
     example_vertex *vertex1, *vertex2;
     example_edge *edge;
-    size_t v1_index, v2_index;
 
-    v1_index = get_user_input<size_t>("Введите индекс первой вершины: ");
-    vertex1 = pretty_graph->get_vertex(v1_index);
-
+    cout << "Первая вершина:\n";
+    vertex1 = get_vertex(pretty_graph);
     if (!vertex1) {
         cout << "Такой вершины нет" << endl;
         return;
     }
 
-    v2_index = get_user_input<size_t>("Введите индекс второй вершины: ");
-    vertex2 = pretty_graph->get_vertex(v2_index);
+    cout << "Вторая вершина:\n";
+    vertex2 = get_vertex(pretty_graph);
 
     if (!vertex2) {
         cout << "Такой вершины нет" << endl;
@@ -168,28 +226,30 @@ void menu_get_edge(example_graph *pretty_graph, bool use_weights) {
 
 // 10.
 void menu_delete_vertex(example_graph *pretty_graph, bool use_weights) {
-    example_vertex *vertex;
-    size_t index = get_user_input<size_t>("Введите индекс вершины: ");
+    example_vertex *vertex = get_vertex(pretty_graph);
+    if (!vertex) {
+        return;
+    }
 
-    cout << "Результат: " << pretty_graph->remove_vertex(index) << endl;
+    vertexes_map.erase(vertex->get_name());
+    cout << "Результат: " << pretty_graph->remove_vertex(vertex) << endl;
 }
 
 // 11.
 void menu_delete_edge(example_graph *pretty_graph, bool use_weights) {
     example_vertex *vertex1, *vertex2;
     example_edge *edge;
-    size_t v1_index, v2_index;
 
-    v1_index = get_user_input<size_t>("Введите индекс первой вершины: ");
-    vertex1 = pretty_graph->get_vertex(v1_index);
+    cout << "Первая вершина:\n";
+    vertex1 = get_vertex(pretty_graph);
 
     if (!vertex1) {
         cout << "Такой вершины нет" << endl;
         return;
     }
 
-    v2_index = get_user_input<size_t>("Введите индекс второй вершины: ");
-    vertex2 = pretty_graph->get_vertex(v2_index);
+    cout << "Вторая вершина:\n";
+    vertex2 = get_vertex(pretty_graph);
 
     if (!vertex2) {
         cout << "Такой вершины нет" << endl;
