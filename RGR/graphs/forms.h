@@ -358,6 +358,10 @@ public:
             return true;
         }
 
+        if (tmp->v2 == v_index_2) {
+            return false;
+        }
+
         while (tmp->next) {
             if (tmp->v2 == v_index_2) {
                 return false;
