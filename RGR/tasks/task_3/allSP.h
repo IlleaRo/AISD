@@ -57,7 +57,7 @@ template <class VERTEX_T, class EDGE_T> class allSP {
                     }
                 }
             }
-            if (radius_path.empty() || radius_path.size() > longest_path.size()) {
+            if (max_dist != -1 && (radius_path.empty() || radius > max_dist)) {
                 radius_path = longest_path;
                 radius = max_dist;
             }
@@ -66,9 +66,7 @@ template <class VERTEX_T, class EDGE_T> class allSP {
 
 public:
     explicit allSP(graph<VERTEX_T, EDGE_T> *G) : G(G), A(G->get_num_of_vertex()) {
-        for (int s = 0; s < G->get_num_of_vertex(); s++) {
             restart();
-        }
     }
 
     allSP(const allSP<VERTEX_T, EDGE_T> &old_allSP) : G(old_allSP.G), radius(old_allSP.radius),
