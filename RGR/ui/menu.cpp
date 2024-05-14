@@ -213,15 +213,35 @@ void menu_get_edge(example_graph *pretty_graph, bool use_weights) {
 
     edge = pretty_graph->get_edge(vertex1, vertex2);
 
-    cout << "Адрес: " << edge << endl;
-    if (edge)
-    {
-        cout << "Данные: " << edge->get_data() << endl;
-        if (use_weights)
-        {
-            cout << "Вес: " << edge->get_weight() << endl;
-        }
+    if (!edge) {
+        cout << 0 << endl;
+
+        return;
     }
+
+    cout << "Адрес: " << edge << endl;
+    cout << "1. Данные: " << edge->get_data() << endl;
+    if (use_weights) {
+        cout << "2. Вес: " << edge->get_weight() << endl;
+    }
+
+    int decision;
+    do {
+        decision = get_user_input<int>("Выберите данные для изменения (0 - продолжить): ");
+
+        switch (decision) {
+            case 1: {
+                int new_data = get_user_input<int>("Новые данные: ");
+                edge->set_data(new_data);
+                continue;
+            }
+            case 2: {
+                int new_weight = get_user_input<int>("Новый вес: ");
+                edge->set_weight(new_weight);
+                continue;
+            }
+        }
+    } while (decision != 0);
 }
 
 // 10.
