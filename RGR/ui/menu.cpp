@@ -400,6 +400,9 @@ void menu_control_edge_iterator_for_v(example_graph *pretty_graph, bool use_weig
             cout << "Имя первой вершины: " << (*menu_ev_iterator)->get_v1()->get_name() << endl;
             cout << "Имя второй вершины: " << (*menu_ev_iterator)->get_v2()->get_name() << endl;
             cout << "Значение итератора: " << (*menu_ev_iterator)->get_data() << endl;
+            if (use_weights) {
+                cout << "Вес ребра: " << (*menu_edge_iterator)->get_weight() << endl;
+            }
         }
         catch (std::exception &exception)
         {
@@ -466,6 +469,9 @@ void menu_control_edge_iterator(example_graph *pretty_graph, bool use_weights) {
             cout << "Имя первой вершины: " << (*menu_edge_iterator)->get_v1()->get_name() << endl;
             cout << "Имя второй вершины: " << (*menu_edge_iterator)->get_v2()->get_name() << endl;
             cout << "Значение итератора: " << (*menu_edge_iterator)->get_data() << endl;
+            if (use_weights) {
+                cout << "Вес ребра: " << (*menu_edge_iterator)->get_weight() << endl;
+            }
         }
         catch (std::exception &exception)
         {
@@ -510,7 +516,7 @@ void menu_control_edge_iterator(example_graph *pretty_graph, bool use_weights) {
 }
 
 static void menu_weighted_task(example_graph *pretty_graph) {
-    allSP<example_vertex, example_edge> spt(pretty_graph);
+    static allSP<example_vertex, example_edge> spt(pretty_graph);
 
     int decision;
 
@@ -538,7 +544,7 @@ static void menu_weighted_task(example_graph *pretty_graph) {
 }
 
 static void menu_nonweighted_task(example_graph *pretty_graph) {
-    PFS<example_vertex, example_edge> pfs(pretty_graph);
+    static PFS<example_vertex, example_edge> pfs(pretty_graph);
 
     int decision;
 
