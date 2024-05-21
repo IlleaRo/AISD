@@ -55,17 +55,19 @@ int main(int argc, char *argv[])
         correct_input = true;
     }
 
-    pretty_graph->pushEdge(
-        pretty_graph->pushVertex("A1"),
-        pretty_graph->pushVertex("A2"),
-        use_weights ? 10 : 0
-    );
+    std::vector<Vertex *> test_vector;
+    for (int i = 0; i <= 4; i++)
+    {
+        test_vector.push_back(pretty_graph->pushVertex());
+    }
+    pretty_graph->pushEdge(test_vector[0], test_vector[1], 1);
+    pretty_graph->pushEdge(test_vector[1], test_vector[2], 2);
+    pretty_graph->pushEdge(test_vector[2], test_vector[3], 2);
+    pretty_graph->pushEdge(test_vector[2], test_vector[4], 4);
+    pretty_graph->pushEdge(test_vector[3], test_vector[2], 3);
+    pretty_graph->pushEdge(test_vector[4], test_vector[3], 5);
 
-    pretty_graph->pushEdge(
-        pretty_graph->pushVertex("B1"),
-        pretty_graph->pushVertex("B2"),
-        use_weights ? 20 : 0
-    );
+
 
     while (true)
     {
