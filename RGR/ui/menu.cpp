@@ -129,7 +129,7 @@ void menu_get_vertex(Graph *pretty_graph, bool use_weights) {
     cout << "Адрес: " << vertex << endl;
     if (vertex)
     {
-        cout << "Данные: " << vertex->get_data() << endl;
+        cout << "Данные: " << vertex->getData() << endl;
         cout << "Имя: " << vertex->getName() << endl;
     }
 }
@@ -213,7 +213,7 @@ void menu_print_vertex(Graph *pretty_graph, bool use_weights) {
 
     while (iter != pretty_graph->vertex_end())
     {
-        cout << (*iter)->getIndex() << ". Данные: " << (*iter)->get_data() << " Имя: " << (*iter)->getName() << endl;
+        cout << (*iter)->getIndex() << ". Данные: " << (*iter)->getData() << " Имя: " << (*iter)->getName() << endl;
         ++iter;
     }
 }
@@ -241,7 +241,7 @@ void menu_control_vertex_iterator(Graph *pretty_graph, bool use_weights) {
             }
             *menu_vertex_iterator;
             cout << "Имя итератора: " << (*menu_vertex_iterator)->getName() << endl;
-            cout << "Значение итератора: " << (*menu_vertex_iterator)->get_data() << endl;
+            cout << "Значение итератора: " << (*menu_vertex_iterator)->getData() << endl;
         }
         catch (std::exception &exception)
         {

@@ -37,7 +37,7 @@ class vertex
             this->data = data;
         }
 
-        DATA_T get_data()
+        DATA_T getData()
         {
             return data;
         }
