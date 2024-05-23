@@ -1,106 +1,90 @@
 #ifndef NON_WEIGHTED_H
 #define NON_WEIGHTED_H
 
-#include <stack>
+#include <algorithm>
 
 template<class VERTEX_T, class EDGE_T>
 class nonWeightedTask
 {
     private:
         graph<VERTEX_T, EDGE_T> *g;
-        graph<VERTEX_T, EDGE_T> *gResult;
-
-        void allocateGraph()
+        std::vector<VERTEX_T *> res;
+        bool isSafe(VERTEX_T *vertex, std::vector<VERTEX_T *> &path, graph<VERTEX_T, EDGE_T> *g)
         {
-            delete gResult;
-
-            gResult = new graph<VERTEX_T, EDGE_T>(*g);
-        }
-
-        std::vector<std::vector<size_t> > Tarjan()
-        {
-            size_t vertexCount = gResult->getVertexCount();
-            size_t visits = 0;
-
-            std::vector<size_t> disc(vertexCount, 0);
-            std::vector<size_t> low(vertexCount, 0);
-            std::vector<bool> visited(vertexCount, false);
-            std::stack<size_t> vertexStack;
-            std::vector<std::vector<size_t> > SCCs(vertexCount);
-
-            for (size_t i = 0; i < vertexCount; i++)
-                if (disc[i] == 0)
-                {
-                    SCCs[i] = TarjanVisit(i, visits, disc, low, vertexStack, visited);
-                }
-            return SCCs;
-        }
-
-        std::vector<size_t> TarjanVisit(size_t index, size_t &visits, std::vector<size_t> &disc, std::vector<size_t> &low, std::stack<size_t> &vertexStack,
-                                        std::vector<bool> &visited)
-        {
-            std::vector<size_t> SCCsPart;
-
-            disc[index] = low[index] = ++visits;
-            vertexStack.push(index);
-            visited[index] = true;
-
-            for (auto iter = gResult->edge_v_begin(gResult->getVertex(index));
-                 iter != gResult->edge_v_end(gResult->getVertex(index));
-                 ++iter)
+            if (path.size() == g->getVertexCount() - 1)
             {
-                VERTEX_T *adj = (*iter)->getDest();
+                // checking for edge between first and last vertices
+                return g->getEdge(path[path.size() - 1], vertex) != nullptr;
+            }
 
-                if (!visited[adj->getIndex()])
+            // if current vertex is adjacent to the last vertex in the path and if the vertex is not already in the path
+            return g->getEdge(path[path.size() - 1], vertex) && std::find(path.begin(), path.end(), vertex) == path.end();
+        }
+        bool HamiltonianCycle(graph<VERTEX_T, EDGE_T> *g, std::vector<VERTEX_T *> &path)
+        {
+            // cycle found
+            if (path.size() == g->getVertexCount())
+            {
+                // If there is an edge between the last vertex and first vertex in the path
+                if (g->getEdge(path[path.size() - 1], path[0]))
                 {
-                    TarjanVisit(adj->getIndex(), visits, disc, low, vertexStack, visited);
-
-                    low[index] = std::min(low[index], low[adj->getIndex()]);
+                    return true;
                 }
                 else
                 {
-                    low[index] = std::min(low[index], disc[adj->getIndex()]);
+                    return false;
                 }
             }
 
-            if (low[index] == disc[index])
+            // try for all vertices as the next vertex in the cycle
+            for (size_t i = 0; i < g->getVertexCount(); i++)
             {
-                size_t curIndex = 0;
-                while (vertexStack.top() != index)
+                VERTEX_T *vertex = g->getVertex(i);
+                if (isSafe(vertex, path, g))
                 {
-                    curIndex = vertexStack.top();
-                    SCCsPart.push_back(curIndex);
-                    visited[curIndex] = false;
-                    vertexStack.pop();
+                    // add the vertex to the path
+                    path.push_back(vertex);
+
+                    // recurse for the rest of the graph
+                    if (HamiltonianCycle(g, path))
+                    {
+                        return true;
+                    }
+
+                    // remove the vertex from the path, before trying other vertices (backtracking)
+                    path.pop_back();
                 }
-                curIndex = vertexStack.top();
-                SCCsPart.push_back(curIndex);
-                visited[curIndex] = false;
-                vertexStack.pop();
             }
-            return SCCsPart;
+
+            return false;
         }
 
-        void reduce(std::vector<std::vector<size_t> > SCCs)
+        void findHamiltonianCycles()
         {
-            for (auto &component: SCCs)
+            std::vector<VERTEX_T *> path;
+            bool isHamiltonian;
+
+            // try for all vertices as the starting vertex
+            for (size_t i = 0; i < g->getVertexCount(); i++)
             {
-                for (size_t i = 0; i < component.size(); ++i)
+                VERTEX_T *vertex = g->getVertex(i);
+                path.clear();
+                path.push_back(vertex);
+
+                isHamiltonian = HamiltonianCycle(g, path);
+
+                // save the cycle if one is found
+                if (isHamiltonian)
                 {
-                    for (size_t j = i + 1; j < component.size(); ++j)
-                    {
-                        gResult->popEdge(component[i], component[j]);
-                    }
+                    this->res = path;
                 }
             }
         }
 
         void solve()
         {
-            std::vector<std::vector<size_t> > SCCs;
-            allocateGraph();
-            SCCs = Tarjan();
-            reduce(SCCs);
+            res.clear();
+            findHamiltonianCycles();
         }
 
     public:
@@ -116,10 +100,7 @@ class nonWeightedTask
             solve();
         }
 
-        ~nonWeightedTask()
-        {
-            delete this->gResult;
-        }
+        ~nonWeightedTask() = default;
 
         void set(graph<VERTEX_T, EDGE_T> &g)
         {
@@ -131,9 +112,9 @@ class nonWeightedTask
             solve();
         }
 
-        graph<VERTEX_T, EDGE_T> *result()
+        std::vector<VERTEX_T *> &result()
         {
-            return this->gResult;
+            return this->res;
         }
 };
 

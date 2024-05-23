@@ -56,7 +56,11 @@ int run_test()
 
     cout << "Задание для невзвешенного графа: " << endl;
 
-    cout << *(task2->result()) << endl;
+    for (Vertex *v : task2->result())
+    {
+        cout << v->getIndex() << " ";
+    }
+    cout << endl;
 
     return 0;
 }

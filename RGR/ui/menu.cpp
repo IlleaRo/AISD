@@ -453,7 +453,7 @@ static void menu_weighted_task(Graph *pretty_graph) {
 
 static void menu_nonweighted_task(Graph *pretty_graph) {
     int option;
-    Graph *result;
+    std::vector<Vertex *> result;
     if (!nwtask) nwtask = new nonWeightedTask<Vertex, Edge>(pretty_graph);
     while (true)
     {
@@ -465,7 +465,11 @@ static void menu_nonweighted_task(Graph *pretty_graph) {
         {
             case 1:
                 result = nwtask->result();
-                cout << *result;
+                for (Vertex *v : result)
+                {
+                    cout << v->getIndex() << " ";
+                }
+                cout << endl;
             break;
             case 2:
                 nwtask->restart();
