@@ -56,10 +56,14 @@ int run_test()
 
     cout << "Задание для невзвешенного графа: " << endl;
 
-    for (Vertex *v : task2->result())
+    for (const auto& cycle : task2->result())
     {
-        cout << v->getIndex() << " ";
+        for (Vertex *v : cycle)
+        {
+            cout << v->getIndex() << " ";
+        }
     }
+
     cout << endl;
 
     return 0;
