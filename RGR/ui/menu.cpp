@@ -440,8 +440,12 @@ void menu_control_edge_iterator(Graph *pretty_graph, bool use_weights)
 static void menu_weighted_task(Graph *pretty_graph)
 {
     int option;
-    std::vector<std::vector<double>> resultDists;
-    std::vector<std::vector<std::vector<Vertex *>>> resultPaths;
+    string hackyString = "Из ";
+    double resultDists;
+    std::vector<Vertex *> resultPaths;
+    int a;
+    int b;
+
     if (!wtask) wtask = new weightedTask<Vertex, Edge>(pretty_graph);
     while (true)
     {
@@ -450,49 +454,39 @@ static void menu_weighted_task(Graph *pretty_graph)
                                      "3. Повторно выполнить задачу\n"
                                      "0. Выйти\n"
                                      "Ввод: ");
-        switch (option)
+        try
         {
-            case 1:
-                resultDists = wtask->resultDist();
-                for (std::vector<double> &distRow : resultDists)
-                {
-                    for (double &dist: distRow)
+            switch (option)
+            {
+                case 1:
+                    a = getInput<int>("Введите исходную вершину: ");
+                    b = getInput<int>("Введите конечную вершину: ");
+                    resultDists = wtask->resultDist(a, b);
+                    cout << "Результат: " << resultDists << endl;
+                    break;
+                case 2:
+                    a = getInput<int>("Введите исходную вершину: ");
+                    b = getInput<int>("Введите конечную вершину: ");
+                    resultPaths = wtask->resultPath(a, b);
+                    cout << "Результат: ";
+                    for (Vertex *v : resultPaths)
                     {
-                        if (dist == INFINITY)
-                        {
-                            cout << "inf" << " ";
-                        }
-                        else
-                        {
-                            cout << dist << " ";
-                        }
+                        cout << v->getIndex() << " ";
                     }
                     cout << endl;
-                }
-                break;
-            case 2:
-                resultPaths = wtask->resultPath();
-                for (size_t i = 0; i < resultPaths.size(); i++)
-                {
-                    cout << "Пути из вершины " << i << ":" << endl;
-                    for (size_t j = 0; j < resultPaths[i].size(); j++)
-                    {
-                        cout << "В вершину " << j << ": ";
-                        for (size_t k = 0; k < resultPaths[i][j].size(); k++)
-                        {
-                            cout << resultPaths[i][j][k]->getIndex() << " ";
-                        }
-                        cout << endl;
-                    }
-                }
-            break;
-            case 3:
-                wtask->restart();
-                break;
-            case 0:
-                return;
-            default:
-                continue;
+                    break;
+                case 3:
+                    wtask->restart();
+                    break;
+                case 0:
+                    return;
+                default:
+                    continue;
+            }
+        }
+        catch (std::exception &exception)
+        {
+            cout << "Ошибка выполнения операции: " << exception.what() << endl;
         }
         anykey();
     }

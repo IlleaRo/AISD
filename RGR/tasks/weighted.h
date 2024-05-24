@@ -114,14 +114,22 @@ class weightedTask
             solve();
         }
 
-        std::vector<std::vector<double> > &resultDist()
+        double resultDist(size_t a, size_t b)
         {
-            return this->distMatrix;
+            if (a >= this->distMatrix.size() || b >= this->distMatrix[a].size())
+            {
+                throw std::out_of_range("out of range");
+            }
+            return this->distMatrix[a][b];
         }
 
-        std::vector<std::vector<std::vector<VERTEX_T *>>> &resultPath()
+        std::vector<VERTEX_T *> &resultPath(int a, int b)
         {
-            return this->pathMatrix;
+            if (a >= this->pathMatrix.size() || b >= this->pathMatrix[a].size())
+            {
+                throw std::out_of_range("out of range");
+            }
+            return this->pathMatrix[a][b];
         }
 };
 #endif //WEIGHTED_H
