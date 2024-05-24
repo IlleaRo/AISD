@@ -76,6 +76,7 @@ int run_test()
         {
             cout << v->getIndex() << " ";
         }
+        cout << endl;
     }
 
     cout << endl;
