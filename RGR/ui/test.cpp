@@ -34,7 +34,7 @@ int run_test()
 
     cout << "Задание для взвешенного графа: " << endl;
 
-    for (std::vector<double> &distRow : task->result())
+    for (std::vector<double> &distRow : task->resultDist())
     {
         for (double &dist : distRow)
         {
@@ -48,6 +48,22 @@ int run_test()
             }
         }
         cout << endl;
+    }
+
+    auto paths = task->resultPath();
+
+    for (size_t i = 0; i < paths.size(); i++)
+    {
+        cout << "Пути из вершины " << i << ":" << endl;
+        for (size_t j = 0; j < paths[i].size(); j++)
+        {
+            cout << "В вершину " << j << ": ";
+            for (size_t k = 0; k < paths[i][j].size(); k++)
+            {
+                cout << paths[i][j][k]->getIndex() << " ";
+            }
+            cout << endl;
+        }
     }
 
     cout << endl;

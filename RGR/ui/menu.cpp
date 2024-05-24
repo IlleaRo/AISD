@@ -440,19 +440,21 @@ void menu_control_edge_iterator(Graph *pretty_graph, bool use_weights)
 static void menu_weighted_task(Graph *pretty_graph)
 {
     int option;
-    std::vector<std::vector<double> > result;
+    std::vector<std::vector<double>> resultDists;
+    std::vector<std::vector<std::vector<Vertex *>>> resultPaths;
     if (!wtask) wtask = new weightedTask<Vertex, Edge>(pretty_graph);
     while (true)
     {
-        option = getInput<int>("1. Вывести результат\n"
-            "2. Повторно выполнить задачу\n"
-            "0. Выйти\n"
-            "Ввод: ");
+        option = getInput<int>("1. Вывести результат (расстояния)\n"
+                                     "2. Вывести результат (пути)\n"
+                                     "3. Повторно выполнить задачу\n"
+                                     "0. Выйти\n"
+                                     "Ввод: ");
         switch (option)
         {
             case 1:
-                result = wtask->result();
-                for (std::vector<double> &distRow: result)
+                resultDists = wtask->resultDist();
+                for (std::vector<double> &distRow : resultDists)
                 {
                     for (double &dist: distRow)
                     {
@@ -469,6 +471,22 @@ static void menu_weighted_task(Graph *pretty_graph)
                 }
                 break;
             case 2:
+                resultPaths = wtask->resultPath();
+                for (size_t i = 0; i < resultPaths.size(); i++)
+                {
+                    cout << "Пути из вершины " << i << ":" << endl;
+                    for (size_t j = 0; j < resultPaths[i].size(); j++)
+                    {
+                        cout << "В вершину " << j << ": ";
+                        for (size_t k = 0; k < resultPaths[i][j].size(); k++)
+                        {
+                            cout << resultPaths[i][j][k]->getIndex() << " ";
+                        }
+                        cout << endl;
+                    }
+                }
+            break;
+            case 3:
                 wtask->restart();
                 break;
             case 0:

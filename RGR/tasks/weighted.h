@@ -9,9 +9,10 @@ class weightedTask
 {
     private:
         graph<VERTEX_T, EDGE_T> *g;
-        std::vector<std::vector<double> > distMatrix;
+        std::vector<std::vector<double>> distMatrix;
+        std::vector<std::vector<std::vector<VERTEX_T *>>> pathMatrix;
 
-        void allocateDist()
+        void allocateVectors()
         {
             distMatrix.clear();
             distMatrix.resize(g->getVertexCount());
@@ -19,9 +20,16 @@ class weightedTask
             {
                 dists.resize(g->getVertexCount());
             }
+
+            pathMatrix.clear();
+            pathMatrix.resize(g->getVertexCount());
+            for (auto &pathsFrom : pathMatrix)
+            {
+                pathsFrom.resize(g->getVertexCount());
+            }
         }
 
-        void initDist(std::vector<double> &dists, size_t source)
+        void initVectors(std::vector<double> &dists, size_t source)
         {
             for (double &dist: dists)
             {
@@ -43,6 +51,8 @@ class weightedTask
                     if (dists[v1] != INFINITY && dists[v1] + weight < dists[v2])
                     {
                         dists[v2] = dists[v1] + weight;
+                        pathMatrix[source][v2] = pathMatrix[source][v1];
+                        pathMatrix[source][v2].push_back(g->getVertex(v2));
                     }
                 }
             }
@@ -65,14 +75,14 @@ class weightedTask
 
         void BellmanFord(std::vector<double> &dists, int source)
         {
-            initDist(dists, source);
+            initVectors(dists, source);
             relaxEdges(dists, source);
             checkCycles(dists, source);
         }
 
         void solve()
         {
-            allocateDist();
+            allocateVectors();
             for (int i = 0; i < g->getVertexCount(); i++)
             {
                 BellmanFord(distMatrix[i], i);
@@ -104,9 +114,14 @@ class weightedTask
             solve();
         }
 
-        std::vector<std::vector<double> > &result()
+        std::vector<std::vector<double> > &resultDist()
         {
             return this->distMatrix;
+        }
+
+        std::vector<std::vector<std::vector<VERTEX_T *>>> &resultPath()
+        {
+            return this->pathMatrix;
         }
 };
 #endif //WEIGHTED_H
