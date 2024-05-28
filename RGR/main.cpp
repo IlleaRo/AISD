@@ -56,17 +56,49 @@ int main(int argc, char *argv[])
     }
 
     std::vector<Vertex *> test_vector;
+    //for (int i = 0; i <= 4; i++)
+    //{
+    //    test_vector.push_back(pretty_graph->pushVertex());
+    //}
+    //pretty_graph->pushEdge(test_vector[0], test_vector[1], 1);
+    //pretty_graph->pushEdge(test_vector[1], test_vector[2], 2);
+    //pretty_graph->pushEdge(test_vector[2], test_vector[3], 2);
+    //pretty_graph->pushEdge(test_vector[2], test_vector[4], 4);
+    //pretty_graph->pushEdge(test_vector[3], test_vector[2], 3);
+    //pretty_graph->pushEdge(test_vector[4], test_vector[3], 5);
+
+    //for (int i = 0; i <= 7; i++)
+    //{
+    //    test_vector.push_back(pretty_graph->pushVertex());
+    //}
+    //pretty_graph->pushEdge(test_vector[0], test_vector[1]);
+    //pretty_graph->pushEdge(test_vector[1], test_vector[2]);
+    //pretty_graph->pushEdge(test_vector[2], test_vector[3]);
+    //pretty_graph->pushEdge(test_vector[3], test_vector[0]);
+    //pretty_graph->pushEdge(test_vector[0], test_vector[4]);
+    //pretty_graph->pushEdge(test_vector[5], test_vector[1]);
+    //pretty_graph->pushEdge(test_vector[2], test_vector[7]);
+    //pretty_graph->pushEdge(test_vector[6], test_vector[3]);
+    //pretty_graph->pushEdge(test_vector[4], test_vector[6]);
+    //pretty_graph->pushEdge(test_vector[5], test_vector[4]);
+    //pretty_graph->pushEdge(test_vector[7], test_vector[5]);
+    //pretty_graph->pushEdge(test_vector[6], test_vector[7]);
+    //pretty_graph->pushEdge(test_vector[7], test_vector[4]);
+
     for (int i = 0; i <= 4; i++)
     {
-        test_vector.push_back(pretty_graph->pushVertex());
+        char test[512];
+        sprintf(reinterpret_cast<char *>(test), "%d", i);
+        test_vector.push_back(pretty_graph->pushVertex(test));
     }
-    pretty_graph->pushEdge(test_vector[0], test_vector[1], 1);
-    pretty_graph->pushEdge(test_vector[1], test_vector[2], 2);
-    pretty_graph->pushEdge(test_vector[2], test_vector[3], 2);
-    pretty_graph->pushEdge(test_vector[2], test_vector[4], 4);
-    pretty_graph->pushEdge(test_vector[3], test_vector[2], 3);
-    pretty_graph->pushEdge(test_vector[4], test_vector[3], 5);
-
+    pretty_graph->pushEdge(test_vector[0], test_vector[1], 3);
+    pretty_graph->pushEdge(test_vector[0], test_vector[2], 8);
+    pretty_graph->pushEdge(test_vector[0], test_vector[4], 4);
+    pretty_graph->pushEdge(test_vector[1], test_vector[3], 20);
+    pretty_graph->pushEdge(test_vector[1], test_vector[4], 7);
+    pretty_graph->pushEdge(test_vector[2], test_vector[1], 4);
+    pretty_graph->pushEdge(test_vector[3], test_vector[2], 5);
+    pretty_graph->pushEdge(test_vector[4], test_vector[3], 6);
 
 
     while (true)

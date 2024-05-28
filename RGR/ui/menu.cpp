@@ -446,7 +446,6 @@ static void menu_weighted_task(Graph *pretty_graph)
     int a;
     int b;
 
-    if (!wtask) wtask = new weightedTask<Vertex, Edge>(pretty_graph);
     while (true)
     {
         option = getInput<int>("1. Вывести результат (расстояния)\n"
@@ -456,6 +455,7 @@ static void menu_weighted_task(Graph *pretty_graph)
                                      "Ввод: ");
         try
         {
+            if (!wtask) wtask = new weightedTask<Vertex, Edge>(pretty_graph);
             switch (option)
             {
                 case 1:
@@ -513,8 +513,8 @@ static void menu_nonweighted_task(Graph *pretty_graph)
                     {
                         cout << v->getIndex() << " ";
                     }
+                    cout << endl;
                 }
-                cout << endl;
                 break;
             case 2:
                 nwtask->restart();
