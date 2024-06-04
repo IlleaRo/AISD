@@ -52,7 +52,7 @@ class graph
             curForm = new nonDirectedL<EDGE_T>;
         };
 
-        graph(unsigned long num_of_vertex, graphTypeE type, graphFormE form)
+        graph(unsigned long vertexCount, graphTypeE type, graphFormE form)
         {
             if (form == L)
             {
@@ -77,17 +77,17 @@ class graph
                 }
             }
 
-            for (int i = 0; i < num_of_vertex; ++i)
+            for (int i = 0; i < vertexCount; ++i)
             {
                 pushVertex();
             }
         }
 
-        graph(graph<VERTEX_T, EDGE_T> &old_graph)
+        graph(graph<VERTEX_T, EDGE_T> &oldGraph)
         {
-            if (old_graph.get_form() == L)
+            if (oldGraph.get_form() == L)
             {
-                if (old_graph.getType() == DIRECTED)
+                if (oldGraph.getType() == DIRECTED)
                 {
                     this->curForm = new directedL<EDGE_T>;
                 }
@@ -98,7 +98,7 @@ class graph
             }
             else
             {
-                if (old_graph.getType() == DIRECTED)
+                if (oldGraph.getType() == DIRECTED)
                 {
                     this->curForm = new directedM<EDGE_T>;
                 }
@@ -108,19 +108,19 @@ class graph
                 }
             }
 
-            for (VERTEX_T *vertex: old_graph.vertices)
+            for (VERTEX_T *vertex: oldGraph.vertices)
             {
                 pushVertex(vertex->getName());
             }
 
-            for (edgeIterator<VERTEX_T, EDGE_T> iter = old_graph.edge_begin(); iter != old_graph.edge_end(); ++iter)
+            for (edgeIterator<VERTEX_T, EDGE_T> iter = oldGraph.edge_begin(); iter != oldGraph.edge_end(); ++iter)
             {
                 pushEdge(getVertex((*iter)->getSrc()->getIndex()),
                          getVertex((*iter)->getDest()->getIndex()), (*iter)->getWeight());
             }
         }
 
-        graph(unsigned long num_of_vertex, unsigned long num_of_edges, graphTypeE type, graphFormE form)
+        graph(unsigned long vertexCount, unsigned long edgeCount, graphTypeE type, graphFormE form)
         {
             if (form == L)
             {
@@ -145,34 +145,34 @@ class graph
                 }
             }
 
-            for (int i = 0; i < num_of_vertex; ++i)
+            for (int i = 0; i < vertexCount; ++i)
             {
                 pushVertex();
             }
 
             if (type == DIRECTED)
             {
-                if (num_of_edges > num_of_vertex * (num_of_vertex - 1))
+                if (edgeCount > vertexCount * (vertexCount - 1))
                 {
-                    num_of_edges = num_of_vertex * (num_of_vertex - 1);
+                    edgeCount = vertexCount * (vertexCount - 1);
                 }
             }
             else
             {
-                if (num_of_edges > num_of_vertex * (num_of_vertex - 1) / 2)
+                if (edgeCount > vertexCount * (vertexCount - 1) / 2)
                 {
-                    num_of_edges = num_of_vertex * (num_of_vertex - 1) / 2;
+                    edgeCount = vertexCount * (vertexCount - 1) / 2;
                 }
             }
 
             std::random_device r;
 
             std::default_random_engine e(r());
-            std::uniform_int_distribution<int> uniform_dist(0, (int) num_of_vertex - 1);
+            std::uniform_int_distribution<int> uniform_dist(0, (int) vertexCount - 1);
 
             unsigned long i = 0;
 
-            while (i < num_of_edges)
+            while (i < edgeCount)
             {
                 unsigned long v1 = uniform_dist(e);
                 unsigned long v2 = uniform_dist(e);
@@ -334,14 +334,14 @@ class graph
             return curForm->popEdge(srcIndex, destIdx);
         }
 
-        bool popVertex(VERTEX_T *vertex_ptr)
+        bool popVertex(VERTEX_T *vertex)
         {
-            if (vertex_ptr == nullptr)
+            if (vertex == nullptr)
             {
                 return false;
             }
 
-            size_t index = vertex_ptr->getIndex();
+            size_t index = vertex->getIndex();
 
             return popVertex(index);
         }
