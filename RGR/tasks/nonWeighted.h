@@ -8,7 +8,7 @@ class nonWeightedTask
 {
     private:
         graph<VERTEX_T, EDGE_T> *g;
-        std::vector<std::vector<VERTEX_T *>> res;
+        std::vector<VERTEX_T *> res;
 
         bool isSafe(VERTEX_T *vertex, std::vector<VERTEX_T *> &path, graph<VERTEX_T, EDGE_T> *g)
         {
@@ -77,7 +77,8 @@ class nonWeightedTask
                 // save the cycle if one is found
                 if (isHamiltonian)
                 {
-                    this->res.push_back(path);
+                    this->res = path;
+                    return;
                 }
             }
         }
@@ -113,7 +114,7 @@ class nonWeightedTask
             solve();
         }
 
-        std::vector<std::vector<VERTEX_T *>> &result()
+        std::vector<VERTEX_T *> &result()
         {
             return this->res;
         }
