@@ -46,9 +46,9 @@ class edge
             return data;
         }
 
-        void setData(E_DATA_T new_data)
+        void setData(E_DATA_T data)
         {
-            data = new_data;
+            this->data = data;
         }
 };
 
