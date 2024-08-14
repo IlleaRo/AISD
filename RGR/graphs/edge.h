@@ -1,8 +1,6 @@
 #ifndef RGR_EDGE_H
 #define RGR_EDGE_H
 
-#include "vertex.h"
-
 template <class VERTEX_T, class E_WEIGHT_T, class E_DATA_T>
 class edge {
 protected:

@@ -1,8 +1,10 @@
 #ifndef RGR_ITERATORS_H
 #define RGR_ITERATORS_H
 
+#include <ostream>
 #include <vector>
-#include "graph.h"
+
+#include "forms.h"
 
 template <class VERTEX_T>
 class vertex_iterator {
