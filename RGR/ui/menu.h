@@ -49,7 +49,7 @@ void menu_print_graph(example_graph *pretty_graph, bool use_weights);
 void menu_print_vertex(example_graph *pretty_graph, bool use_weights);
 
 // 14.
-void menu_clear_graph(example_graph *pretty_graph, bool use_weights);
+void menu_clear_graph(example_graph *&pretty_graph, bool use_weights);
 
 // 15.
 void menu_reform_graph(example_graph *pretty_graph, bool use_weights);

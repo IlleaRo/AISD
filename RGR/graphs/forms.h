@@ -177,8 +177,8 @@ public:
                             vertex_vector[i] = current->next;
                             if (form_of_graphs<EDGE_T>::type == DIRECTED) {
                                 delete current->edge;
-                                num_of_edges--;
                             }
+                            num_of_edges--;
                             delete current;
                             current = vertex_vector[i];
                             continue;
@@ -358,6 +358,10 @@ public:
             return true;
         }
 
+        if (tmp->v2 == v_index_2) {
+            return false;
+        }
+
         while (tmp->next) {
             if (tmp->v2 == v_index_2) {
                 return false;
@@ -424,6 +428,7 @@ public:
                 while (current != nullptr) {
                     node *temp = current;
                     current = current->next;
+                    num_of_edges--; // Проверь меня
                     delete temp;
                 }
                 continue;
@@ -476,6 +481,7 @@ template <class EDGE_T>
 class M_graph_non_directed : public form_of_graphs<EDGE_T> {
 protected:
     using form_of_graphs<EDGE_T>::num_of_edges;
+    using form_of_graphs<EDGE_T>::type;
 protected:
     std::vector<std::vector<EDGE_T *>> vertex_vector;
 
@@ -542,10 +548,18 @@ public:
         // Сдвигаем ребра влево
         for (std::vector<EDGE_T *> &edges : vertex_vector) {
             if (edges == to_remove_edges) {
+                for (EDGE_T *edge : edges) {
+                    if (edge) {
+                            num_of_edges--;
+                    }
+                }
                 continue;
             }
 
             for (unsigned long i = vertex_index; i < edges.size() - 1; ++i) {
+                if (type == DIRECTED && edges[i] && edges[i]->get_v2()->get_index() == vertex_index) {
+                    num_of_edges--;
+                }
                 edges[i] = edges[i + 1];
             }
 
@@ -562,10 +576,12 @@ public:
             vertex_vector[i] = vertex_vector[i + 1];
         }
 
+        /*
         // Чистим последнюю строчку
         for (EDGE_T *edge : vertex_vector.back()) {
             delete edge;
         }
+         */
         vertex_vector.pop_back();
 
         return true;

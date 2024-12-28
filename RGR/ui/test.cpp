@@ -1,8 +1,10 @@
 #include "test.h"
 #include "menu.h"
 #include "../graphs/graph.h"
+#include "../tasks/task_2/PFS.h"
+#include "../tasks/task_3/allSP.h"
 
-#define TEST_EDGE_REMOVAL (1)
+#define TEST_EDGE_REMOVAL (0)
 #define TEST_EDGE_TYPE NON_DIRECTED
 #define TEST_EDGE_FORM L
 
@@ -113,12 +115,13 @@ int run_test() {
 
     std::cout<<graph_M<<std::endl;
 
-    graph<vertex<std::string, int>, edge<vertex<std::string, int>, double, int>> graph_M_2(10, 13, NON_DIRECTED, L);
+    graph<vertex<std::string, int>, edge<vertex<std::string, int>, double, int>> graph_M_2(10, 15, DIRECTED, L);
 
     vertex<std::string, int> *d_vertex10 = graph_M_2.insert_vertex("d_vertex_10");
     vertex<std::string, int> *d_vertex11 = graph_M_2.insert_vertex("d_vertex_11");
 
     graph_M_2.insert_edge(d_vertex11, d_vertex10);
+    graph_M_2.insert_edge(d_vertex10, d_vertex10);
 
     std::cout<<graph_M_2<<std::endl;
 
@@ -133,6 +136,19 @@ int run_test() {
     graph_M_2.to_matrix_graph();
 
     std::cout<<graph_M_2<<std::endl;
+
+    PFS shortest_way(&graph_M_2);
+
+    shortest_way.print_result();
+
+
+    //TODO: протестировать диаметр!
+    graph<vertex<std::string, int>, edge<vertex<std::string, int>, double, int>> graph_M_3(10, 15, NON_DIRECTED, L);
+
+    allSP all(&graph_M_3);
+    std::cout<<graph_M_3;
+    //std::cout<<"\n---\n"<<all.dist(2, 8);
+
 #endif
     return 0;
 }

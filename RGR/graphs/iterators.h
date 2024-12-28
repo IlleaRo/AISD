@@ -1,8 +1,10 @@
 #ifndef RGR_ITERATORS_H
 #define RGR_ITERATORS_H
 
+#include <ostream>
 #include <vector>
-#include "graph.h"
+
+#include "forms.h"
 
 template <class VERTEX_T>
 class vertex_iterator {
@@ -11,7 +13,11 @@ class vertex_iterator {
 
 public:
     explicit vertex_iterator() : it(), undefined(true) {}
-    explicit vertex_iterator(typename std::vector<VERTEX_T *>::iterator it) : it(it), undefined(false) {}
+    explicit vertex_iterator(typename std::vector<VERTEX_T *>::iterator it, typename std::vector<VERTEX_T *> vector) : it(it), undefined(false) {
+        if (vector.empty()) {
+            undefined = true;
+        }
+    }
 
     VERTEX_T *operator*() {
         if (undefined || *it == nullptr) {
@@ -129,7 +135,7 @@ public:
     explicit edge_iterator(graph<VERTEX_T, EDGE_T> *graph) : graph_ptr(graph), undefined(false) {}
 
     EDGE_T *operator*() {
-        if (undefined || *this == graph_ptr->edge_end()) {
+        if (undefined || *this == graph_ptr->edge_end()  || cur_edge == nullptr || cur_vertex == nullptr) {
             throw std::out_of_range("Out of range");
         }
 

@@ -9,4 +9,10 @@ add_executable(RGR main.cpp
         graphs/iterators.h
         ui/test.cpp
         ui/prompts.cpp
-        ui/menu.cpp)
+        ui/menu.cpp
+        tasks/task_2/PFS.h
+        tasks/task_2/randomized_queue.h
+        tasks/task_2/SEARCH.h
+        tasks/task_3/SPT.h
+        tasks/task_3/PQi.h
+        tasks/task_3/allSP.h)

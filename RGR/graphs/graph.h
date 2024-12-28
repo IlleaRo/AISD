@@ -138,7 +138,7 @@ public:
             }
 
             if (get_edge(vertexes[v1], vertexes[v2]) == nullptr) {
-                insert_edge(vertexes[v1], vertexes[v2]);
+                insert_edge(vertexes[v1], vertexes[v2], rand() % 100);
 
                 if (type == NON_DIRECTED) {
                     i+=2;
@@ -255,7 +255,7 @@ public:
     }
 
     VERTEX_T *get_vertex(size_t idx) const {
-        if (idx > this->vertexes.size() - 1) {
+        if (this->vertexes.size() == 0 || idx > this->vertexes.size() - 1) {
             return nullptr;
         }
 
@@ -310,11 +310,11 @@ public:
     }
 
     vertex_iterator<VERTEX_T> vertex_begin() {
-        return vertex_iterator<VERTEX_T>(vertexes.begin());
+        return vertex_iterator<VERTEX_T>(vertexes.begin(), vertexes);
     }
 
     vertex_iterator<VERTEX_T> vertex_end() {
-        return vertex_iterator<VERTEX_T>(vertexes.end());
+        return vertex_iterator<VERTEX_T>(vertexes.end(), vertexes);
     }
 
     edge_iterator_for_v<VERTEX_T, EDGE_T> edge_v_begin(VERTEX_T *vertex) {
@@ -363,6 +363,9 @@ public:
     edge_iterator<VERTEX_T, EDGE_T> edge_end() {
         edge_iterator<VERTEX_T, EDGE_T> iter(this);
         iter.set_cur_edge(nullptr);
+        if (vertexes.empty()) {
+            return iter;
+        }
         iter.set_cur_vertex(*vertexes.rbegin());
 
         return iter;
