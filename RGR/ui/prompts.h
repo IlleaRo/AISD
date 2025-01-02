@@ -1,6 +1,8 @@
 #ifndef RGR_PROMPTS_H
 #define RGR_PROMPTS_H
 
+#include <iostream>
+
 const std::string prompt_type = "Выберите тип графа:\n"
                               "\t1. Неориентированный, невзвешенный\n"
                               "\t2. Ориентированный, невзвешенный\n"

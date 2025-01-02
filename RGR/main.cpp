@@ -2,12 +2,10 @@
 #include <windows.h>
 #endif
 
-#include <iostream>
 #include <cstring>
 #include "ui/test.h"
 #include "ui/prompts.h"
 #include "ui/menu.h"
-#include "graphs/graph.h"
 
 #pragma execution_character_set( "utf-8" )
 #define WIN_UTF_ID 65001
